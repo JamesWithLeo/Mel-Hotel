@@ -9,6 +9,7 @@ import Review from "./review.component/review";
 import Home from "./home.component/home";
 import Location from "./location.component/location";
 import Contact from "./contact.component/contact";
+import Admin from "./admin.component/admin";
 
 const router = createHashRouter([
   {
@@ -23,6 +24,7 @@ const router = createHashRouter([
     ],
   },
   { path: "/book", element: <Book /> },
+  { path: "admin", element: <Admin /> },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,

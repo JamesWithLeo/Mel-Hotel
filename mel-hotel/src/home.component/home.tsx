@@ -18,12 +18,12 @@ export default function Home() {
       </div>
       <Link
         to={"book"}
-        className="bg-contrast font-fauna mb-4 rounded-full px-5 py-1 shadow drop-shadow"
+        className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
       >
         Book Now!
       </Link>
 
-      <div className="flex w-full gap-8 bg-gray-100 px-8">
+      <div className="flex w-full gap-4 bg-gray-100 px-8">
         <div
           id="homeAmmenities"
           className="h-96 w-1/2 rounded p-4 shadow drop-shadow"
@@ -34,7 +34,7 @@ export default function Home() {
           id="Ammenities"
           className="h-96 w-1/2 rounded p-4 shadow drop-shadow"
         >
-          <h1>Rooms & Suites</h1>
+          <h1>Home</h1>
         </div>
       </div>
     </div>
