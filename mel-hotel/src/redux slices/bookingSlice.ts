@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type IBookedType = "regular" | "premium" | "luxury";
+export type IBookedType = "ordinary" | "vip";
+export type IVip = "regular" | "premium" | "luxury" | null;
 
 interface IBookingReducer {
   numberOfRooms: number;
   dateOfBooking: string;
   bookedDays: number;
-  BookedType: IBookedType;
+  packageType: IBookedType;
   Date: string;
+  vip: IVip;
 }
 let date = new Date().toLocaleDateString().split("/");
 if (date[0].length === 1) {
@@ -19,14 +21,16 @@ const BookingInit: IBookingReducer = {
   bookedDays: 1,
   dateOfBooking: new Date().toLocaleDateString(),
   Date: dateToday,
-  BookedType: "regular",
+  packageType: "ordinary",
+  vip: null,
 };
 const BookingInitialState: IBookingReducer = {
   numberOfRooms: 1,
   bookedDays: 1,
   dateOfBooking: new Date().toLocaleDateString(),
   Date: dateToday,
-  BookedType: "regular",
+  packageType: "ordinary",
+  vip: null,
 };
 
 const bookingSlice = createSlice({
@@ -52,12 +56,18 @@ const bookingSlice = createSlice({
     ResetBooking: (state) => {
       state.Date = BookingInit.Date;
       state.numberOfRooms = BookingInit.numberOfRooms;
-      state.BookedType = BookingInit.BookedType;
+      state.packageType = BookingInit.packageType;
       state.bookedDays = BookingInit.bookedDays;
       state.dateOfBooking = BookingInit.dateOfBooking;
     },
     SetBookedDate: (state, action: PayloadAction<string>) => {
       state.Date = action.payload;
+    },
+    SetPackageTypeToHotel: (state) => {
+      state.packageType = "vip";
+    },
+    SetPackageTypeToOrdinary: (state) => {
+      state.packageType = "ordinary";
     },
   },
 });
@@ -68,5 +78,7 @@ export const {
   DecrementDays,
   SetBookedDate,
   ResetBooking,
+  SetPackageTypeToOrdinary,
+  SetPackageTypeToHotel,
 } = { ...bookingSlice.actions };
 export default bookingSlice.reducer;

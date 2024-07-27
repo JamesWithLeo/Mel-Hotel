@@ -17,9 +17,11 @@ import Admin from "./admin.component/admin";
 import RegularPackage from "./packages.component/regular";
 import PremiumPackage from "./packages.component/premium.pkg";
 import LuxuryPackage from "./packages.component/luxury.pkg";
-import Room from "./packages.component/room.pkg";
-import Hotel from "./packages.component/hotel.pkg";
+import Ordinary from "./packages.component/ordinary.pkg";
+import Hotel from "./packages.component/vip.pkg";
 import BookingSelection from "./book.component/bookSelection";
+import Signin from "./signin.component/signin";
+import Profile from "./account.component/profile";
 
 const router = createHashRouter([
   {
@@ -39,10 +41,21 @@ const router = createHashRouter([
     children: [
       { element: <BookingSelection />, index: true },
       { path: "booking", element: <BookingSelection /> },
-      { path: "room", element: <Room /> },
-      { path: "hotel", element: <Hotel /> },
     ],
   },
+  { path: "room", element: <Ordinary /> },
+  {
+    path: "hotel",
+    element: <Hotel />,
+    children: [
+      { index: true, element: <RegularPackage /> },
+      { path: "regular", element: <RegularPackage />, index: false },
+      { path: "premium", element: <PremiumPackage /> },
+      { path: "luxury", element: <LuxuryPackage /> },
+    ],
+  },
+  { path: "signin", element: <Signin /> },
+  { path: "profile", element: <Profile /> },
   { path: "admin", element: <Admin /> },
 ]);
 const root = ReactDOM.createRoot(
