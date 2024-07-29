@@ -5,11 +5,16 @@ import luxuryDrink from "../assets/images/luxury-drinks.jpg";
 import luxuryBalcony from "../assets/images/luxry-balcony.jpg";
 import luxuryDining from "../assets/images/luxury-dining.jpg";
 import hotelRommlg from "../assets/images/hotel-room.jpg";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SetVipPackage } from "../redux slices/vipSlice";
 import { hotelStore } from "../hotelStore";
-export default function LuxuryPackage() {
+
+export default function LuxuryPackage({
+  isReadOnly = false,
+}: {
+  isReadOnly: boolean;
+}) {
   const dispatch = useDispatch();
   const onSelectPackage = () => {
     dispatch(SetVipPackage("luxury"));
@@ -22,13 +27,34 @@ export default function LuxuryPackage() {
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Luxury
           </h1>
-          <NavLink
-            to={"/signin"}
-            onClick={onSelectPackage}
-            className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
-          >
-            Select this Package
-          </NavLink>
+          {isReadOnly ? (
+            <Link
+              to={"/hotel/luxury"}
+              className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+            >
+              Book this Package
+            </Link>
+          ) : (
+            <>
+              {hotelStore.getState().auth.isAuth ? (
+                <Link
+                  to={"/profile"}
+                  onClick={onSelectPackage}
+                  className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                >
+                  Select this Package
+                </Link>
+              ) : (
+                <Link
+                  to={"/login"}
+                  onClick={onSelectPackage}
+                  className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                >
+                  Select this Package
+                </Link>
+              )}
+            </>
+          )}
         </div>
         <h1 className="w-max text-sm text-slate-800">
           VIPs, entrepreneurs, and high-net-worth individuals.

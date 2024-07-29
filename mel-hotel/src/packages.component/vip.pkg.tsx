@@ -21,7 +21,6 @@ import { AppState } from "../hotelStore";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
-import BookNav from "../book.component/bookNav";
 
 let date = new Date().toLocaleDateString().split("/");
 if (date[0].length === 1) {

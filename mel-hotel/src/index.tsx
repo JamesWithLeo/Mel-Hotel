@@ -6,9 +6,9 @@ import { hotelStore } from "./hotelStore";
 import { Provider } from "react-redux";
 // routes
 import App from "./App";
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Book from "./book.component/book";
-import Pricing from "./pricing.component/pricing";
+import PricingLayout from "./pricing.component/pricingLayout";
 import Review from "./review.component/review";
 import Home from "./home.component/home";
 import Location from "./location.component/location";
@@ -20,19 +20,25 @@ import LuxuryPackage from "./packages.component/luxury.pkg";
 import Ordinary from "./packages.component/ordinary.pkg";
 import Hotel from "./packages.component/vip.pkg";
 import BookingSelection from "./book.component/bookSelection";
-import Signin from "./signin.component/signin";
+import LoginFC from "./signin.component/login";
 import Profile from "./account.component/profile";
-
-const router = createHashRouter([
+import SigninFC from "./signin.component/signin";
+import OrdinaryLayout from "./packages.component/ordinaryLayout";
+const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: "pricing", element: <Pricing /> },
+      {
+        path: "pricing",
+        element: <PricingLayout />,
+        children: [],
+      },
       { path: "review", element: <Review /> },
       { path: "location", element: <Location /> },
       { path: "contact", element: <Contact /> },
+      { path: "profile", element: <Profile /> },
     ],
   },
   {
@@ -43,20 +49,28 @@ const router = createHashRouter([
       { path: "booking", element: <BookingSelection /> },
     ],
   },
-  { path: "room", element: <Ordinary /> },
+  {
+    path: "room",
+    element: <OrdinaryLayout />,
+    children: [{ element: <Ordinary isReadOnly />, index: true }],
+  },
   {
     path: "hotel",
     element: <Hotel />,
     children: [
-      { index: true, element: <RegularPackage /> },
-      { path: "regular", element: <RegularPackage />, index: false },
-      { path: "premium", element: <PremiumPackage /> },
-      { path: "luxury", element: <LuxuryPackage /> },
+      { index: true, element: <RegularPackage isReadOnly /> },
+      { path: "regular", element: <RegularPackage isReadOnly /> },
+      { path: "premium", element: <PremiumPackage isReadOnly /> },
+      { path: "luxury", element: <LuxuryPackage isReadOnly /> },
     ],
   },
-  { path: "signin", element: <Signin /> },
-  { path: "profile", element: <Profile /> },
+  { path: "login", element: <LoginFC /> },
+  { path: "signin", element: <SigninFC /> },
   { path: "admin", element: <Admin /> },
+  { path: "ordinary", element: <Ordinary isReadOnly={true} /> },
+  { path: "regular", element: <RegularPackage isReadOnly={true} /> },
+  { path: "premium", element: <PremiumPackage isReadOnly={true} /> },
+  { path: "luxury", element: <LuxuryPackage isReadOnly={true} /> },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,

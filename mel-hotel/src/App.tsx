@@ -1,8 +1,9 @@
 import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { hotelStore } from "./hotelStore";
+import { isPending } from "@reduxjs/toolkit";
 interface INavClass {
   isActive: boolean;
   isPending: boolean;
@@ -21,6 +22,16 @@ function App() {
       isTransitioning ? "" : "",
     ].join(" ");
   };
+  React.useEffect(()=>{
+    const fetchHome = async () => {
+      await fetch("/hotel").then(async (response)=>{
+        await response.json().then((value)=>{
+          console.log(value)
+        })
+      })
+    }
+  fetchHome()
+  }, [])
 
   return (
     <div className="flex h-screen w-full flex-col items-center">
@@ -45,11 +56,17 @@ function App() {
         </div>
         <div className="flex items-center gap-8">
           {hotelStore.getState().auth.isAuth ? (
-            <NavLink to={"profile"} className={"text-primarydarker border-b-4"}>
+            <NavLink to={"profile"} className={({isPending, isActive, isTransitioning}) => 
+              [
+                isActive ? "text-contrast" : "text-primarydarker", 
+                isPending ? "" : "",
+              isTransitioning ? "" : "",
+              ].join(" ")
+            }>
               <FontAwesomeIcon icon={faUser} className="align-bottom text-xl" />
             </NavLink>
           ) : (
-            <NavLink to={"/signin"} className={"text-primarydarker border-b-4"}>
+            <NavLink to={"/login"} className={"text-primarydarker border-b-4"}>
               <FontAwesomeIcon icon={faUser} className="align-bottom text-xl" />
             </NavLink>
           )}

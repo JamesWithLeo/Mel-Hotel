@@ -1,7 +1,11 @@
+import PricingCard from "./pricingCard";
 export default function Pricing() {
   return (
-    <div className="flex w-full">
-      <h1>pricing</h1>
-    </div>
+    <>
+      <PricingCard packageName="Ordinary" />
+      <PricingCard packageName="Regular" />
+      <PricingCard packageName="Premium" />
+      <PricingCard packageName="Luxury" />
+    </>
   );
 }

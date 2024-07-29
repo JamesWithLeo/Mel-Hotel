@@ -7,6 +7,7 @@ module.exports = {
         'cinzel': ['cinzel'],
         'fauna': ['fauna'],
         'edu': ['edu'],
+        'bebas': ['bebas']
       },
       colors: {
         'contrast': '#ED7D31',

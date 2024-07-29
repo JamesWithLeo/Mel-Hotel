@@ -6,12 +6,16 @@ import hotelPlay from "../assets/images/regular-play.jpg";
 import hotelDrink from "../assets/images/regular-drink.jpg";
 import hotelSpa from "../assets/images/regular-spa.jpg";
 
-import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppState, hotelStore } from "../hotelStore";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { hotelStore } from "../hotelStore";
 import { SetVipPackage } from "../redux slices/vipSlice";
 
-export default function RegularPackage() {
+export default function RegularPackage({
+  isReadOnly = false,
+}: {
+  isReadOnly: boolean;
+}) {
   const dispatch = useDispatch();
   const onSelectPackage = () => {
     dispatch(SetVipPackage("regular"));
@@ -24,13 +28,34 @@ export default function RegularPackage() {
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Regular
           </h1>
-          <NavLink
-            to={"/signin"}
-            className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
-            onClick={onSelectPackage}
-          >
-            Select this Package
-          </NavLink>
+          {isReadOnly ? (
+            <Link
+              to={"/hotel/regular"}
+              className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+            >
+              Book this Package
+            </Link>
+          ) : (
+            <>
+              {hotelStore.getState().auth.isAuth ? (
+                <Link
+                  to={"/profile"}
+                  className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                  onClick={onSelectPackage}
+                >
+                  Select this Package
+                </Link>
+              ) : (
+                <Link
+                  to={"/login"}
+                  className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                  onClick={onSelectPackage}
+                >
+                  Select this Package
+                </Link>
+              )}
+            </>
+          )}
         </div>
         <h1 className="w-max text-sm text-slate-800">
           Families and general travelers.

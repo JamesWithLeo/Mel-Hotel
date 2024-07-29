@@ -1,3 +1,6 @@
+import hotelCozyroom from "../assets/images/hotelRoom-sm.jpg";
+import hotelFacade from "../assets/images/hotel-scenries1.jpg";
+import hotelPool1 from "../assets/images/luxury-pool.jpg";
 import { Link } from "react-router-dom";
 import Gallary from "./gallary";
 export default function Home() {
@@ -23,20 +26,49 @@ export default function Home() {
         Book Now!
       </Link>
 
-      <div className="flex w-full gap-4 bg-gray-100 px-8">
+      <div className="flex w-full flex-col gap-4 bg-gray-100 px-8 py-4 sm:flex-col">
         <div
           id="homeAmmenities"
-          className="h-96 w-1/2 rounded p-4 shadow drop-shadow"
+          className="grid h-40 grid-cols-3 grid-rows-3 overflow-hidden rounded shadow drop-shadow sm:w-1/3 md:h-60"
         >
-          <h1>Home</h1>
+          <div className="z-10 col-span-3 row-span-1 row-start-2 flex items-center justify-center text-gray-200 backdrop-brightness-50 lg:text-5xl">
+            <h1 className="font-bebas opacity-70">Wonderful sceneries</h1>
+          </div>
+
+          <img
+            src={hotelFacade}
+            alt="hotel scenery"
+            className="col-span-3 col-start-1 col-end-4 row-start-1 columns-1"
+          />
         </div>
+
         <div
           id="Ammenities"
-          className="h-96 w-1/2 rounded p-4 shadow drop-shadow"
+          className="grid h-40 w-1/3 grid-cols-1 grid-rows-3 overflow-hidden rounded shadow drop-shadow md:h-60"
         >
-          <h1>Home</h1>
+          <div className="z-10 flex items-center justify-center text-gray-200 backdrop-brightness-50 lg:text-5xl">
+            <h1 className="font-bebas">Cozy Rooms</h1>
+          </div>
+          <img
+            src={hotelCozyroom}
+            alt="cozy room"
+            className="col-start-1 row-start-1"
+          />
+        </div>
+
+        <div
+          id="Ammenities"
+          className="grid h-40 w-1/3 grid-cols-1 grid-rows-3 overflow-hidden rounded shadow drop-shadow md:h-60"
+        >
+          <div className="z-10 flex items-center justify-center text-gray-200 backdrop-brightness-50 lg:text-5xl">
+            <h1 className="font-bebas">Private Pools</h1>
+          </div>
+          <img src={hotelPool1} alt="" className="col-start-1 row-start-1" />
         </div>
       </div>
+      <footer className="flex h-96 w-full">
+        <h1 className="flex h-96 w-full">foot</h1>
+      </footer>
     </div>
   );
 }

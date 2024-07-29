@@ -31,3 +31,8 @@ code {
   font-family: edu;
   src: url(./assets/fonts/Edu_AU_VIC_WA_NT_Hand/EduAUVICWANTHand-VariableFont_wght.ttf);
 }
+
+@font-face {
+  font-family: bebas;
+  src: url(./assets/fonts/Bebas_Neue/BebasNeue-Regular.ttf);
+}
