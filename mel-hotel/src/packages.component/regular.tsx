@@ -12,7 +12,7 @@ import { hotelStore } from "../hotelStore";
 import { SetVipPackage } from "../redux slices/vipSlice";
 
 export default function RegularPackage({
-  isReadOnly = false,
+  isReadOnly,
 }: {
   isReadOnly: boolean;
 }) {
@@ -22,12 +22,16 @@ export default function RegularPackage({
     console.log(hotelStore.getState().vipBooking);
   };
   return (
-    <div className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-white pb-56 md:pb-20">
-      <div className="sticky top-0 flex h-40 w-full flex-col bg-gray-50 bg-gradient-to-b from-gray-100 from-20% px-4 py-2 pb-4">
+    <div
+      id="packageContent"
+      className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-gray-100 pb-56 md:pb-20"
+    >
+      <div className="sticky top-0 flex w-full flex-col bg-gradient-to-b from-gray-200 from-20% to-gray-100 px-4 py-2 pb-4">
         <div className="flex justify-between">
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Regular
           </h1>
+
           {isReadOnly ? (
             <Link
               to={"/hotel/regular"}
@@ -49,7 +53,6 @@ export default function RegularPackage({
                 <Link
                   to={"/login"}
                   className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
-                  onClick={onSelectPackage}
                 >
                   Select this Package
                 </Link>
@@ -57,8 +60,9 @@ export default function RegularPackage({
             </>
           )}
         </div>
+
         <h1 className="w-max text-sm text-slate-800">
-          Families and general travelers.
+          Families and common travelers.
         </h1>
         <div className="flex gap-2">
           <button className="rounded bg-slate-300 px-2 text-sm">
@@ -68,7 +72,7 @@ export default function RegularPackage({
         </div>
       </div>
 
-      <div className="flex w-full flex-col px-8">
+      <div className="flex w-full flex-col px-2 sm:px-4 md:px-8">
         <h1>Inclusions:</h1>
         <h1 className="">
           Standard room with a double bed and an extra bed for children.
@@ -99,7 +103,17 @@ export default function RegularPackage({
         </div>
       </div>
 
-      <h1>Back to top</h1>
+      <button
+        className="mt-8 w-max self-center rounded px-2 text-sm text-gray-500 hover:bg-gray-100"
+        onClick={() => {
+          const element = document.getElementById(
+            "packageContent",
+          ) as HTMLElement;
+          element.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        Back to top
+      </button>
     </div>
   );
 }

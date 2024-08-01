@@ -10,17 +10,17 @@ export default function BookingSelection() {
   return (
     <>
       <NavLink
-        className="mt-16 flex w-1/3 rounded bg-[#f5b97c] p-4"
+        className="mt-16 flex w-60 flex-col rounded bg-[#f5b97c] p-4"
         to={"/room"}
       >
         {" "}
-        <h1>Ordinary Room </h1>
+        <h1 className="text-center text-[#DD5B19]">Ordinary Room </h1>
       </NavLink>
       <NavLink
-        className="bg-contrast mt-16 flex w-1/3 rounded p-4"
+        className="bg-contrast mt-16 flex w-60 flex-col rounded p-4"
         to={"/hotel"}
       >
-        <h1>Hotel Package</h1>
+        <h1 className="text-center text-[#762f18]">Hotel Package</h1>
       </NavLink>
     </>
   );

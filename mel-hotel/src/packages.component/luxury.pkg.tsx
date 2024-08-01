@@ -21,8 +21,11 @@ export default function LuxuryPackage({
     console.log(hotelStore.getState().vipBooking);
   };
   return (
-    <div className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-white pb-56 md:pb-20">
-      <div className="sticky top-0 flex w-full flex-col bg-gray-50 bg-gradient-to-b from-gray-100 from-20% px-4 py-2 pb-4">
+    <div
+      id="packageContent"
+      className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-gray-100 pb-56 md:pb-20"
+    >
+      <div className="sticky top-0 flex w-full flex-col bg-gradient-to-b from-gray-200 from-20% to-gray-100 px-4 py-2 pb-4">
         <div className="flex w-full justify-between">
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Luxury
@@ -47,7 +50,6 @@ export default function LuxuryPackage({
               ) : (
                 <Link
                   to={"/login"}
-                  onClick={onSelectPackage}
                   className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
                 >
                   Select this Package
@@ -109,6 +111,18 @@ export default function LuxuryPackage({
         <h1>30% discount on all spa services.</h1>
         <h1>Personal concierge service for the duration of the stay.</h1>
       </div>
+
+      <button
+        className="mt-8 w-max self-center rounded px-2 text-sm text-gray-500 hover:bg-gray-100"
+        onClick={() => {
+          const element = document.getElementById(
+            "packageContent",
+          ) as HTMLElement;
+          element.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        Back to top
+      </button>
     </div>
   );
 }

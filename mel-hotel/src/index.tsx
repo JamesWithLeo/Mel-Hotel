@@ -24,6 +24,7 @@ import LoginFC from "./signin.component/login";
 import Profile from "./account.component/profile";
 import SigninFC from "./signin.component/signin";
 import OrdinaryLayout from "./packages.component/ordinaryLayout";
+import ProtectedRoute from "./protectedRoute";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -58,15 +59,25 @@ const router = createBrowserRouter([
     path: "hotel",
     element: <Hotel />,
     children: [
-      { index: true, element: <RegularPackage isReadOnly /> },
-      { path: "regular", element: <RegularPackage isReadOnly /> },
-      { path: "premium", element: <PremiumPackage isReadOnly /> },
-      { path: "luxury", element: <LuxuryPackage isReadOnly /> },
+      {
+        index: true,
+        element: <RegularPackage isReadOnly={false} />,
+      },
+      { path: "regular", element: <RegularPackage isReadOnly={false} /> },
+      { path: "premium", element: <PremiumPackage isReadOnly={false} /> },
+      { path: "luxury", element: <LuxuryPackage isReadOnly={false} /> },
     ],
   },
   { path: "login", element: <LoginFC /> },
   { path: "signin", element: <SigninFC /> },
-  { path: "admin", element: <Admin /> },
+  {
+    path: "admin",
+    element: (
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    ),
+  },
   { path: "ordinary", element: <Ordinary isReadOnly={true} /> },
   { path: "regular", element: <RegularPackage isReadOnly={true} /> },
   { path: "premium", element: <PremiumPackage isReadOnly={true} /> },

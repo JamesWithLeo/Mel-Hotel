@@ -2,15 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface IAuthSlice {
   isAuth: boolean;
   authTyoe: "guest" | "user" | "admin";
-  gmail: string | null
-  password: string | null
+  gmail: string | null;
+  password: string | null;
 }
 const authInit: IAuthSlice = {
   isAuth: false,
   authTyoe: "guest",
   gmail: null,
   password: null,
-}
+};
 const authSliceInit: IAuthSlice = {
   isAuth: false,
   authTyoe: "guest",
@@ -29,12 +29,11 @@ const authSlice = createSlice({
   reducers: {
     Login: (state, action: PayloadAction<ICredentials>) => {
       state.isAuth = true;
-      state.gmail = action.payload.gmail
-      state.password = action.payload.password
+      state.gmail = action.payload.gmail;
+      state.password = action.payload.password;
     },
     Logout: (state) => {
-      state = {...authInit}
-
+      state = { ...authInit };
     },
   },
 });

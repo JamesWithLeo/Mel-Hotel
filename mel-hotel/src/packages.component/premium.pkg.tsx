@@ -17,8 +17,11 @@ export default function PremiumPackage({
     console.log(hotelStore.getState().vipBooking);
   };
   return (
-    <div className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-white pb-56 md:pb-20">
-      <div className="sticky top-0 flex w-full flex-col bg-gray-50 bg-gradient-to-b from-gray-100 from-20% px-4 py-2 pb-4">
+    <div
+      id="packageContent"
+      className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-gray-100 pb-56 md:pb-20"
+    >
+      <div className="sticky top-0 flex w-full flex-col bg-gradient-to-b from-gray-200 from-20% to-gray-100 px-4 py-2 pb-4">
         <div className="flex w-full justify-between">
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Premium
@@ -44,7 +47,6 @@ export default function PremiumPackage({
               ) : (
                 <Link
                   to={"/login"}
-                  onClick={onSelectPackage}
                   className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
                 >
                   Select this Package
@@ -54,7 +56,7 @@ export default function PremiumPackage({
           )}
         </div>
         <h1 className="w-max text-sm text-slate-800">
-          Affluent guests seeking enhanced comfort and luxury.
+          Affluent guests seeking enhanced comfort.
         </h1>
         <div className="flex gap-2">
           <button className="rounded bg-slate-300 px-2 text-sm">
@@ -85,6 +87,18 @@ export default function PremiumPackage({
         <h1>20% discount on spa services.</h1>
         <h1>Late check-out upon request.</h1>
       </div>
+
+      <button
+        className="mt-8 w-max self-center rounded px-2 text-sm text-gray-500 hover:bg-gray-100"
+        onClick={() => {
+          const element = document.getElementById(
+            "packageContent",
+          ) as HTMLElement;
+          element.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        Back to top
+      </button>
     </div>
   );
 }

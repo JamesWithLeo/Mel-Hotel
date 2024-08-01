@@ -9,38 +9,42 @@ export default function Ordinary({
   isReadOnly: Boolean;
 }) {
   return (
-    <div className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-white pb-56 md:pb-20">
-      {isReadOnly ? (
-        <Link
-          to={"/room"}
-          className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
-        >
-          Book this Package
-        </Link>
-      ) : (
-        <>
-          {hotelStore.getState().auth.isAuth ? (
+    <div
+      id="packageContent"
+      className="group flex h-dvh max-h-max w-full max-w-max flex-col overflow-y-auto bg-white pb-56 md:pb-20"
+    >
+      <div className="sticky top-0 flex h-max w-full flex-col text-wrap bg-gray-50 bg-gradient-to-b from-gray-100 from-20% px-4 py-2 pb-4">
+        <div className="flex justify-between">
+          <h1 className="font-fauna text-contrast text-2xl font-bold">
+            Ordinary Room
+          </h1>
+          {isReadOnly ? (
             <Link
-              to={"/profile"}
-              className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+              to={"/room"}
+              className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
             >
-              Select this Package
+              Book this Package
             </Link>
           ) : (
-            <Link
-              to={"/login"}
-              className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
-            >
-              Select this Package
-            </Link>
+            <>
+              {hotelStore.getState().auth.isAuth ? (
+                <Link
+                  to={"/profile"}
+                  className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                >
+                  Select this Package
+                </Link>
+              ) : (
+                <Link
+                  to={"/login"}
+                  className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                >
+                  Select this Package
+                </Link>
+              )}
+            </>
           )}
-        </>
-      )}
-
-      <div className="sticky top-0 flex h-max w-full flex-col text-wrap bg-gray-50 bg-gradient-to-b from-gray-100 from-20% px-4 py-2 pb-4">
-        <h1 className="font-fauna text-contrast text-2xl font-bold">
-          Ordinary Room
-        </h1>
+        </div>
         <h1 className="w-max text-sm text-slate-800">
           Budget-conscious travelers and guests seeking a basic stay.
         </h1>
@@ -70,6 +74,18 @@ export default function Ordinary({
         <h1>Laundry and dry cleaning services</h1>
         <h1>Room service</h1>
       </div>
+
+      <button
+        className="mt-8 w-max self-center rounded px-2 text-sm text-gray-500 hover:bg-gray-100"
+        onClick={() => {
+          const element = document.getElementById(
+            "packageContent",
+          ) as HTMLElement;
+          element.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        Back to top
+      </button>
     </div>
   );
 }
