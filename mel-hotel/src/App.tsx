@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="flex h-screen w-full flex-col items-center">
-      <header className="fixed top-0 z-50 flex h-16 min-h-16 w-full max-w-7xl justify-between bg-gray-100 px-8 opacity-95 backdrop-blur backdrop-opacity-20">
+      <header className="sticky top-0 z-50 flex h-16 min-h-16 w-full max-w-7xl justify-between bg-gray-100 px-8 opacity-95 backdrop-blur backdrop-opacity-20">
         <div></div>
         <div className="hidden h-full items-center gap-8 opacity-100 md:flex">
           <NavLink to={"/"} className={navClass}>
@@ -98,9 +98,9 @@ function App() {
             <NavLink to={"location"} className={navClass}>
               Location
             </NavLink>
-            {/* <NavLink to={"contact"} className={navClass}>
+            <NavLink to={"contact"} className={navClass}>
               Contact us
-            </NavLink> */}
+            </NavLink>
           </div>
         )}
       </header>
