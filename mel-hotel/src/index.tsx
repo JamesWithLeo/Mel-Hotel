@@ -13,7 +13,6 @@ import Review from "./review.component/review";
 import Home from "./home.component/home";
 import Location from "./location.component/location";
 import Contact from "./contact.component/contact";
-import Admin from "./admin.component/admin";
 import RegularPackage from "./packages.component/regular";
 import PremiumPackage from "./packages.component/premium.pkg";
 import LuxuryPackage from "./packages.component/luxury.pkg";
@@ -25,6 +24,10 @@ import Profile from "./account.component/profile";
 import SigninFC from "./signin.component/signin";
 import OrdinaryLayout from "./packages.component/ordinaryLayout";
 import ProtectedRoute from "./protectedRoute";
+import AdminLayout from "./admin.component/adminLayout";
+import CollectionLayout from "./admin.component/collectionLayout";
+import AccountCollection from "./admin.component/accountCollection";
+import CollectionController from "./admin.component/collectionController";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -74,9 +77,22 @@ const router = createBrowserRouter([
     path: "admin",
     element: (
       <ProtectedRoute>
-        <Admin />
+        <AdminLayout />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        path: "collections",
+        element: <CollectionLayout />,
+        children: [
+          {
+            element: <CollectionController />,
+            index: true,
+          },
+          { path: "accountCollection", element: <AccountCollection /> },
+        ],
+      },
+    ],
   },
   { path: "ordinary", element: <Ordinary isReadOnly={true} /> },
   { path: "regular", element: <RegularPackage isReadOnly={true} /> },
