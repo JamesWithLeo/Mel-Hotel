@@ -26,9 +26,6 @@ export default function BookNav({
           &middot; Booking &middot;
         </h1>
       </div>
-      {/* <h1 className="text-primarydark flex items-center justify-end text-right text-xs">
-        Today's Date is {new Date().toLocaleDateString().split("/").join("-")}
-      </h1> */}
     </div>
   );
 }

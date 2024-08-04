@@ -4,6 +4,7 @@ import hotelPool1 from "../assets/images/luxury-pool.jpg";
 import { Link } from "react-router-dom";
 import Gallary from "./gallary";
 import Footer from "../footer.component/footer";
+import Location from "../location.component/location";
 export default function Home() {
   return (
     <div
@@ -115,6 +116,9 @@ export default function Home() {
           </div>
         </section>
       </div>
+      {/* <div className="w-full">
+        <Location />
+      </div> */}
       <footer id="#footer" className="flex h-96 w-full bg-gray-300 px-8 py-8">
         <Footer />
       </footer>

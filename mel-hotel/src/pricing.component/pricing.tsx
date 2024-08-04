@@ -19,7 +19,7 @@ export default function Pricing() {
       <PricingCard
         packageObj={{
           packageName: "ordinary",
-          pricePerNight: 80,
+          pricePerNight: 100,
           thumbnail: ordinaryBedroom,
         }}
       />

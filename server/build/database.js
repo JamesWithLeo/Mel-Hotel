@@ -11,6 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = CreateMongoCLient;
 exports.fetchDocuments = fetchDocuments;
+exports.insertDocument = insertDocument;
+exports.fetchDocumentById = fetchDocumentById;
+exports.deleteDocument = deleteDocument;
+exports.updateDocument = updateDocument;
 const mongodb_1 = require("mongodb");
 function CreateMongoCLient(uri) {
     const OPTIONS = {
@@ -35,6 +39,51 @@ function fetchDocuments(collection, id) {
             if (!id) {
                 return yield collection.find().toArray();
             }
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+function insertDocument(collection, doc) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield collection.insertOne(doc);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+function fetchDocumentById(collection, id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const filter = { _id: new mongodb_1.ObjectId(id) };
+            return yield collection.findOne(filter);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+function deleteDocument(collection, id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield collection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+function updateDocument(collection, id, doc) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield collection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: doc, $currentDate: { lastModified: true } });
         }
         catch (error) {
             console.log(error);

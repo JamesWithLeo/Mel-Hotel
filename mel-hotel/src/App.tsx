@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { hotelStore } from "./hotelStore";
-import { isPending } from "@reduxjs/toolkit";
+
 interface INavClass {
   isActive: boolean;
   isPending: boolean;

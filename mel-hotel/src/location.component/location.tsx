@@ -2,8 +2,6 @@ import { LatLngExpression } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { MapController } from "./mapController";
-import { NavLink } from "react-router-dom";
-import { get } from "http";
 
 type markTypeface = {
   name: string;
@@ -105,7 +103,7 @@ export default function Location() {
           center={locationInit}
           zoom={4}
           scrollWheelZoom={true}
-          minZoom={2}
+          minZoom={3}
           className="h-full w-full"
         >
           <TileLayer

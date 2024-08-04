@@ -13,7 +13,7 @@ import {
   faMinus,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { AppState, hotelStore } from "../hotelStore";
+import { AppState } from "../hotelStore";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, Link } from "react-router-dom";
 let date = new Date().toLocaleDateString().split("/");

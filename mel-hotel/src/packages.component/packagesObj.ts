@@ -20,18 +20,18 @@ export const packagesData: packageTypeface[] = [
     thumbnail: hotelRoomSm,
     packageName: "regular",
     targetAudience: "Families and common travelers",
-    pricePerNight: 120,
+    pricePerNight: 350,
   },
   {
     thumbnail: hotelRoomMd,
     packageName: "premium",
     targetAudience: "Affluent guests seeking enhanced comfort",
-    pricePerNight: 300,
+    pricePerNight: 500,
   },
   {
     thumbnail: hotelRoomLg,
     packageName: "luxury",
     targetAudience: "VIPs, entrepreneurs, and high-net-worth individuals.",
-    pricePerNight: 600,
+    pricePerNight: 1000,
   },
 ];

@@ -1,69 +1,85 @@
-import { Document } from "mongodb";
-import { useEffect, useState } from "react";
+import { faTable } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+const AccountTable = lazy(() => import("./accountTable"));
+export type GenderTypeface = "male" | "female" | "others";
+export type AccountTypeface = {
+  _id: string;
+  Gmail: string;
+  Password: string;
+  Age: number;
+  Gender: GenderTypeface;
+};
+
 export default function AccountCollection() {
-  const [accountElements, setAccountElements] = useState<JSX.Element[] | null>(
+  const [isTableVisible, setIsTableVisibility] = useState<boolean>(true);
+  const [accountData, setAccountData] = useState<AccountTypeface[] | null>(
     null,
   );
-  useEffect(() => {
-    async function fetchCollections() {
-      await fetch("/admin/database/collections")
-        .then(async (response) => {
-          await response.json().then((dbCollections: Document[]) => {
-            console.log(dbCollections);
-            const accountEl = dbCollections.map((doc) => {
-              return (
-                <div className="bg-slate-500" key={doc._id}>
-                  <h1>{doc._id}</h1>
-                </div>
-              );
-            });
-            setAccountElements(accountEl);
-          });
-        })
-        .catch((rej) => {
-          console.log({ rejected: rej });
+  async function fetchCollections() {
+    await fetch("/admin/database/collections")
+      .then(async (response) => {
+        await response.json().then((dbCollections: AccountTypeface[]) => {
+          console.log(dbCollections);
+          setAccountData(dbCollections);
         });
-    }
-
+      })
+      .catch((rej) => {
+        console.log({ rejected: rej });
+      });
+  }
+  useEffect(() => {
     fetchCollections();
   }, []);
 
   return (
-    <div className="flex h-full w-full flex-col px-4 py-4">
-      <Link to={"/admin/collections"}>back</Link>
-      {accountElements ? (
+    <div className="flex h-full w-full flex-col gap-2 px-4 py-4">
+      <Link
+        to={"/admin/collections"}
+        className="w-max rounded bg-white px-3 py-1 shadow drop-shadow"
+      >
+        back
+      </Link>
+      {accountData ? (
         <>
-          {accountElements.length ? (
-            accountElements
+          {isTableVisible ? (
+            <button
+              className="w-max rounded bg-white px-3 py-1 shadow drop-shadow"
+              onClick={() => {
+                setIsTableVisibility(!isTableVisible);
+              }}
+            >
+              Hide Table
+            </button>
           ) : (
-            <h1>collection/table empty</h1>
+            <button
+              className="bg-gr w-max rounded bg-white px-3 py-1 shadow drop-shadow"
+              onClick={() => {
+                setIsTableVisibility(!isTableVisible);
+              }}
+            >
+              Show table
+            </button>
+          )}
+
+          {!isTableVisible ? null : (
+            <Suspense
+              fallback={
+                <div className="flex h-full w-full items-center justify-center">
+                  <FontAwesomeIcon
+                    icon={faTable}
+                    className="text-4xl text-slate-400 md:text-5xl"
+                  />
+                </div>
+              }
+            >
+              <AccountTable data={accountData} RefreshData={fetchCollections} />
+            </Suspense>
           )}
         </>
       ) : null}
-      {/* <table className="borde table-auto border-separate">
-        <caption>
-          <h1>Account Collection</h1>
-        </caption>
-        <thead className="bg-gray-400">
-          <tr>
-            <th scope="col">UID</th>
-            <th scope="col">Gmail</th>
-            <th scope="col">Name</th>
-            <th scope="col">Contact</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody className="">
-          <tr className="border-b border-gray-300">
-            <th scope="row">34024093</th>
-            <th scope="row">James@gmail.com</th>
-            <th scope="row">James Leo</th>
-            <th scope="row">0912345669</th>
-            <button onClick={() => console.log("edit")}>Edit</button>
-          </tr>
-        </tbody>
-      </table> */}
     </div>
   );
 }

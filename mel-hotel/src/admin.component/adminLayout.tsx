@@ -12,7 +12,7 @@ export default function AdminLayout() {
   return (
     <main className="flex h-dvh w-full gap-2 bg-gray-100">
       {!isNavVisible ? (
-        <div className="fixed bottom-3 left-1/2 flex w-[96%] -translate-x-1/2 flex-row justify-center gap-4 rounded bg-gray-200 px-3 py-2 sm:relative sm:left-4 sm:top-4 sm:h-[96%] sm:w-max sm:-translate-x-0 sm:flex-col sm:justify-normal">
+        <div className="fixed bottom-3 left-1/2 flex w-[96%] -translate-x-1/2 flex-row justify-center gap-4 rounded bg-gray-200 px-3 py-2 md:relative md:left-4 md:top-4 md:h-[96%] md:w-max md:-translate-x-0 md:flex-col md:justify-normal">
           <Link
             to={"/"}
             className="text-primarydarker hover:text-contrast text-xl"
@@ -30,7 +30,7 @@ export default function AdminLayout() {
           </button>
         </div>
       ) : (
-        <div className="fixed z-10 flex h-full w-1/2 flex-col gap-2 bg-gray-100 py-4 shadow sm:relative sm:flex sm:w-1/6">
+        <div className="fixed z-20 flex h-full w-1/2 flex-col gap-2 bg-gray-100 py-4 shadow md:relative md:flex md:w-1/6">
           <div className="w-max self-end px-4">
             <button
               onClick={() => {
@@ -54,7 +54,7 @@ export default function AdminLayout() {
       {isNavVisible ? (
         <div
           id="outletMask"
-          className="fixed z-0 h-full w-full bg-slate-300 opacity-50 sm:hidden"
+          className="fixed z-10 h-full w-full bg-slate-300 opacity-50 md:hidden"
           onClick={() => {
             setIsNavVisible(false);
           }}

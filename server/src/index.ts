@@ -8,7 +8,11 @@ if (!process.env.PORT || !process.env.DB_CLUSTER) {
 
 //
 import CreateMongoCLient, {
+  deleteDocument,
+  fetchDocumentById,
   fetchDocuments as fetchDocuments,
+  insertDocument,
+  updateDocument,
 } from "./database";
 import { MongoClient } from "mongodb";
 const user = process.env.DB_USER;
@@ -51,7 +55,26 @@ SERVER.get("/admin/database/collections", async (req, res) => {
       res.status(200).json({ rejected });
     });
 });
-
+SERVER.post("/admin/database/account/insert", async (req, res) => {
+  await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
+    res.status(200).json(result);
+  });
+});
+SERVER.get("/admin/database/account/:id", async (req, res) => {
+  await fetchDocumentById(ACCOUNT_COLL, req.params.id).then((result) => {
+    res.status(200).json(result);
+  });
+});
+SERVER.delete("/admin/database/account/delete/:id", async (req, res) => {
+  await deleteDocument(ACCOUNT_COLL, req.params.id).then((result) => {
+    res.status(200).json(result);
+  });
+});
+SERVER.post("/admin/database/account/update/:id", async (req, res) => {
+  await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
+    res.status(200).json(result);
+  });
+});
 SERVER.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
