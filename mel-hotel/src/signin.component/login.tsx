@@ -21,6 +21,7 @@ export default function LoginFC() {
       // empty entry, do nothing.
       return;
     }
+    // do authorization
     const credentials: ICredentials = { gmail, password };
     dispatch(Login(credentials));
     console.log(credentials);

@@ -11,6 +11,8 @@ export type AccountTypeface = {
   Password: string;
   Age: number;
   Gender: GenderTypeface;
+  FirstName: string;
+  LastName: string;
 };
 
 export default function AccountCollection() {

@@ -30,6 +30,7 @@ const AccountTable = ({
         maxSize: 240,
         enableSorting: false,
         enableClickToCopy: true,
+        enableColumnDragging: false,
       },
       {
         accessorKey: "Gmail",
@@ -37,30 +38,48 @@ const AccountTable = ({
         size: 150,
         maxSize: 240,
         enableClickToCopy: true,
+        enableColumnDragging: false,
       },
-      {
-        accessorKey: "Password",
-        header: "Password",
-        maxSize: 240,
-        size: 150,
-        enableSorting: false,
-        columnDefType: "group",
-      },
+      // show password if needed
+      // {
+      //   accessorKey: "Password",
+      //   header: "Password",
+      //   maxSize: 240,
+      //   size: 150,
+      //   enableSorting: false,
+      //   enableGrouping: false,
+      // },
       {
         accessorKey: "Age",
         header: "Age",
-        size: 130,
+        size: 100,
         maxSize: 140,
         enableSorting: true,
       },
       {
         accessorKey: "Gender",
         header: "Gender",
-        size: 130,
+        size: 100,
         maxSize: 140,
         enableSorting: false,
         editVariant: "select",
         editSelectOptions: genderDropDownOption,
+      },
+      {
+        accessorKey: "FirstName",
+        header: "First name",
+        size: 150,
+        enableSorting: true,
+        enableClickToCopy: true,
+        enableColumnDragging: false,
+      },
+      {
+        accessorKey: "LastName",
+        header: "Surname",
+        size: 150,
+        enableSorting: true,
+        enableClickToCopy: true,
+        enableColumnDragging: false,
       },
     ],
     [],
@@ -148,11 +167,7 @@ const AccountTable = ({
     enableExpandAll: true,
     enableColumnDragging: true,
     getRowId: (row) => row._id,
-    // muiTableBodyCellProps: {
-    //   sx: {
-    //     border: "1px solid rgb(243 244 246)",
-    //   },
-    // },
+
     initialState: {
       showColumnFilters: false,
       showGlobalFilter: false,
@@ -233,7 +248,7 @@ const AccountTable = ({
 
     renderDetailPanel: ({ row }) => (
       <div>
-        <h1>{row.original.Gmail}</h1>
+        <h1>Password: {row.original.Password}</h1>
       </div>
     ),
   });

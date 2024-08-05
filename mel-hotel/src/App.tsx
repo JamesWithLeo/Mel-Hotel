@@ -55,11 +55,16 @@ function App() {
           </NavLink> */}
         </div>
         <div className="flex items-center gap-8">
-          <NavLink to={"admin"}>Admin</NavLink>
+          {hotelStore.getState().auth.authType === "admin" ? (
+            <NavLink to={"admin"}>Admin</NavLink>
+          ) : null}
 
           {hotelStore.getState().auth.isAuth ? (
             <NavLink
-              to={"profile"}
+              to={"/profile"}
+              onClick={() => {
+                console.log(hotelStore.getState().auth.isAuth);
+              }}
               className={({ isPending, isActive, isTransitioning }) =>
                 [
                   isActive ? "text-contrast" : "text-primarydarker",

@@ -7,52 +7,46 @@ import hotelbreakfast from "../assets/images/hotel-breakfast.jpg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-
-export default function Gallary() {
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    centerMode: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          initialSlide: 1,
-          infinite: true,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-        },
-      },
-    ],
-  };
+export type carouselTypeface = {
+  dots?: boolean;
+  infinite?: boolean;
+  speed?: number;
+  slidesToShow?: number;
+  slidesToScroll?: number;
+  swipeToSlide?: boolean;
+  autoplay?: boolean;
+  autoplaySpeed?: number;
+  centerMode?: boolean;
+  initialSlide?: number;
+  adaptiveHeight?: boolean;
+  vertical?: boolean;
+  responsive?: [
+    { breakpoint: number; settings: carouselTypeface },
+    { breakpoint: number; settings: carouselTypeface },
+    { breakpoint: number; settings: carouselTypeface },
+  ];
+};
+export default function Gallary({
+  settings,
+  isFullscreen,
+}: {
+  settings: carouselTypeface;
+  isFullscreen?: true;
+}) {
+  const imagesStyle = isFullscreen
+    ? "h-dvh bg-center bg-repeat w-full "
+    : "h-auto w-full";
+  const parentStyle = isFullscreen
+    ? "flex h-full w-full absolute z-0 overflow-y-hidden brightness-75 contrast-100 items-center saturate-100  "
+    : "flex h-max w-full";
   return (
-    <div id="gallary" className="flex h-max w-full">
+    <div id="gallary" className={parentStyle}>
       <Slider {...settings} className="flex w-full gap-0 overflow-hidden">
         <div>
           <img
             src={hotelAtBeack}
             alt="hotel beach side"
-            className="h-auto w-96"
+            className={imagesStyle}
           />
         </div>
         <div>
@@ -69,7 +63,7 @@ export default function Gallary() {
           <img
             src={hotelbreakfast}
             alt="Hotel Healthy breakfast"
-            className="h-auto w-96"
+            className={imagesStyle}
           />
         </div>
 
@@ -87,7 +81,7 @@ export default function Gallary() {
           <img
             src={hotelroom}
             alt="hotel room interior"
-            className="h-auto w-96"
+            className={imagesStyle}
           />
         </div>
         <div className="">
@@ -104,7 +98,7 @@ export default function Gallary() {
           <img
             src={hotelhallway}
             alt="hotel beach side"
-            className="h-auto w-96"
+            className={imagesStyle}
           />
         </div>
       </Slider>

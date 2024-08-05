@@ -1,38 +1,107 @@
-import Gallary from "../home.component/gallary";
+import { useNavigate } from "react-router-dom";
+import Gallary, { carouselTypeface } from "../home.component/gallary";
 import { hotelStore } from "../hotelStore";
+import { Logout } from "../redux slices/authSlice";
 
 export default function Profile() {
+  const settings: carouselTypeface = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    centerMode: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          initialSlide: 1,
+          infinite: true,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+        },
+      },
+    ],
+  };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    hotelStore.dispatch(Logout());
+    navigate("/", { replace: true });
+  };
   return (
-    
     <div className="flex h-svh w-full max-w-7xl flex-col items-center bg-gray-100">
       <div className="w-full opacity-80">
-        <Gallary/>
+        <Gallary settings={settings} />
       </div>
 
-      <div className="sm:w-32 sm:h-32 w-20 h-20 absolute left-16 top-32 bg-gray-200 p-2 rounded">.</div>
-      <h1 className="absolute sm:top-44 bg-gray-100 bg-opacity-85 px-2 py-1 sm:left-52 left-40 top-36 text-sm rounded text-primarydarker">Username</h1>
-      <h1 className="absolute sm:top-56 bg-gray-100 bg-opacity-85 px-2 py-1 sm:left-52 left-40 top-44 rounded text-primarydarker text-sm" >Id :</h1>
-
-      <div className="w-full h-max py-1 flex items-center justify-end gap-1 mb-1 px-8">
-        <div className="w-[2px] bg-gray-400 h-full"><hr/></div>
-        <button className="bg-gray-100 px-2 py-1 text-primarydarker hover:bg-primarydarker hover:text-white">Booked</button>
-        <div className="w-[2px] bg-gray-400 h-full"><hr/></div>
-        <button className="bg-gray-100 px-2 py-1 text-primarydarker hover:bg-primarydarker hover:text-white">Write Review</button>
-        <div className="w-[2px] bg-gray-400 h-full"><hr/></div>
+      <div className="absolute left-16 top-32 h-20 w-20 rounded bg-gray-200 p-2 sm:h-32 sm:w-32">
+        .
       </div>
-      <div className="grid grid-cols-2 max md:pl-24 px-8 gap-2 items-center text-primarydarker self-start"> 
-        <h1 className="w-max font-fauna align-middle">Gmail</h1>
-        <input value={hotelStore.getState().auth.gmail || ""} type="text" readOnly className="w-max px-2 py-1"/>
+      <h1 className="text-primarydarker absolute left-40 top-36 rounded bg-gray-100 bg-opacity-85 px-2 py-1 text-sm sm:left-52 sm:top-44">
+        Username
+      </h1>
+      <h1 className="text-primarydarker absolute left-40 top-44 rounded bg-gray-100 bg-opacity-85 px-2 py-1 text-sm sm:left-52 sm:top-56">
+        Id :
+      </h1>
 
-        <h1 className="w-max font-fauna align-middle">Password</h1>
-        <input className="w-max px-2 py-1"/>
+      <div className="mb-1 flex h-max w-full items-center justify-end gap-1 px-8 py-1">
+        <div className="h-full w-[2px] bg-gray-400">
+          <hr />
+        </div>
+        <button className="text-primarydarker hover:bg-primarydarker bg-gray-100 px-2 py-1 hover:text-white">
+          Booked
+        </button>
+        <div className="h-full w-[2px] bg-gray-400">
+          <hr />
+        </div>
+        <button className="text-primarydarker hover:bg-primarydarker bg-gray-100 px-2 py-1 hover:text-white">
+          Write Review
+        </button>
+        <div className="h-full w-[2px] bg-gray-400">
+          <hr />
+        </div>
+      </div>
+      <div className="max text-primarydarker grid grid-cols-2 items-center gap-2 self-start px-8 md:pl-24">
+        <h1 className="font-fauna w-max align-middle">Gmail</h1>
+        <input
+          value={hotelStore.getState().auth.gmail || ""}
+          type="text"
+          readOnly
+          className="w-max px-2 py-1"
+        />
 
-        <h1 className="w-max font-fauna align-middle">Address</h1>
-        <input className="w-max px-2 py-1"/>
-        
-        <h1 className="w-max font-fauna align-middle">contact</h1>
-        <input className="w-max px-2 py-1"/>
+        <h1 className="font-fauna w-max align-middle">Password</h1>
+        <input className="w-max px-2 py-1" />
 
+        <h1 className="font-fauna w-max align-middle">Address</h1>
+        <input className="w-max px-2 py-1" />
+
+        <h1 className="font-fauna w-max align-middle">contact</h1>
+        <input className="w-max px-2 py-1" />
+
+        <button
+          className="w-max rounded bg-gray-50 px-3 py-1 shadow hover:drop-shadow"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

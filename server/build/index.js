@@ -50,6 +50,7 @@ const DB_URI = `mongodb+srv://${user}:${password}@${cluster}.wadd7q8.mongodb.net
 const DATABASE_CLIENT = (0, database_1.default)(DB_URI);
 const DATABASE = DATABASE_CLIENT.db("MelHotel");
 const ACCOUNT_COLL = DATABASE.collection("ACCOUNT");
+const RESERVATION_COLL = DATABASE.collection("RESERVATION");
 //
 const PORT = parseInt(process.env.PORT, 10);
 const express_1 = __importStar(require("express"));
@@ -78,6 +79,7 @@ SERVER.get("/admin/database/collections", (req, res) => __awaiter(void 0, void 0
         res.status(200).json({ rejected });
     });
 }));
+//account request
 SERVER.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
         res.status(200).json(result);
@@ -95,6 +97,22 @@ SERVER.delete("/admin/database/account/delete/:id", (req, res) => __awaiter(void
 }));
 SERVER.post("/admin/database/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.updateDocument)(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
+        res.status(200).json(result);
+    });
+}));
+// Reservation request
+SERVER.get("/admin/database/reservation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.fetchDocuments)(RESERVATION_COLL).then((result) => {
+        res.status(200).json(result);
+    });
+}));
+SERVER.delete("/admin/database/reservation/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.deleteDocument)(RESERVATION_COLL, req.params.id).then((result) => {
+        res.status(200).json(result);
+    });
+}));
+SERVER.post("/admin/database/reservation/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.updateDocument)(RESERVATION_COLL, req.params.id, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));

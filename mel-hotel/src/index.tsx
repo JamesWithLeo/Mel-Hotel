@@ -28,6 +28,7 @@ import AdminLayout from "./admin.component/adminLayout";
 import CollectionLayout from "./admin.component/collectionLayout";
 import AccountCollection from "./admin.component/accountCollection";
 import CollectionController from "./admin.component/collectionController";
+import ReservationCollection from "./admin.component/reservationCollection";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -89,7 +90,8 @@ const router = createBrowserRouter([
             element: <CollectionController />,
             index: true,
           },
-          { path: "accountCollection", element: <AccountCollection /> },
+          { path: "account", element: <AccountCollection /> },
+          { path: "reservation", element: <ReservationCollection /> },
         ],
       },
     ],

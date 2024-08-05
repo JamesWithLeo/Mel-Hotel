@@ -2,16 +2,52 @@ import hotelCozyroom from "../assets/images/hotelRoom-sm.jpg";
 import hotelFacade from "../assets/images/hotel-scenries1.jpg";
 import hotelPool1 from "../assets/images/luxury-pool.jpg";
 import { Link } from "react-router-dom";
-import Gallary from "./gallary";
+import Gallary, { carouselTypeface } from "./gallary";
 import Footer from "../footer.component/footer";
-import Location from "../location.component/location";
+
 export default function Home() {
+  const settings: carouselTypeface = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    centerMode: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          initialSlide: 1,
+          infinite: true,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+        },
+      },
+    ],
+  };
   return (
     <div
       className="flex h-full w-full max-w-7xl flex-col items-center bg-gray-100"
       id="homeContainer"
     >
-      <Gallary />
+      <Gallary settings={settings} />
 
       <div className="mb-4 w-full py-4 text-center shadow">
         <h1 className="font-cinzel text-5xl font-medium text-[#4F4A45]">

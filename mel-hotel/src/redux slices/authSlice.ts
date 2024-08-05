@@ -1,21 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 interface IAuthSlice {
   isAuth: boolean;
-  authTyoe: "guest" | "user" | "admin";
+  authType: "guest" | "user" | "admin";
+  userToken: string | null;
   gmail: string | null;
   password: string | null;
 }
-const authInit: IAuthSlice = {
-  isAuth: false,
-  authTyoe: "guest",
-  gmail: null,
-  password: null,
-};
+
 const authSliceInit: IAuthSlice = {
   isAuth: false,
-  authTyoe: "guest",
+  authType: "guest",
   gmail: null,
   password: null,
+  userToken: null,
 };
 
 export interface ICredentials {
@@ -33,7 +31,10 @@ const authSlice = createSlice({
       state.password = action.payload.password;
     },
     Logout: (state) => {
-      state = { ...authInit };
+      state.isAuth = false;
+      state.authType = "guest";
+      state.gmail = null;
+      state.password = null;
     },
   },
 });

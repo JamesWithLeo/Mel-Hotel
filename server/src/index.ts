@@ -23,6 +23,7 @@ const DB_URI = `mongodb+srv://${user}:${password}@${cluster}.wadd7q8.mongodb.net
 const DATABASE_CLIENT: MongoClient = CreateMongoCLient(DB_URI);
 const DATABASE = DATABASE_CLIENT.db("MelHotel");
 const ACCOUNT_COLL = DATABASE.collection("ACCOUNT");
+const RESERVATION_COLL = DATABASE.collection("RESERVATION");
 //
 const PORT: number = parseInt(process.env.PORT as string, 10);
 
@@ -55,6 +56,8 @@ SERVER.get("/admin/database/collections", async (req, res) => {
       res.status(200).json({ rejected });
     });
 });
+
+//account request
 SERVER.post("/admin/database/account/insert", async (req, res) => {
   await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
     res.status(200).json(result);
@@ -74,6 +77,25 @@ SERVER.post("/admin/database/account/update/:id", async (req, res) => {
   await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
     res.status(200).json(result);
   });
+});
+
+// Reservation request
+SERVER.get("/admin/database/reservation", async (req, res) => {
+  await fetchDocuments(RESERVATION_COLL).then((result) => {
+    res.status(200).json(result);
+  });
+});
+SERVER.delete("/admin/database/reservation/delete/:id", async (req, res) => {
+  await deleteDocument(RESERVATION_COLL, req.params.id).then((result) => {
+    res.status(200).json(result);
+  });
+});
+SERVER.post("/admin/database/reservation/update/:id", async (req, res) => {
+  await updateDocument(RESERVATION_COLL, req.params.id, req.body).then(
+    (result) => {
+      res.status(200).json(result);
+    },
+  );
 });
 SERVER.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
