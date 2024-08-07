@@ -13,6 +13,7 @@ exports.default = CreateMongoCLient;
 exports.fetchDocuments = fetchDocuments;
 exports.insertDocument = insertDocument;
 exports.fetchDocumentById = fetchDocumentById;
+exports.fetchDocumentByGmail = fetchDocumentByGmail;
 exports.deleteDocument = deleteDocument;
 exports.updateDocument = updateDocument;
 const mongodb_1 = require("mongodb");
@@ -65,6 +66,18 @@ function fetchDocumentById(collection, id) {
         }
         catch (error) {
             console.log(error);
+            throw error;
+        }
+    });
+}
+function fetchDocumentByGmail(collection, credentials) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { Gmail } = credentials;
+        try {
+            // prettier-ignore
+            return yield collection.findOne({ "Gmail": { $eq: Gmail } });
+        }
+        catch (error) {
             throw error;
         }
     });

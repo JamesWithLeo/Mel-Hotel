@@ -2,28 +2,26 @@ import { faTable } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { IUser } from "../redux slices/authSlice";
 
 const AccountTable = lazy(() => import("./accountTable"));
-export type GenderTypeface = "male" | "female" | "others";
-export type AccountTypeface = {
-  _id: string;
-  Gmail: string;
-  Password: string;
-  Age: number;
-  Gender: GenderTypeface;
-  FirstName: string;
-  LastName: string;
-};
+// export type AccountTypeface = {
+//   _id: string;
+//   Gmail: string;
+//   Password: string;
+//   Age: number;
+//   Gender: GenderTypeface;
+//   FirstName: string;
+//   LastName: string;
+// };
 
 export default function AccountCollection() {
   const [isTableVisible, setIsTableVisibility] = useState<boolean>(true);
-  const [accountData, setAccountData] = useState<AccountTypeface[] | null>(
-    null,
-  );
+  const [accountData, setAccountData] = useState<IUser[] | null>(null);
   async function fetchCollections() {
     await fetch("/admin/database/collections")
       .then(async (response) => {
-        await response.json().then((dbCollections: AccountTypeface[]) => {
+        await response.json().then((dbCollections: IUser[]) => {
           console.log(dbCollections);
           setAccountData(dbCollections);
         });

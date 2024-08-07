@@ -14,16 +14,5 @@ export default function Pricing() {
     });
     setPricingCardElement(pricingEl);
   }, []);
-  return (
-    <>
-      <PricingCard
-        packageObj={{
-          packageName: "ordinary",
-          pricePerNight: 100,
-          thumbnail: ordinaryBedroom,
-        }}
-      />
-      {pricingCardElement ? pricingCardElement : null}
-    </>
-  );
+  return <>{pricingCardElement ? pricingCardElement : null}</>;
 }

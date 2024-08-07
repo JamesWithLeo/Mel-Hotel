@@ -14,6 +14,7 @@
     "@types/jest": "^27.5.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "axios": "^1.7.3",
     "leaflet": "^1.9.4",
     "material-react-table": "^2.13.1",
     "mongodb": "^6.8.0",

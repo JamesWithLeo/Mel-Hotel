@@ -9,7 +9,7 @@ import hotelSpa from "../assets/images/regular-spa.jpg";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { hotelStore } from "../hotelStore";
-import { SetVipPackage } from "../redux slices/vipSlice";
+import { SetPackage } from "../redux slices/bookSlice";
 
 export default function RegularPackage({
   isReadOnly,
@@ -18,8 +18,11 @@ export default function RegularPackage({
 }) {
   const dispatch = useDispatch();
   const onSelectPackage = () => {
-    dispatch(SetVipPackage("regular"));
-    console.log(hotelStore.getState().vipBooking);
+    dispatch(SetPackage("regular"));
+    console.log(hotelStore.getState().booking);
+  };
+  const handleLuxury = () => {
+    dispatch(SetPackage("regular"));
   };
   return (
     <div
@@ -34,16 +37,17 @@ export default function RegularPackage({
 
           {isReadOnly ? (
             <Link
-              to={"/hotel/regular"}
+              to={"/book/package/regular"}
               className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+              onClick={handleLuxury}
             >
               Book this Package
             </Link>
           ) : (
             <>
-              {hotelStore.getState().auth.isAuth ? (
+              {hotelStore.getState().auth.user ? (
                 <Link
-                  to={"/profile"}
+                  to={"/book/location"}
                   className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
                   onClick={onSelectPackage}
                 >

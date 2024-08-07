@@ -79,6 +79,15 @@ SERVER.get("/admin/database/collections", (req, res) => __awaiter(void 0, void 0
         res.status(200).json({ rejected });
     });
 }));
+SERVER.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.fetchDocumentByGmail)(ACCOUNT_COLL, req.body)
+        .then((result) => {
+        res.status(200).json(result);
+    })
+        .catch((rejectResult) => {
+        res.status(200).json(rejectResult);
+    });
+}));
 //account request
 SERVER.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {

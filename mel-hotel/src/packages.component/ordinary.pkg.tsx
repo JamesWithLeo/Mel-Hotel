@@ -2,12 +2,20 @@ import { hotelStore } from "../hotelStore";
 import { Link } from "react-router-dom";
 import ordinaryBedroom from "../assets/images/ordinary-bedroom.jpg";
 import ordinaryBathroom from "../assets/images/ordinary-bathroom.jpg";
+import { useDispatch } from "react-redux";
+import { SetPackage } from "../redux slices/bookSlice";
 
 export default function Ordinary({
   isReadOnly = false,
 }: {
   isReadOnly: Boolean;
 }) {
+  const dispatch = useDispatch();
+  const handleOrdinary = () => {
+    dispatch(SetPackage("ordinary"));
+    console.log(hotelStore.getState().booking);
+  };
+
   return (
     <div
       id="packageContent"
@@ -18,19 +26,20 @@ export default function Ordinary({
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Ordinary Room
           </h1>
-          {isReadOnly ? (
+          {isReadOnly === true ? (
             <Link
-              to={"/room"}
+              to={"/book/package/ordinary"}
               className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
             >
               Book this Package
             </Link>
           ) : (
             <>
-              {hotelStore.getState().auth.isAuth ? (
+              {hotelStore.getState().auth.user ? (
                 <Link
-                  to={"/profile"}
+                  to={"/book/location"}
                   className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
+                  onClick={handleOrdinary}
                 >
                   Select this Package
                 </Link>

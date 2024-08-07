@@ -2,14 +2,21 @@ import { LatLngExpression } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { MapController } from "./mapController";
-
+import { useDispatch } from "react-redux";
+import { SetBookLocation } from "../redux slices/bookSlice";
+import { hotelStore } from "../hotelStore";
+import { Link } from "react-router-dom";
 type markTypeface = {
   name: string;
   position: LatLngExpression;
   description: string | null;
 };
 
-export default function Location() {
+export default function BranchLocation({
+  isReadOnly,
+}: {
+  isReadOnly: boolean;
+}) {
   const locationInit: LatLngExpression = [14.55, 120.9038];
   const [location, setLocation] = useState<LatLngExpression | null>(null);
   const markers: markTypeface[] = [
@@ -48,26 +55,51 @@ export default function Location() {
   const [markersELement, setMarkersElement] = useState<JSX.Element[] | null>(
     null,
   );
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const marks = markers.map((map) => {
       return (
         <Marker position={map.position}>
-          {map.description ? <Popup>{map.description}</Popup> : null}
+          <Popup className="gap-4">
+            <div className="flex flex-col items-center gap-2">
+              {map.description ?? "Mel Hotel"}
+              <button
+                className="bg-contrast rounded px-3 py-1 text-white"
+                onClick={() => {
+                  dispatch(SetBookLocation(map.name));
+                  console.log(hotelStore.getState().booking);
+                }}
+              >
+                Select this location
+              </button>
+            </div>
+          </Popup>
         </Marker>
       );
     });
     const branch = markers.map((map) => {
       return (
-        <button
-          className="rounded bg-gray-100 py-1 text-gray-500 shadow"
-          id={map.name}
-          onClick={() => {
-            onBranchButtonClick(map.position);
-          }}
-        >
-          {map.name}
-        </button>
+        <div className="group flex w-full flex-col gap-2 bg-gray-100 py-2 shadow">
+          <button
+            className="w-full rounded text-gray-500"
+            id={map.name}
+            onClick={() => {
+              onBranchButtonClick(map.position);
+            }}
+          >
+            {map.name}
+          </button>
+          <Link
+            to={"/book/schedule"}
+            className="bg-contrast hidden w-max self-center rounded px-3 py-1 text-sm text-white group-hover:block"
+            onClick={() => {
+              dispatch(SetBookLocation(map.name));
+              console.log(hotelStore.getState().booking);
+            }}
+          >
+            Select this location
+          </Link>
+        </div>
       );
     });
     setBranchButton(branch);

@@ -50,6 +50,23 @@ export async function fetchDocumentById(collection: Collection, id: string) {
     throw error;
   }
 }
+export async function fetchDocumentByGmail(
+  collection: Collection,
+  credentials: {
+    Gmail: string;
+    Password: string;
+  },
+) {
+  const { Gmail } = credentials;
+  try {
+    // prettier-ignore
+    return await collection.findOne(
+      { "Gmail": {$eq : Gmail}}
+    );
+  } catch (error) {
+    throw error;
+  }
+}
 export async function deleteDocument(collection: Collection, id: string) {
   try {
     return await collection.deleteOne({ _id: new ObjectId(id) });

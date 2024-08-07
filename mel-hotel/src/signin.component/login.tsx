@@ -1,12 +1,19 @@
-import { useDispatch } from "react-redux";
-import { ICredentials, Login } from "../redux slices/authSlice";
+import {
+  ICredentials,
+  login,
+  SetAuthToDefault,
+} from "../redux slices/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { hotelStore } from "../hotelStore";
+import { AppDispatch, AppState } from "../hotelStore";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 export default function LoginFC() {
-  const dispatch = useDispatch();
-
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { statusMessage } = useSelector((state: AppState) => state.auth);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isRemembered, setIsRemembered] = useState<boolean>(true);
 
   const onLogin = async () => {
     const gmailElement = document.getElementById(
@@ -15,18 +22,27 @@ export default function LoginFC() {
     const passwordElement = document.getElementById(
       "inputPassword",
     ) as HTMLInputElement;
-    const gmail: string = gmailElement.value;
+
+    // get the value in the input element
+    const gmail: string = gmailElement.value.toLowerCase();
     const password: string = passwordElement.value;
+    localStorage.setItem("isRemember", JSON.stringify(isRemembered));
     if (!gmail || !password) {
-      // empty entry, do nothing.
+      dispatch(SetAuthToDefault());
       return;
     }
-    // do authorization
+
     const credentials: ICredentials = { gmail, password };
-    dispatch(Login(credentials));
-    console.log(credentials);
-    console.log(hotelStore.getState().auth);
-    navigate("/profile", { replace: false });
+    setIsLoading(true);
+    dispatch(login(credentials))
+      .unwrap()
+      .then(() => {
+        navigate("/profile", { replace: false });
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -35,10 +51,15 @@ export default function LoginFC() {
         <h1 className="text-primarydark font-fauna mb-8 text-center text-3xl font-bold">
           Mel Hotel
         </h1>
+        {statusMessage ? (
+          <h1 className="self-center text-xs text-red-600 lg:text-sm">
+            {statusMessage}
+          </h1>
+        ) : null}
         <input
           id="inputGmail"
           placeholder="Enter gmail"
-          type="text"
+          type="email"
           required
           className="outline-primarydarker rounded bg-gray-200 px-2 py-2"
         />
@@ -49,10 +70,28 @@ export default function LoginFC() {
           required
           className="outline-primarydarker rounded bg-gray-200 px-2 py-2"
         />
-        <button className="text-primarydarker self-end text-xs">
-          forgot password
-        </button>
+        <div className="flex justify-between">
+          <label className="text-primarydarker flex gap-2 text-xs">
+            Remember me
+            <input
+              type="checkbox"
+              id="isRemember"
+              name="isRemember"
+              checked={isRemembered}
+              onChange={() => {
+                setIsRemembered(!isRemembered);
+              }}
+            />
+          </label>
+
+          <button className="text-primarydarker self-end text-xs">
+            forgot password
+          </button>
+        </div>
         <button
+          id="loginButton"
+          type="submit"
+          disabled={isLoading}
           className="rounded bg-[#f09247] py-2 text-white shadow"
           onClick={onLogin}
         >

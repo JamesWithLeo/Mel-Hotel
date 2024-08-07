@@ -1,4 +1,4 @@
-// import ordinaryBedroom from "../assets/images/ordinary-bedroom.jpg";
+import ordinaryBedroom from "../assets/images/ordinary-bedroom.jpg";
 import hotelRoomSm from "../assets/images/hotelRoom-sm.jpg";
 import hotelRoomMd from "../assets/images/hotelRoom-md.jpg";
 import hotelRoomLg from "../assets/images/hotelRoom-lg.jpg";
@@ -9,13 +9,13 @@ interface packageTypeface {
   pricePerNight: number;
 }
 export const packagesData: packageTypeface[] = [
-  // {
-  //   thumbnail: ordinaryBedroom,
-  //   packageName: "ordinary",
-  //   targetAudience:
-  //     "Budget-conscious travelers and guests seeking a basic stay.",
-  //   pricePerNight: 60,
-  // },
+  {
+    thumbnail: ordinaryBedroom,
+    packageName: "ordinary",
+    targetAudience:
+      "Budget-conscious travelers and guests seeking a basic stay.",
+    pricePerNight: 100,
+  },
   {
     thumbnail: hotelRoomSm,
     packageName: "regular",

@@ -1,4 +1,3 @@
-import { isPending } from "@reduxjs/toolkit";
 import { NavLink } from "react-router-dom";
 
 export interface IPackageDeal {

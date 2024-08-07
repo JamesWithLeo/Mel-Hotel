@@ -7,7 +7,7 @@ import luxuryDining from "../assets/images/luxury-dining.jpg";
 import hotelRommlg from "../assets/images/hotel-room.jpg";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { SetVipPackage } from "../redux slices/vipSlice";
+import { SetPackage } from "../redux slices/bookSlice";
 import { hotelStore } from "../hotelStore";
 
 export default function LuxuryPackage({
@@ -16,9 +16,8 @@ export default function LuxuryPackage({
   isReadOnly: boolean;
 }) {
   const dispatch = useDispatch();
-  const onSelectPackage = () => {
-    dispatch(SetVipPackage("luxury"));
-    console.log(hotelStore.getState().vipBooking);
+  const handleLuxury = () => {
+    dispatch(SetPackage("luxury"));
   };
   return (
     <div
@@ -30,19 +29,19 @@ export default function LuxuryPackage({
           <h1 className="font-fauna text-contrast text-2xl font-bold">
             Luxury
           </h1>
-          {isReadOnly ? (
+          {isReadOnly === true ? (
             <Link
-              to={"/hotel/luxury"}
+              to={"/book/package/luxury"}
               className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
             >
               Book this Package
             </Link>
           ) : (
             <>
-              {hotelStore.getState().auth.isAuth ? (
+              {hotelStore.getState().auth.user ? (
                 <Link
-                  to={"/profile"}
-                  onClick={onSelectPackage}
+                  to={"/book/location"}
+                  onClick={handleLuxury}
                   className="bg-contrast left-[60%] rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
                 >
                   Select this Package

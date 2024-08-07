@@ -9,6 +9,7 @@ if (!process.env.PORT || !process.env.DB_CLUSTER) {
 //
 import CreateMongoCLient, {
   deleteDocument,
+  fetchDocumentByGmail,
   fetchDocumentById,
   fetchDocuments as fetchDocuments,
   insertDocument,
@@ -54,6 +55,16 @@ SERVER.get("/admin/database/collections", async (req, res) => {
     })
     .catch((rejected) => {
       res.status(200).json({ rejected });
+    });
+});
+
+SERVER.post("/login/", async (req, res) => {
+  await fetchDocumentByGmail(ACCOUNT_COLL, req.body)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((rejectResult) => {
+      res.status(200).json(rejectResult);
     });
 });
 

@@ -1,6 +1,6 @@
 import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { hotelStore } from "./hotelStore";
 
@@ -10,7 +10,7 @@ interface INavClass {
   isTransitioning: boolean;
 }
 function App() {
-  const [isNavOpen, setIsNavOpen] = React.useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const navClass = ({ isActive, isPending, isTransitioning }: INavClass) => {
     return [
       isPending
@@ -22,7 +22,7 @@ function App() {
       isTransitioning ? "" : "",
     ].join(" ");
   };
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchHome = async () => {
       await fetch("/hotel").then(async (response) => {
         await response.json().then((value) => {
@@ -50,20 +50,17 @@ function App() {
           <NavLink to={"location"} className={navClass}>
             Location
           </NavLink>
-          {/* <NavLink to={"contact"} className={navClass}>
-            Contact us
-          </NavLink> */}
         </div>
         <div className="flex items-center gap-8">
-          {hotelStore.getState().auth.authType === "admin" ? (
+          {hotelStore.getState().auth.user?.AuthType === "admin" ? (
             <NavLink to={"admin"}>Admin</NavLink>
           ) : null}
 
-          {hotelStore.getState().auth.isAuth ? (
+          {hotelStore.getState().auth.authType ? (
             <NavLink
               to={"/profile"}
               onClick={() => {
-                console.log(hotelStore.getState().auth.isAuth);
+                console.log(hotelStore.getState().auth);
               }}
               className={({ isPending, isActive, isTransitioning }) =>
                 [

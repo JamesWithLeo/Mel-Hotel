@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { hotelStore } from "./hotelStore";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuth = hotelStore.getState().auth.isAuth;
+  const isAuth = hotelStore.getState().auth.user;
   if (isAuth) {
     return children;
   }

@@ -4,6 +4,7 @@ import hotelPool1 from "../assets/images/luxury-pool.jpg";
 import { Link } from "react-router-dom";
 import Gallary, { carouselTypeface } from "./gallary";
 import Footer from "../footer.component/footer";
+import { hotelStore } from "../hotelStore";
 
 export default function Home() {
   const settings: carouselTypeface = {
@@ -58,7 +59,7 @@ export default function Home() {
         </h1>
       </div>
       <Link
-        to={"book"}
+        to={"/book/package/" + hotelStore.getState().booking.package}
         className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
       >
         Book Now!

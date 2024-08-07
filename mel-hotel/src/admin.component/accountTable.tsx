@@ -6,20 +6,21 @@ import {
   MRT_EditActionButtons,
   MRT_TableOptions,
 } from "material-react-table";
-
+import { IUser } from "../redux slices/authSlice";
 import { useMemo } from "react";
-import { AccountTypeface, GenderTypeface } from "./accountCollection";
+import { GenderTypeface, AuthTypeface } from "../redux slices/authSlice";
 
 const AccountTable = ({
   data,
   RefreshData,
 }: {
-  data: AccountTypeface[];
+  data: IUser[];
   RefreshData: () => Promise<void>;
 }) => {
   const genderDropDownOption: GenderTypeface[] = ["male", "female", "others"];
+  const authTypeDropDownOption: AuthTypeface[] = ["guest", "user", "admin"];
   //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<AccountTypeface>[]>(
+  const columns = useMemo<MRT_ColumnDef<IUser>[]>(
     () => [
       {
         id: "_id",
@@ -41,14 +42,25 @@ const AccountTable = ({
         enableColumnDragging: false,
       },
       // show password if needed
-      // {
-      //   accessorKey: "Password",
-      //   header: "Password",
-      //   maxSize: 240,
-      //   size: 150,
-      //   enableSorting: false,
-      //   enableGrouping: false,
-      // },
+      {
+        accessorKey: "Password",
+        header: "Password",
+        maxSize: 240,
+        size: 150,
+        enableSorting: false,
+        enableGrouping: false,
+        enableHiding: true,
+      },
+      {
+        accessorKey: "AuthType",
+        header: "Type",
+        size: 100,
+        maxSize: 150,
+        enableEditing: true,
+        enableSorting: false,
+        editVariant: "select",
+        editSelectOptions: authTypeDropDownOption,
+      },
       {
         accessorKey: "Age",
         header: "Age",
@@ -85,9 +97,9 @@ const AccountTable = ({
     [],
   );
 
-  const handleCreateAccount: MRT_TableOptions<AccountTypeface>["onCreatingRowSave"] =
+  const handleCreateAccount: MRT_TableOptions<IUser>["onCreatingRowSave"] =
     async ({ table, values }) => {
-      const { Gmail, Password, Gender, Age }: AccountTypeface = { ...values };
+      const { Gmail, Password, Gender, Age }: IUser = { ...values };
       if (Gmail && Password && Gender && Age) {
         const newAccount = JSON.stringify({ Gmail, Password, Gender, Age });
         await fetch("/admin/database/account/insert", {
@@ -105,7 +117,7 @@ const AccountTable = ({
         });
       }
     };
-  const handleDeleteAccount = async (row: MRT_Row<AccountTypeface>) => {
+  const handleDeleteAccount = async (row: MRT_Row<IUser>) => {
     if (
       window.confirm(
         "Are you sure you want to delete this user? " + row.original.Gmail,
@@ -129,7 +141,7 @@ const AccountTable = ({
         });
     }
   };
-  const handleEditAccount: MRT_TableOptions<AccountTypeface>["onEditingRowSave"] =
+  const handleEditAccount: MRT_TableOptions<IUser>["onEditingRowSave"] =
     async ({ values, table }) => {
       const accountBody = JSON.stringify({
         Gmail: values.Gmail,
@@ -156,6 +168,7 @@ const AccountTable = ({
     // enableRowPinning: true,
     // enableTopToolbar: false,
     // enableBottomToolbar: false,
+
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableGrouping: true,
@@ -171,14 +184,27 @@ const AccountTable = ({
     initialState: {
       showColumnFilters: false,
       showGlobalFilter: false,
+
       columnPinning: {
         left: ["mrt-row-expand", "mrt-row-select"],
         right: ["mrt-row-actions"],
+      },
+      columnVisibility: {
+        Password: false,
       },
     },
 
     paginationDisplayMode: "pages",
     positionToolbarAlertBanner: "bottom",
+    muiTableProps: {
+      size: "small",
+    },
+    muiTableBodyCellProps: {
+      size: "small",
+    },
+    muiTableHeadCellProps: {
+      size: "small",
+    },
     muiSearchTextFieldProps: {
       size: "small",
       variant: "outlined",
