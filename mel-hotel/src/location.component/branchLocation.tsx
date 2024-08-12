@@ -2,10 +2,11 @@ import { LatLngExpression } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { MapController } from "./mapController";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SetBookLocation } from "../redux slices/bookSlice";
-import { hotelStore } from "../hotelStore";
-import { Link } from "react-router-dom";
+import { AppState } from "../hotelStore";
+import { Link, Navigate } from "react-router-dom";
+import Notification from "../notification";
 type markTypeface = {
   name: string;
   position: LatLngExpression;
@@ -28,7 +29,7 @@ export default function BranchLocation({
     {
       name: "Main branch. Boracay, Philippines",
       position: [11.9683, 121.9229],
-      description: null,
+      description: "Boracay branch",
     },
     {
       name: "Egypt, Cairo",
@@ -41,9 +42,9 @@ export default function BranchLocation({
       name: "Switzerland, Main Branch",
     },
     {
-      description: null,
+      description: "上海 | Shanghai",
       position: [31.1343, 121.2829],
-      name: "上海 | Shanghai ",
+      name: "上海 | Shanghai",
     },
     {
       position: [25.885942, 50.0791],
@@ -56,6 +57,7 @@ export default function BranchLocation({
     null,
   );
   const dispatch = useDispatch();
+
   useEffect(() => {
     const marks = markers.map((map) => {
       return (
@@ -63,15 +65,29 @@ export default function BranchLocation({
           <Popup className="gap-4">
             <div className="flex flex-col items-center gap-2">
               {map.description ?? "Mel Hotel"}
-              <button
-                className="bg-contrast rounded px-3 py-1 text-white"
-                onClick={() => {
-                  dispatch(SetBookLocation(map.name));
-                  console.log(hotelStore.getState().booking);
-                }}
-              >
-                Select this location
-              </button>
+              <>
+                {isReadOnly ? (
+                  <Link
+                    to={"/book/package/ordinary"}
+                    className="bg-contrast rounded px-3 py-1 text-white"
+                    onClick={() => {
+                      dispatch(SetBookLocation(map.name));
+                    }}
+                  >
+                    Book here
+                  </Link>
+                ) : (
+                  <Link
+                    to={"/book/schedule/"}
+                    className="bg-contrast rounded px-3 py-1 text-white"
+                    onClick={() => {
+                      dispatch(SetBookLocation(map.name));
+                    }}
+                  >
+                    Select this location
+                  </Link>
+                )}
+              </>
             </div>
           </Popup>
         </Marker>
@@ -89,16 +105,27 @@ export default function BranchLocation({
           >
             {map.name}
           </button>
-          <Link
-            to={"/book/schedule"}
-            className="bg-contrast hidden w-max self-center rounded px-3 py-1 text-sm text-white group-hover:block"
-            onClick={() => {
-              dispatch(SetBookLocation(map.name));
-              console.log(hotelStore.getState().booking);
-            }}
-          >
-            Select this location
-          </Link>
+          {isReadOnly ? (
+            <Link
+              to={"/book/package/ordinary"}
+              className="bg-contrast hidden w-max self-center rounded px-3 py-1 text-sm text-white group-hover:block"
+              onClick={() => {
+                dispatch(SetBookLocation(map.name));
+              }}
+            >
+              Book here
+            </Link>
+          ) : (
+            <Link
+              to={"/book/schedule"}
+              className="bg-contrast hidden w-max self-center rounded px-3 py-1 text-sm text-white group-hover:block"
+              onClick={() => {
+                dispatch(SetBookLocation(map.name));
+              }}
+            >
+              Select this location
+            </Link>
+          )}
         </div>
       );
     });
@@ -109,44 +136,66 @@ export default function BranchLocation({
   const onBranchButtonClick = (loc: LatLngExpression) => {
     setLocation(loc);
   };
-
+  const { user } = useSelector((state: AppState) => state.auth);
+  if (!isReadOnly && !user) {
+    return <Navigate to={"/login"} replace={true} />;
+  } else if (
+    !isReadOnly &&
+    user &&
+    // If undefined, null or "", meaning a field doesnt exist,
+    //  Required details should be completed .
+    !(
+      (
+        user.FirstName &&
+        user.LastName &&
+        user.Age &&
+        user.Gender &&
+        user.Address
+      )
+      // && user.Contact
+    )
+  ) {
+    return <Navigate to={"/profile"} replace={true} />;
+  }
   return (
-    <div className="z-0 flex h-full w-full flex-col items-center justify-center gap-4 px-4 py-8 sm:px-8 md:flex-row">
-      <div className="flex h-44 w-full flex-col justify-start gap-2 md:h-full md:w-1/4">
-        <h1 className="font-fauna text-primarydark drop-shadow">
-          Mel hotel branches
-        </h1>
+    <>
+      <div className="z-0 flex h-full w-full flex-col items-center justify-center gap-4 px-4 py-8 sm:px-8 md:flex-row">
+        <div className="flex h-44 w-full flex-col justify-start gap-2 md:h-full md:w-1/4">
+          <h1 className="font-fauna text-primarydark drop-shadow">
+            Mel hotel branches
+          </h1>
 
-        <div className="flex w-full justify-between gap-2">
-          <input
-            type="text"
-            className="outline-primarydark w-full rounded px-2 py-1 shadow-inner outline outline-1"
-          />
-          <button className="bg-primarydarker w-max rounded px-2 py-1 text-sm text-white shadow">
-            search
-          </button>
+          <div className="flex w-full justify-between gap-2">
+            <input
+              type="text"
+              className="outline-primarydark w-full rounded px-2 py-1 shadow-inner outline outline-1"
+            />
+            <button className="bg-primarydarker w-max rounded px-2 py-1 text-sm text-white shadow">
+              search
+            </button>
+          </div>
+          <div className="flex flex-col gap-2 overflow-y-auto px-2">
+            {branchButton}
+          </div>
         </div>
-        <div className="flex flex-col gap-2 overflow-y-auto px-2">
-          {branchButton}
+        <div className="h-full w-full overflow-hidden rounded-lg md:w-3/4">
+          <MapContainer
+            center={locationInit}
+            zoom={4}
+            scrollWheelZoom={true}
+            minZoom={3}
+            className="h-full w-full"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <MapContainer />
+            <MapController location={location} original={locationInit} />
+            {markersELement ? markersELement : null}
+          </MapContainer>
         </div>
       </div>
-      <div className="h-full w-full overflow-hidden rounded-lg md:w-3/4">
-        <MapContainer
-          center={locationInit}
-          zoom={4}
-          scrollWheelZoom={true}
-          minZoom={3}
-          className="h-full w-full"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <MapContainer />
-          <MapController location={location} original={locationInit} />
-          {markersELement ? markersELement : null}
-        </MapContainer>
-      </div>
-    </div>
+    </>
   );
 }

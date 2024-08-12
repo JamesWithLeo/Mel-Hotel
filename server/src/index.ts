@@ -15,7 +15,7 @@ import CreateMongoCLient, {
   insertDocument,
   updateDocument,
 } from "./database";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const cluster = process.env.DB_CLUSTER;
@@ -74,7 +74,7 @@ SERVER.post("/admin/database/account/insert", async (req, res) => {
     res.status(200).json(result);
   });
 });
-SERVER.get("/admin/database/account/:id", async (req, res) => {
+SERVER.get("/account/:id", async (req, res) => {
   await fetchDocumentById(ACCOUNT_COLL, req.params.id).then((result) => {
     res.status(200).json(result);
   });
@@ -84,7 +84,7 @@ SERVER.delete("/admin/database/account/delete/:id", async (req, res) => {
     res.status(200).json(result);
   });
 });
-SERVER.post("/admin/database/account/update/:id", async (req, res) => {
+SERVER.post("/account/update/:id", async (req, res) => {
   await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
     res.status(200).json(result);
   });

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 type packageTypeface = {
   packageName: string;
-  pricePerNight: number;
+  pricePerDay: number;
   thumbnail: string;
 };
 type PricingCardTypeface = {
@@ -20,7 +20,7 @@ export default function PricingCard({ packageObj }: PricingCardTypeface) {
           {packageObj.packageName}
         </h1>
         <h1 className="font-fauna text-priamrydark col-start-1 row-start-3 text-stone-300">
-          ${packageObj.pricePerNight.toString()}
+          ${packageObj.pricePerDay.toString()}
         </h1>
         <Link
           to={"/" + packageObj.packageName.toLowerCase()}

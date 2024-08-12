@@ -96,7 +96,7 @@ function deleteDocument(collection, id) {
 function updateDocument(collection, id, doc) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            return yield collection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: doc, $currentDate: { lastModified: true } });
+            return yield collection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: doc, $currentDate: { lastModified: true } }, { returnDocument: "after" });
         }
         catch (error) {
             console.log(error);

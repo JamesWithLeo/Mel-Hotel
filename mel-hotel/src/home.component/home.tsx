@@ -4,45 +4,47 @@ import hotelPool1 from "../assets/images/luxury-pool.jpg";
 import { Link } from "react-router-dom";
 import Gallary, { carouselTypeface } from "./gallary";
 import Footer from "../footer.component/footer";
-import { hotelStore } from "../hotelStore";
+import { AppState, hotelStore } from "../hotelStore";
+import { useSelector } from "react-redux";
 
+const settings: carouselTypeface = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2000,
+  centerMode: true,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+        infinite: true,
+        dots: true,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        initialSlide: 1,
+        infinite: true,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        infinite: true,
+      },
+    },
+  ],
+};
 export default function Home() {
-  const settings: carouselTypeface = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    centerMode: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          initialSlide: 1,
-          infinite: true,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-        },
-      },
-    ],
-  };
+  const { user } = useSelector((state: AppState) => state.auth);
   return (
     <div
       className="flex h-full w-full max-w-7xl flex-col items-center bg-gray-100"
@@ -58,12 +60,23 @@ export default function Home() {
           Affordable Elegance, Unforgettable Escapes
         </h1>
       </div>
-      <Link
-        to={"/book/package/" + hotelStore.getState().booking.package}
-        className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
-      >
-        Book Now!
-      </Link>
+      <div className="flex flex-row-reverse gap-4">
+        {user?.Active ? (
+          <Link
+            to={"active"}
+            className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
+          >
+            View active package
+          </Link>
+        ) : (
+          <Link
+            to={"/book/package/" + hotelStore.getState().booking.hotelPackage}
+            className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
+          >
+            Book Now!
+          </Link>
+        )}
+      </div>
 
       <div className="flex w-full flex-col gap-8 bg-gray-100 px-8 py-4 sm:flex-col">
         <section className="flex w-full flex-col items-center gap-4 md:flex-row">
@@ -153,9 +166,7 @@ export default function Home() {
           </div>
         </section>
       </div>
-      {/* <div className="w-full">
-        <Location />
-      </div> */}
+
       <footer id="#footer" className="flex h-96 w-full bg-gray-300 px-8 py-8">
         <Footer />
       </footer>

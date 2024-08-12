@@ -15,12 +15,12 @@ import Location from "./location.component/branchLocation";
 import Contact from "./contact.component/contact";
 import RegularPackage from "./packages.component/regular";
 import PremiumPackage from "./packages.component/premium.pkg";
-import PackageSelection from "./packages.component/packageSelection";
 import LuxuryPackage from "./packages.component/luxury.pkg";
 import Ordinary from "./packages.component/ordinary.pkg";
-import LoginFC from "./signin.component/login";
+import LoginFC from "./account.component/login";
 import Profile from "./account.component/profile";
-import SigninFC from "./signin.component/signin";
+import SigninFC from "./account.component/signin";
+import SchedLayout from "./book.component/schedLayout";
 import ProtectedRoute from "./protectedRoute";
 import AdminLayout from "./admin.component/adminLayout";
 import CollectionLayout from "./admin.component/collectionLayout";
@@ -28,8 +28,7 @@ import AccountCollection from "./admin.component/accountCollection";
 import CollectionController from "./admin.component/collectionController";
 import ReservationCollection from "./admin.component/reservationCollection";
 import PackageLayout from "./packages.component/packageLayout";
-import BranchLocationLayout from "./location.component/branchLocationLayout";
-import SchedLayout from "./book.component/schedLayout";
+import ActivePackage from "./packages.component/activePackage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -45,6 +44,7 @@ const router = createBrowserRouter([
       { path: "location", element: <Location isReadOnly={true} /> },
       { path: "contact", element: <Contact /> },
       { path: "profile", element: <Profile /> },
+      { path: "active", element: <ActivePackage /> },
     ],
   },
   {
@@ -69,10 +69,7 @@ const router = createBrowserRouter([
       },
       {
         path: "location",
-        element: <Location isReadOnly />,
-        children: [
-          { path: "branch", element: <Location isReadOnly={false} /> },
-        ],
+        element: <Location isReadOnly={false} />,
       },
       { path: "schedule", element: <SchedLayout /> },
     ],

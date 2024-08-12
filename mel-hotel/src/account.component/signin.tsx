@@ -14,6 +14,24 @@ const setting: carouselTypeface = {
 };
 export default function SigninFC() {
   const [steps, setSteps] = useState<1 | 2 | 3>(1);
+
+  const handleSignin = () => {
+    const emailElement = document.getElementById(
+      "inputGmail",
+    ) as HTMLInputElement;
+    const passwordElement = document.getElementById(
+      "inputPassword",
+    ) as HTMLInputElement;
+
+    if (!(emailElement.value && passwordElement)) return;
+    if (
+      window.confirm(
+        `Mel Hotel confirmation! \nAgreeing to this will create a account using, ${emailElement.value}`,
+      )
+    ) {
+      setSteps(2);
+    }
+  };
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center">
       {steps === 1 ? (
@@ -46,9 +64,7 @@ export default function SigninFC() {
           />
           <button
             className="mt-8 rounded bg-[#f09247] py-2 text-white shadow"
-            onClick={() => {
-              setSteps(2);
-            }}
+            onClick={handleSignin}
           >
             Sign in
           </button>
@@ -146,11 +162,7 @@ export default function SigninFC() {
           </div>
         </>
       ) : null}
-      {/* <img
-        src={hotelfacade}
-        alt="hotel facade"
-        className="relative h-full bg-contain bg-center bg-no-repeat lg:bg-cover"
-      /> */}
+
       <Gallary settings={setting} isFullscreen={true} />
     </div>
   );

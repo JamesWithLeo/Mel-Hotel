@@ -1,66 +1,134 @@
 import BookNav from "./bookNav";
-import { Outlet, NavLink } from "react-router-dom";
-import { AppState, hotelStore } from "../hotelStore";
-import { useDispatch, useSelector } from "react-redux";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { AppState } from "../hotelStore";
+import { useSelector } from "react-redux";
+import Notification from "../notification";
+import { useState } from "react";
 
 export default function Book() {
+  const bookingState = useSelector((state: AppState) => state.booking);
+  const authState = useSelector((state: AppState) => state.auth);
+  const navigate = useNavigate();
+  const [isNotificationPopupVisible, setIsNotificationPopupVisible] =
+    useState<boolean>(false);
+
+  const [isLogin, setIslogin] = useState<boolean>(false);
+
+  const showScheduleNotification = () => {
+    setIsNotificationPopupVisible(true);
+    setTimeout(() => {
+      setIsNotificationPopupVisible(false);
+    }, 4000);
+  };
+
+  const showLoginNotification = () => {
+    setIslogin(true);
+    setTimeout(() => {
+      setIslogin(false);
+    }, 2000);
+  };
+
   return (
-    <div className="flex h-dvh flex-col items-center overflow-hidden bg-gray-50">
-      <BookNav linkTo={"/"} destination={"home"} />
-      <div className="flex w-full justify-center bg-gray-100 py-2">
-        {/* <h1 className="font-cinzel text-xs md:text-sm">
-            &middot; Booking &middot;
-          </h1> */}
-        <NavLink
-          to={"package/" + hotelStore.getState().booking.package}
-          className={({ isPending, isActive, isTransitioning }) =>
-            [
-              isPending
-                ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                : "",
-              isActive
-                ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
-              isTransitioning
-                ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                : "",
-            ].join(" ")
-          }
-        >
-          Packages
-        </NavLink>
-        <NavLink
-          to={"location"}
-          className={({ isPending, isActive, isTransitioning }) =>
-            [
-              isPending ? "" : "",
-              isActive
-                ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
-              isTransitioning ? "" : "",
-            ].join(" ")
-          }
-        >
-          Branch
-        </NavLink>
-        <NavLink
-          to={"schedule"}
-          className={({ isPending, isActive, isTransitioning }) =>
-            [
-              isPending ? "" : "",
-              isActive
-                ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
-              isTransitioning ? "" : "",
-            ].join(" ")
-          }
-        >
-          Schedule
-        </NavLink>
+    <>
+      {isNotificationPopupVisible ? (
+        <Notification
+          notificationText="You need to set the location first!"
+          onClose={() => {
+            setIsNotificationPopupVisible(false);
+          }}
+        />
+      ) : null}
+
+      {isLogin ? (
+        <Notification notificationText="Must login first!" onClose={() => {}} />
+      ) : null}
+
+      <div className="flex h-dvh flex-col items-center overflow-hidden bg-gray-50">
+        <BookNav linkTo={"/"} destination={"home"} />
+        <div className="flex w-full justify-center bg-gray-100 py-2">
+          <NavLink
+            to={"package/" + bookingState.hotelPackage}
+            replace={true}
+            className={({ isPending, isActive, isTransitioning }) =>
+              [
+                isPending
+                  ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
+                  : "",
+                isActive
+                  ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
+                  : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
+                isTransitioning
+                  ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
+                  : "",
+              ].join(" ")
+            }
+          >
+            Packages
+          </NavLink>
+          {authState.user ? (
+            <NavLink
+              to={"location"}
+              replace={true}
+              className={({ isPending, isActive, isTransitioning }) =>
+                [
+                  isPending ? "" : "",
+                  isActive
+                    ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
+                    : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
+                  isTransitioning ? "" : "",
+                ].join(" ")
+              }
+            >
+              Branch
+            </NavLink>
+          ) : (
+            <button
+              onClick={showLoginNotification}
+              className="font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm"
+            >
+              Branch
+            </button>
+          )}
+          {authState.user ? (
+            <>
+              {bookingState.hotelPackage && bookingState.location ? (
+                <NavLink
+                  to={"schedule"}
+                  replace={true}
+                  className={({ isPending, isActive, isTransitioning }) =>
+                    [
+                      isPending ? "" : "",
+                      isActive
+                        ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
+                        : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
+                      isTransitioning ? "" : "",
+                    ].join(" ")
+                  }
+                >
+                  Schedule
+                </NavLink>
+              ) : (
+                <button
+                  className="font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm"
+                  onClick={showScheduleNotification}
+                >
+                  Schedule
+                </button>
+              )}
+            </>
+          ) : (
+            <button
+              className="font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm"
+              onClick={showLoginNotification}
+            >
+              Schedule
+            </button>
+          )}
+        </div>
+        <div className="h-full w-full">
+          <Outlet />
+        </div>
       </div>
-      <div className="h-full w-full">
-        <Outlet />
-      </div>
-    </div>
+    </>
   );
 }

@@ -1,6 +1,8 @@
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useDispatch } from "react-redux";
 import { Link, Navigate, NavLink } from "react-router-dom";
+import { Reset } from "../redux slices/bookSlice";
 export default function BookNav({
   linkTo,
   destination = "home",
@@ -8,11 +10,16 @@ export default function BookNav({
   linkTo: string;
   destination: string;
 }) {
+  const dispatch = useDispatch();
+  const handleGotoHome = () => {
+    dispatch(Reset());
+  };
   return (
     <div className="sticky top-0 z-10 grid h-16 max-h-16 min-h-16 w-full max-w-7xl grid-cols-3 bg-gray-100 px-8 text-center opacity-100">
       <Link
         to={linkTo}
         className="text-primarydarker flex items-center text-left font-bold"
+        onClick={handleGotoHome}
       >
         <FontAwesomeIcon
           icon={faChevronLeft}
@@ -25,50 +32,6 @@ export default function BookNav({
         <h1 className="font-cinzel text-xs md:text-sm">
           &middot; Booking &middot;
         </h1>
-        {/* <div className="flex justify-center">
-          <NavLink
-            to={"package"}
-            className={({ isPending, isActive, isTransitioning }) =>
-              [
-                isPending ? "" : "",
-                isActive
-                  ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                  : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
-                isTransitioning ? "" : "",
-              ].join(" ")
-            }
-          >
-            Packages
-          </NavLink>
-          <NavLink
-            to={"location"}
-            className={({ isPending, isActive, isTransitioning }) =>
-              [
-                isPending ? "" : "",
-                isActive
-                  ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                  : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
-                isTransitioning ? "" : "",
-              ].join(" ")
-            }
-          >
-            Branch
-          </NavLink>
-          <NavLink
-            to={"schedule"}
-            className={({ isPending, isActive, isTransitioning }) =>
-              [
-                isPending ? "" : "",
-                isActive
-                  ? "font-cinzel border-contrast border-b-2 border-solid px-2 text-xs md:text-sm"
-                  : "font-cinzel border-b-2 border-solid px-2 text-xs md:text-sm",
-                isTransitioning ? "" : "",
-              ].join(" ")
-            }
-          >
-            Schedule
-          </NavLink>
-        </div> */}
       </div>
     </div>
   );

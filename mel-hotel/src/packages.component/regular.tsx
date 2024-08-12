@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { hotelStore } from "../hotelStore";
 import { SetPackage } from "../redux slices/bookSlice";
+import { packagesData } from "./packagesObj";
 
 export default function RegularPackage({
   isReadOnly,
@@ -19,9 +20,8 @@ export default function RegularPackage({
   const dispatch = useDispatch();
   const onSelectPackage = () => {
     dispatch(SetPackage("regular"));
-    console.log(hotelStore.getState().booking);
   };
-  const handleLuxury = () => {
+  const handleRegular = () => {
     dispatch(SetPackage("regular"));
   };
   return (
@@ -39,7 +39,7 @@ export default function RegularPackage({
             <Link
               to={"/book/package/regular"}
               className="bg-contrast left-1/2 rounded bg-opacity-90 px-4 py-2 text-sm group-hover:block md:fixed md:bottom-0 md:hidden md:-translate-x-1/2 md:-translate-y-1/2"
-              onClick={handleLuxury}
+              onClick={handleRegular}
             >
               Book this Package
             </Link>

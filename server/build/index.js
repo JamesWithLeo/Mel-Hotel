@@ -94,7 +94,7 @@ SERVER.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, vo
         res.status(200).json(result);
     });
 }));
-SERVER.get("/admin/database/account/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+SERVER.get("/account/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocumentById)(ACCOUNT_COLL, req.params.id).then((result) => {
         res.status(200).json(result);
     });
@@ -104,11 +104,16 @@ SERVER.delete("/admin/database/account/delete/:id", (req, res) => __awaiter(void
         res.status(200).json(result);
     });
 }));
-SERVER.post("/admin/database/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+SERVER.post("/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.updateDocument)(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));
+// SERVER.post("/account/insert/:id", async (req, res) => {
+//   await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
+//     res.status(200).json(result);
+//   });
+// });
 // Reservation request
 SERVER.get("/admin/database/reservation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocuments)(RESERVATION_COLL).then((result) => {

@@ -7,6 +7,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppDispatch, AppState } from "../hotelStore";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import Gallary from "../home.component/gallary";
+import { carouselTypeface } from "../home.component/gallary";
+const setting: carouselTypeface = {
+  dots: false,
+  slidesToShow: 1,
+  centerMode: true,
+  infinite: true,
+  initialSlide: 1,
+  speed: 3000,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 5000,
+  adaptiveHeight: true,
+};
 
 export default function LoginFC() {
   const navigate = useNavigate();
@@ -47,7 +61,7 @@ export default function LoginFC() {
 
   return (
     <div className="flex h-dvh flex-col items-center justify-center bg-gray-100">
-      <div className="min-w-md flex h-max w-full max-w-md flex-col gap-4 rounded-md px-8 py-8 shadow drop-shadow">
+      <div className="min-w-md z-10 flex h-max w-full max-w-md flex-col gap-4 rounded-md bg-gray-100 bg-opacity-80 px-8 py-8 shadow drop-shadow backdrop-blur backdrop-filter">
         <h1 className="text-primarydark font-fauna mb-8 text-center text-3xl font-bold">
           Mel Hotel
         </h1>
@@ -61,14 +75,14 @@ export default function LoginFC() {
           placeholder="Enter gmail"
           type="email"
           required
-          className="outline-primarydarker rounded bg-gray-200 px-2 py-2"
+          className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
         />
         <input
           id="inputPassword"
           placeholder="Enter password"
           type="password"
           required
-          className="outline-primarydarker rounded bg-gray-200 px-2 py-2"
+          className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
         />
         <div className="flex justify-between">
           <label className="text-primarydarker flex gap-2 text-xs">
@@ -98,7 +112,7 @@ export default function LoginFC() {
           Login
         </button>
         <div>
-          <hr className="h-[4px] w-full bg-gray-400" />
+          <hr className="h-[4px] w-full bg-stone-400" />
         </div>
         <Link
           to={"/signin"}
@@ -107,6 +121,7 @@ export default function LoginFC() {
           Doesn't have account?
         </Link>
       </div>
+      <Gallary isFullscreen={true} settings={setting} />
     </div>
   );
 }

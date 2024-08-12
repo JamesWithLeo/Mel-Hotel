@@ -4,34 +4,35 @@ import hotelRoomMd from "../assets/images/hotelRoom-md.jpg";
 import hotelRoomLg from "../assets/images/hotelRoom-lg.jpg";
 interface packageTypeface {
   thumbnail: string;
-  packageName: string;
+  packageName: "regular" | "premium" | "luxury" | "ordinary";
   targetAudience: string;
-  pricePerNight: number;
+  pricePerDay: number;
 }
+
 export const packagesData: packageTypeface[] = [
   {
     thumbnail: ordinaryBedroom,
     packageName: "ordinary",
     targetAudience:
       "Budget-conscious travelers and guests seeking a basic stay.",
-    pricePerNight: 100,
+    pricePerDay: 100,
   },
   {
     thumbnail: hotelRoomSm,
     packageName: "regular",
     targetAudience: "Families and common travelers",
-    pricePerNight: 350,
+    pricePerDay: 350,
   },
   {
     thumbnail: hotelRoomMd,
     packageName: "premium",
     targetAudience: "Affluent guests seeking enhanced comfort",
-    pricePerNight: 500,
+    pricePerDay: 500,
   },
   {
     thumbnail: hotelRoomLg,
     packageName: "luxury",
     targetAudience: "VIPs, entrepreneurs, and high-net-worth individuals.",
-    pricePerNight: 1000,
+    pricePerDay: 1000,
   },
 ];

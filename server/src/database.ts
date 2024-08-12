@@ -33,7 +33,7 @@ export async function fetchDocuments(collection: Collection, id?: string) {
     throw error;
   }
 }
-export async function insertDocument(collection: Collection, doc: Document) {
+export async function insertDocument(collection: Collection, doc: any) {
   try {
     return await collection.insertOne(doc);
   } catch (error) {
@@ -81,9 +81,10 @@ export async function updateDocument(
   doc: Document,
 ) {
   try {
-    return await collection.updateOne(
+    return await collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: doc, $currentDate: { lastModified: true } },
+      { returnDocument: "after" },
     );
   } catch (error) {
     console.log(error);

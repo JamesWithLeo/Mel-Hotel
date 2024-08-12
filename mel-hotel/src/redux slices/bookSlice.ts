@@ -1,28 +1,29 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { packagesData } from "../packages.component/packagesObj";
 
-interface IBookSlice {
-  package: "regular" | "premium" | "luxury" | "ordinary";
+import axios from "axios";
+
+import { IUser, SetUser } from "./authSlice";
+export interface IBookSlice {
+  hotelPackage: "regular" | "premium" | "luxury" | "ordinary";
   daysOfStaying: number;
   numberOfRooms: number;
   scheduledDate: string;
-  bookedDate: string;
   location: string | null;
+  bookedDate: string;
+  time: string;
+  totalPrice: number;
 }
-const initSliceReadOnly: IBookSlice = {
-  package: "ordinary",
-  daysOfStaying: 1,
-  numberOfRooms: 1,
-  location: null,
-  scheduledDate: new Date().toLocaleDateString(),
-  bookedDate: new Date().toLocaleDateString(),
-};
+
 const initSlice: IBookSlice = {
-  package: "ordinary",
+  hotelPackage: "ordinary",
   daysOfStaying: 1,
   numberOfRooms: 1,
   location: null,
   scheduledDate: new Date().toLocaleDateString(),
   bookedDate: new Date().toLocaleDateString(),
+  time: new Date().toLocaleTimeString(),
+  totalPrice: 0,
 };
 
 const bookSlice = createSlice({
@@ -31,9 +32,9 @@ const bookSlice = createSlice({
   reducers: {
     SetPackage: (
       state,
-      actiom: PayloadAction<"regular" | "premium" | "luxury" | "ordinary">,
+      action: PayloadAction<"regular" | "premium" | "luxury" | "ordinary">,
     ) => {
-      state.package = actiom.payload;
+      state.hotelPackage = action.payload;
     },
     IncrementDays: (state) => {
       state.daysOfStaying++;
@@ -54,18 +55,63 @@ const bookSlice = createSlice({
     SetBookLocation: (state, action: PayloadAction<string>) => {
       state.location = action.payload;
     },
-    SetBookedDate: (state, action: PayloadAction<string>) => {
+    SetSchedule: (state, action: PayloadAction<string>) => {
       state.scheduledDate = action.payload;
     },
+    SetBookedDateAndTime: (state) => {
+      state.bookedDate = new Date().toLocaleDateString();
+      state.time = new Date().toLocaleTimeString();
+    },
+    SetTotalPrice: (state) => {
+      packagesData.forEach((value) => {
+        if (state.hotelPackage === value.packageName) {
+          state.totalPrice = state.daysOfStaying * value.pricePerDay;
+        }
+      });
+    },
     Reset: (state) => {
-      state.numberOfRooms = initSliceReadOnly.numberOfRooms;
-      state.bookedDate = initSliceReadOnly.bookedDate;
-      state.daysOfStaying = initSliceReadOnly.daysOfStaying;
-      state.scheduledDate = initSliceReadOnly.scheduledDate;
-      state.package = initSliceReadOnly.package;
+      state.numberOfRooms = 1;
+      state.location = null;
+      state.daysOfStaying = 1;
+      state.bookedDate = new Date().toLocaleDateString();
+      state.scheduledDate = new Date().toLocaleDateString();
+      state.hotelPackage = "ordinary";
+      state.time = new Date().toLocaleTimeString();
+      state.totalPrice = 0;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(CheckOut.fulfilled, (state, action) => {});
+  },
 });
+
+const CheckOutRequest = async (id: string, state: IBookSlice) => {
+  return axios
+    .post("/account/update/" + id, {
+      Active: {
+        ...state,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+export const CheckOut = createAsyncThunk(
+  "booking/CheckOut",
+  async ({ id, state }: { id: string; state: IBookSlice }, { dispatch }) => {
+    try {
+      const document: IUser = await CheckOutRequest(id, state);
+      if (!document) return { user: null };
+      localStorage.removeItem("melhotelUser");
+      localStorage.setItem("melhotelUser", JSON.stringify(document));
+      dispatch(SetUser(document));
+      return { user: document };
+    } catch (error) {
+      return { user: null };
+    }
+  },
+);
+
 export const {
   SetPackage,
   Reset,
@@ -73,8 +119,10 @@ export const {
   IncrementDays,
   DecrementRoom,
   IncrementRoom,
-  SetBookedDate,
+  SetSchedule,
+  SetTotalPrice,
   SetBookLocation,
+  SetBookedDateAndTime,
 } = {
   ...bookSlice.actions,
 };
