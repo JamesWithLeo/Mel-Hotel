@@ -1,10 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-// redux
 import { hotelStore } from "./hotelStore";
 import { Provider } from "react-redux";
-// routes
 import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Book from "./book.component/book";
@@ -29,6 +27,7 @@ import CollectionController from "./admin.component/collectionController";
 import ReservationCollection from "./admin.component/reservationCollection";
 import PackageLayout from "./packages.component/packageLayout";
 import ActivePackage from "./packages.component/activePackage";
+
 const router = createBrowserRouter([
   {
     path: "/",

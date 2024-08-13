@@ -1,6 +1,8 @@
 import hotelCozyroom from "../assets/images/hotelRoom-sm.jpg";
 import hotelFacade from "../assets/images/hotel-scenries1.jpg";
 import hotelPool1 from "../assets/images/luxury-pool.jpg";
+import hotelSalmon from "../assets/images/hotel-salmon.jpg";
+import hotelReceptionist from "../assets/images/hotel-receptionists.jpg";
 import { Link } from "react-router-dom";
 import Gallary, { carouselTypeface } from "./gallary";
 import Footer from "../footer.component/footer";
@@ -107,7 +109,6 @@ export default function Home() {
             </h1>
           </div>
         </section>
-
         <section className="flex w-full flex-col items-center gap-4 md:flex-row-reverse">
           <div
             id="homeAmmenities"
@@ -125,7 +126,7 @@ export default function Home() {
             />
           </div>
           <div className="flex w-full flex-col justify-center md:w-1/2">
-            <h1 className="font-bebas text-primarydark hidden text-2xl opacity-70 lg:block lg:text-5xl">
+            <h1 className="font-bebas text-primarydark hidden self-end text-2xl opacity-70 lg:block lg:text-5xl">
               Coxy Rooms
             </h1>
             <h1 className="text-primarydark text-justify indent-8 font-sans text-sm drop-shadow">
@@ -138,7 +139,6 @@ export default function Home() {
             </h1>
           </div>
         </section>
-
         <section className="flex w-full flex-col items-center gap-4 md:flex-row">
           <div className="grid h-40 w-full max-w-sm grid-cols-3 grid-rows-3 overflow-hidden rounded shadow drop-shadow sm:max-w-sm md:h-60">
             <div className="z-10 col-span-3 row-span-1 row-start-3 flex items-center bg-gradient-to-t from-gray-600 px-4 text-gray-100 lg:row-start-2 lg:hidden lg:justify-center lg:bg-gray-600 lg:bg-opacity-60 lg:from-transparent">
@@ -162,6 +162,64 @@ export default function Home() {
               perfect for a refreshing swim or lounging by the water on our
               comfortable sunbeds. Surrounded by lush greenery and beautifully
               landscaped gardens, it offers a serene and picturesque setting.
+            </h1>
+          </div>
+        </section>
+        <section className="flex w-full flex-col items-center gap-4 md:flex-row-reverse">
+          <div className="grid h-40 w-full max-w-sm grid-cols-3 grid-rows-3 overflow-hidden rounded shadow drop-shadow sm:max-w-sm md:h-60">
+            <div className="z-10 col-span-3 row-span-1 row-start-3 flex items-center bg-gradient-to-t from-gray-600 px-4 text-gray-100 lg:row-start-2 lg:hidden lg:justify-center lg:bg-gray-600 lg:bg-opacity-60 lg:from-transparent">
+              <h1 className="font-bebas text-2xl opacity-70 sm:text-3xl lg:text-5xl">
+                Fine dining experience
+              </h1>
+            </div>
+            <img
+              src={hotelSalmon}
+              alt=""
+              className="col-span-3 h-56 w-full sm:h-60"
+            />
+          </div>
+          <div className="flex w-full flex-col justify-center md:w-1/2">
+            <h1 className="font-bebas text-primarydark hidden self-end text-2xl opacity-70 lg:block lg:text-5xl">
+              Fine dining experience
+            </h1>
+            <h1 className="text-primarydark text-justify indent-8 font-sans text-sm drop-shadow">
+              At Mel Hotel, we elevate your dining experience to the
+              extraordinary with our fine dining offerings. Our restaurant
+              combines elegant ambiance with a menu crafted by our personal
+              chef, who brings a wealth of culinary expertise to every dish.
+              From succulent seafood to tender steaks and fresh, locally-sourced
+              produce, each meal is a journey through rich flavors and artful
+              presentations. Whether you’re enjoying a romantic dinner or a
+              celebratory feast, our personalized service ensures that every
+              detail is tailored to your taste, making your dining experience at
+              Mel Hotel unforgettable.
+            </h1>
+          </div>
+        </section>
+        <section className="flex w-full flex-col items-center gap-4 md:flex-row">
+          <div className="grid h-40 w-full max-w-sm grid-cols-3 grid-rows-3 overflow-hidden rounded shadow drop-shadow sm:max-w-sm md:h-60">
+            <div className="z-10 col-span-3 row-span-1 row-start-3 flex items-center bg-gradient-to-t from-gray-600 px-4 text-gray-100 lg:row-start-2 lg:hidden lg:justify-center lg:bg-gray-600 lg:bg-opacity-60 lg:from-transparent">
+              <h1 className="font-bebas text-2xl opacity-70 sm:text-3xl lg:text-5xl">
+                Exceptional Hospitality
+              </h1>
+            </div>
+            <img
+              src={hotelReceptionist}
+              alt=""
+              className="col-span-3 h-56 w-full sm:h-60"
+            />
+          </div>
+          <div className="flex w-full flex-col justify-center md:w-1/2">
+            <h1 className="font-bebas text-primarydark hidden text-2xl opacity-70 lg:block lg:text-5xl">
+              Exceptional Hospitality
+            </h1>
+            <h1 className="text-primarydark text-justify indent-8 font-sans text-sm drop-shadow">
+              At Mel Hotel, our staff and reception team are dedicated to making
+              you feel at home from the moment you arrive. Friendly, attentive,
+              and always ready to assist, they go above and beyond to ensure
+              your stay is comfortable and enjoyable. Whether you need help with
+              your luggage, local recommendations, or just a warm smile, our
+              team is here to welcome you with open arms.
             </h1>
           </div>
         </section>

@@ -33,7 +33,7 @@ function App() {
     };
     fetchHome();
   }, []);
-
+  console.log(hotelStore.getState().auth.authType);
   return (
     <>
       <div className="flex h-screen w-full flex-col items-center">
@@ -46,15 +46,13 @@ function App() {
             <NavLink to={"pricing"} className={navClass}>
               Pricing
             </NavLink>
-            <NavLink to={"review"} className={navClass}>
-              Review
-            </NavLink>
+
             <NavLink to={"location"} className={navClass}>
               Location
             </NavLink>
           </div>
           <div className="flex items-center gap-8">
-            {hotelStore.getState().auth.user?.AuthType === "admin" ? (
+            {hotelStore.getState().auth.authType === "admin" ? (
               <NavLink to={"admin"}>Admin</NavLink>
             ) : null}
 

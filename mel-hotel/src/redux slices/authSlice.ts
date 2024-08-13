@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { response } from "express";
 import { IBookSlice } from "./bookSlice";
+import { act } from "react";
 
 export type GenderTypeface = "male" | "female" | "others";
 export type AuthTypeface = "guest" | "user" | "admin";
@@ -12,7 +12,8 @@ export type IUserEditableFields =
   | "Contact"
   | "Gender"
   | "Password"
-  | "Age";
+  | "Age"
+  | "Birthdate";
 export interface IUser {
   _id: string;
   Age: number;
@@ -24,6 +25,7 @@ export interface IUser {
   Contact: string;
   Jwt: string;
   Gender: GenderTypeface;
+  Birthdate: string;
   AuthType: AuthTypeface;
   Active: IBookSlice;
 }
@@ -34,15 +36,15 @@ var user: IUser | null = userlocal ? JSON.parse(userlocal) : null;
 
 interface IAuthSlice {
   user: null | IUser;
-  activeBooking: null;
+  activeBooking: null | IBookSlice;
   authType: "guest" | "user" | "admin";
   statusMessage: string | null;
 }
 
 const authSliceInitState: IAuthSlice = {
-  authType: user?.AuthType ?? "guest",
   user: user ? user : null,
-  activeBooking: null,
+  authType: user?.AuthType ?? "guest",
+  activeBooking: user?.Active ?? null,
   statusMessage: null,
 };
 
@@ -54,7 +56,7 @@ export interface ICredentials {
 const updateRequest = async (
   id: string,
   fieldToUpdate: IUserEditableFields,
-  updatedValue: string,
+  updatedValue: string | number,
 ) => {
   switch (fieldToUpdate) {
     case "Password":
@@ -93,6 +95,18 @@ const updateRequest = async (
           Contact: updatedValue,
         })
         .then((response) => response.data);
+    case "Age":
+      return axios
+        .post("/account/update/" + id, {
+          Age: updatedValue,
+        })
+        .then((response) => response.data);
+    case "Birthdate":
+      return axios
+        .post("/account/update/" + id, {
+          Birthdate: updatedValue,
+        })
+        .then((response) => response.data);
   }
 };
 
@@ -103,12 +117,11 @@ export const update = createAsyncThunk(
       id,
       field,
       value,
-    }: { id: string; field: IUserEditableFields; value: string },
+    }: { id: string; field: IUserEditableFields; value: string | number },
     thunkApi,
   ) => {
     try {
       const document: IUser = await updateRequest(id, field, value);
-      console.log(document);
       if (!document) return { user: null };
       localStorage.removeItem("melhotelUser");
       localStorage.setItem("melhotelUser", JSON.stringify(document));
@@ -161,6 +174,7 @@ const authSlice = createSlice({
   reducers: {
     SetUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
+      localStorage.setItem("melhotelUser", JSON.stringify(state.user));
     },
     SetAuthToDefault: (state) => {
       state.statusMessage = null;
@@ -169,6 +183,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
       state.user = action.payload.user;
+      state.activeBooking = action.payload.user.Active;
       state.statusMessage = action.payload.statusMessage;
     });
     builder.addCase(login.rejected, (state) => {

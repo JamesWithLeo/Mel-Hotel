@@ -68,6 +68,12 @@ SERVER.post("/login/", async (req, res) => {
     });
 });
 
+SERVER.post("/signin", async (req, res) => {
+  await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
+    res.status(200).json(result);
+  });
+});
+
 //account request
 SERVER.post("/admin/database/account/insert", async (req, res) => {
   await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
@@ -84,6 +90,7 @@ SERVER.delete("/admin/database/account/delete/:id", async (req, res) => {
     res.status(200).json(result);
   });
 });
+
 SERVER.post("/account/update/:id", async (req, res) => {
   await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
     res.status(200).json(result);

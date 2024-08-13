@@ -1,5 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Gallary, { carouselTypeface } from "../home.component/gallary";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../hotelStore";
+import { login } from "../redux slices/authSlice";
+import { Capitalize, toTItleCase } from "../fomatString";
+
 const setting: carouselTypeface = {
   dots: false,
   slidesToShow: 1,
@@ -12,26 +19,124 @@ const setting: carouselTypeface = {
   autoplaySpeed: 5000,
   adaptiveHeight: true,
 };
+
 export default function SigninFC() {
   const [steps, setSteps] = useState<1 | 2 | 3>(1);
+  const [id, setId] = useState<string | null>(null);
+  const [gmailValue, setGmail] = useState<string | null>(null);
+  const [passwordValue, setPassword] = useState<string | null>(null);
+  const [FirstName, setFirstName] = useState<string | null>(null);
+  const [LastName, setLastName] = useState<string | null>(null);
+  const age = useRef(0);
+  // const [age, setAge] = useState<number>();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleSignin = () => {
+  const handleSignin = async () => {
     const emailElement = document.getElementById(
       "inputGmail",
     ) as HTMLInputElement;
     const passwordElement = document.getElementById(
       "inputPassword",
     ) as HTMLInputElement;
+    const confirmPasswordElement = document.getElementById(
+      "confirmPassword",
+    ) as HTMLInputElement;
 
-    if (!(emailElement.value && passwordElement)) return;
     if (
-      window.confirm(
+      !(
+        emailElement.value &&
+        passwordElement.value &&
+        passwordElement.value === confirmPasswordElement.value
+      )
+    )
+      return;
+    if (
+      !window.confirm(
         `Mel Hotel confirmation! \nAgreeing to this will create a account using, ${emailElement.value}`,
       )
-    ) {
-      setSteps(2);
-    }
+    )
+      return;
+    axios
+      .post("/signin", {
+        Gmail: emailElement.value,
+        Password: passwordElement.value,
+        Age: null,
+        FirstName: null,
+        LastName: null,
+        Address: null,
+        Contact: null,
+        Gender: null,
+        Active: null,
+      })
+      .then((value) => {
+        if (value.data.insertedId) {
+          setId(value.data.insertedId);
+          setGmail(emailElement.value);
+          setPassword(passwordElement.value);
+          setSteps(2);
+        }
+      });
   };
+  const handlePersonalInfo = async () => {
+    const dateOfBirth = document.getElementById(
+      "dateOfBirth",
+    ) as HTMLInputElement;
+    const genderElement = document.getElementById(
+      "genderElement",
+    ) as HTMLInputElement;
+    const addressElement = document.getElementById(
+      "addressElement",
+    ) as HTMLInputElement;
+    const contactElement = document.getElementById(
+      "contactElement",
+    ) as HTMLInputElement;
+
+    const todayYear = new Date().getFullYear();
+    const todayMonth = new Date().getMonth() + 1;
+    const todayDay = new Date().getDate();
+
+    const Birthdate = dateOfBirth.value
+      .split("-")
+      .map((value) => Number(value));
+    const birthyear = Birthdate[0];
+    const birthmonth = Birthdate[1];
+    const birthday = Birthdate[2];
+
+    const month = todayMonth - birthmonth;
+    if (month >= 0) {
+      if (todayDay >= birthday) {
+        age.current = todayYear - birthyear;
+      } else {
+        age.current = todayYear - birthyear - 1;
+      }
+    } else {
+      age.current = todayYear - birthyear - 1;
+    }
+
+    axios
+      .post("/account/update/" + id, {
+        FirstName: FirstName,
+        LastName: LastName,
+        Birthdate: dateOfBirth.value,
+        Age: age.current,
+        Gender: genderElement.value,
+        Address: toTItleCase(addressElement.value),
+        Contact: contactElement.value,
+      })
+      .then((value) => {
+        setId(null);
+        if (gmailValue && passwordValue) {
+          localStorage.setItem("isRemember", JSON.stringify("true"));
+          dispatch(login({ gmail: gmailValue, password: passwordValue }))
+            .unwrap()
+            .then(() => {
+              navigate("/profile", { replace: true });
+            });
+        }
+      });
+  };
+
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center">
       {steps === 1 ? (
@@ -83,6 +188,7 @@ export default function SigninFC() {
               <h1>First name</h1>
               <input
                 type="text"
+                id="firstNameElement"
                 required
                 className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
               />
@@ -90,12 +196,23 @@ export default function SigninFC() {
               <input
                 type="text"
                 required
+                id="lastNameElement"
                 className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
               />
               <button
                 className="mt-4 w-max self-end rounded bg-[#f09247] px-4 py-2 text-white shadow"
                 onClick={() => {
-                  setSteps(3);
+                  const firstNameElement = document.getElementById(
+                    "firstNameElement",
+                  ) as HTMLInputElement;
+                  const lastNameElement = document.getElementById(
+                    "lastNameElement",
+                  ) as HTMLInputElement;
+                  if (firstNameElement.value && lastNameElement) {
+                    setSteps(3);
+                    setFirstName(Capitalize(firstNameElement.value));
+                    setLastName(Capitalize(lastNameElement.value));
+                  }
                 }}
               >
                 Next
@@ -116,6 +233,7 @@ export default function SigninFC() {
             <div className="flex w-full items-center justify-between">
               <h1>Date of birth</h1>
               <input
+                id="dateOfBirth"
                 type="date"
                 className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
               />
@@ -124,6 +242,7 @@ export default function SigninFC() {
             <div className="flex w-full items-center justify-between">
               <h1>Gender</h1>
               <select
+                id="genderElement"
                 className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
                 name="gender"
               >
@@ -134,6 +253,7 @@ export default function SigninFC() {
             </div>
             <h1>Address</h1>
             <input
+              id="addressElement"
               placeholder="Enter your address"
               type="text"
               required
@@ -141,13 +261,17 @@ export default function SigninFC() {
             />
             <h1>Contact number</h1>
             <input
+              id="contactElement"
               placeholder="Enter your contact number"
               type="tel"
               required
               className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
             />
             <div className="mt-4 flex flex-row-reverse gap-8">
-              <button className="rounded bg-[#f09247] px-4 py-2 text-white hover:drop-shadow-md active:drop-shadow-md">
+              <button
+                className="rounded bg-[#f09247] px-4 py-2 text-white hover:drop-shadow-md active:drop-shadow-md"
+                onClick={handlePersonalInfo}
+              >
                 Save
               </button>
               <button

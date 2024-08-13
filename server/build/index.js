@@ -88,6 +88,11 @@ SERVER.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(rejectResult);
     });
 }));
+SERVER.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
+        res.status(200).json(result);
+    });
+}));
 //account request
 SERVER.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
@@ -109,11 +114,6 @@ SERVER.post("/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 
         res.status(200).json(result);
     });
 }));
-// SERVER.post("/account/insert/:id", async (req, res) => {
-//   await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
-//     res.status(200).json(result);
-//   });
-// });
 // Reservation request
 SERVER.get("/admin/database/reservation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocuments)(RESERVATION_COLL).then((result) => {

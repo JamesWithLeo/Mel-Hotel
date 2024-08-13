@@ -9,6 +9,7 @@ import {
 import { IUser } from "../redux slices/authSlice";
 import { useMemo } from "react";
 import { GenderTypeface, AuthTypeface } from "../redux slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const AccountTable = ({
   data,
@@ -17,8 +18,9 @@ const AccountTable = ({
   data: IUser[];
   RefreshData: () => Promise<void>;
 }) => {
+  const navigate = useNavigate();
   const genderDropDownOption: GenderTypeface[] = ["male", "female", "others"];
-  const authTypeDropDownOption: AuthTypeface[] = ["guest", "user", "admin"];
+  const authTypeDropDownOption: AuthTypeface[] = ["user", "admin"];
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IUser>[]>(
     () => [
@@ -27,7 +29,7 @@ const AccountTable = ({
         accessorKey: "_id",
         header: "User Id",
         enableEditing: false,
-        size: 150,
+        size: 110,
         maxSize: 240,
         enableSorting: false,
         enableClickToCopy: true,
@@ -36,7 +38,7 @@ const AccountTable = ({
       {
         accessorKey: "Gmail",
         header: "Gmail",
-        size: 150,
+        size: 130,
         maxSize: 240,
         enableClickToCopy: true,
         enableColumnDragging: false,
@@ -80,7 +82,7 @@ const AccountTable = ({
       {
         accessorKey: "FirstName",
         header: "First name",
-        size: 150,
+        size: 100,
         enableSorting: true,
         enableClickToCopy: true,
         enableColumnDragging: false,
@@ -88,8 +90,32 @@ const AccountTable = ({
       {
         accessorKey: "LastName",
         header: "Surname",
-        size: 150,
+        size: 100,
         enableSorting: true,
+        enableClickToCopy: true,
+        enableColumnDragging: false,
+      },
+      {
+        accessorKey: "Address",
+        header: "Address",
+        size: 130,
+        enableSorting: true,
+        enableClickToCopy: true,
+        enableColumnDragging: true,
+      },
+      {
+        accessorKey: "Birthdate",
+        header: "birthdate y-m-d",
+        enableSorting: true,
+        size: 100,
+        enableClickToCopy: true,
+        enableColumnDragging: true,
+      },
+      {
+        accessorKey: "Contact",
+        header: "Contact",
+        enableSorting: false,
+        size: 100,
         enableClickToCopy: true,
         enableColumnDragging: false,
       },
@@ -146,20 +172,28 @@ const AccountTable = ({
       const accountBody = JSON.stringify({
         Gmail: values.Gmail,
         Password: values.Password,
+        AuthType: values.AuthType,
+        Age: values.Age,
+        Gender: values.Gender,
+        FirstName: values.FirstName,
+        LastName: values.LastName,
+        Address: values.Address,
       });
-      await fetch(`/admin/database/account/update/${values._id}`, {
+      await fetch(`/account/update/${values._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: accountBody,
       }).then(async (response) => {
-        await response.json().then((value) => {
-          console.log(value);
-        });
+        await response.json().then((value) => {});
       });
       table.setEditingRow(null);
     };
+
+  const handleback = () => {
+    navigate("/admin/collections");
+  };
 
   const table = useMaterialReactTable({
     columns,
@@ -191,6 +225,11 @@ const AccountTable = ({
       },
       columnVisibility: {
         Password: false,
+        AuthType: false,
+        Birthdate: false,
+        Address: false,
+        Gender: false,
+        Contact: false,
       },
     },
 
@@ -235,9 +274,15 @@ const AccountTable = ({
     onCreatingRowCancel: () => {},
     onCreatingRowSave: handleCreateAccount,
     renderTopToolbarCustomActions: ({ table }) => (
-      <div className="p-2">
+      <div className="flex gap-2 p-2">
         <button
-          className="rounded bg-white px-2 py-1 text-gray-500 shadow hover:text-gray-600 hover:drop-shadow"
+          className="rounded bg-white px-2 py-1 text-gray-700 shadow hover:text-gray-600 hover:drop-shadow"
+          onClick={handleback}
+        >
+          Back
+        </button>
+        <button
+          className="rounded bg-white px-2 py-1 text-gray-700 shadow hover:text-gray-600 hover:drop-shadow"
           onClick={() => {
             table.setCreatingRow(true);
           }}
@@ -274,7 +319,17 @@ const AccountTable = ({
 
     renderDetailPanel: ({ row }) => (
       <div>
-        <h1>Password: {row.original.Password}</h1>
+        {row.original.Active ? (
+          <div className="rounded bg-gray-100 px-2 py-1">
+            <h1>Active booking</h1>
+            <h1>{row.original.Active.hotelPackage}</h1>
+            <h1>Location: {row.original.Active.location}</h1>
+            <h1>Rooms: {row.original.Active.numberOfRooms}</h1>
+            <h1>Days: {row.original.Active.daysOfStaying}</h1>
+          </div>
+        ) : (
+          <h1>No Active booking</h1>
+        )}
       </div>
     ),
   });

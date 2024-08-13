@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { SetBookLocation } from "../redux slices/bookSlice";
 import { AppState } from "../hotelStore";
 import { Link, Navigate } from "react-router-dom";
-import Notification from "../notification";
 type markTypeface = {
   name: string;
   position: LatLngExpression;
@@ -148,11 +147,11 @@ export default function BranchLocation({
       (
         user.FirstName &&
         user.LastName &&
-        user.Age &&
         user.Gender &&
-        user.Address
+        user.Address &&
+        user.Contact
       )
-      // && user.Contact
+      // user.Age &&
     )
   ) {
     return <Navigate to={"/profile"} replace={true} />;
@@ -165,7 +164,7 @@ export default function BranchLocation({
             Mel hotel branches
           </h1>
 
-          <div className="flex w-full justify-between gap-2">
+          {/* <div className="flex w-full justify-between gap-2">
             <input
               type="text"
               className="outline-primarydark w-full rounded px-2 py-1 shadow-inner outline outline-1"
@@ -173,7 +172,7 @@ export default function BranchLocation({
             <button className="bg-primarydarker w-max rounded px-2 py-1 text-sm text-white shadow">
               search
             </button>
-          </div>
+          </div> */}
           <div className="flex flex-col gap-2 overflow-y-auto px-2">
             {branchButton}
           </div>

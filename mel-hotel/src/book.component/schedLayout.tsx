@@ -14,12 +14,12 @@ import {
 import { AppDispatch, AppState, hotelStore } from "../hotelStore";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function SchedLayout() {
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
-
+  const navigate = useNavigate();
   const bookingState = useSelector((state: AppState) => state.booking);
   const onIncrementRooms = () => {
     dispatch(IncrementRoom());
@@ -167,6 +167,7 @@ export default function SchedLayout() {
                 dispatch(CheckOut({ id: user._id, state: bookingState }));
                 setIsSummaryVisible(false);
                 dispatch(Reset());
+                navigate("/", { replace: true });
               }}
             >
               Check out

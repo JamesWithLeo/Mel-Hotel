@@ -6,7 +6,7 @@ import { SetUser } from "../redux slices/authSlice";
 
 export default function ActivePackage() {
   const dispatch = useDispatch<AppDispatch>();
-  const Active = useSelector((state: AppState) => state.auth.user?.Active);
+  const Active = useSelector((state: AppState) => state.auth.activeBooking);
   const user = useSelector((state: AppState) => state.auth.user);
   if (!Active || user === null) return <Navigate to={"/"} replace={true} />;
   const handleAbort = async () => {
@@ -47,7 +47,7 @@ export default function ActivePackage() {
         className="w-max rounded bg-red-500 px-4 py-1 text-white shadow"
         onClick={handleAbort}
       >
-        Abort this package
+        Abort this booked package
       </button>
     </div>
   );

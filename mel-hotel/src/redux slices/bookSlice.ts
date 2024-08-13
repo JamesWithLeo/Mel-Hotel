@@ -37,7 +37,9 @@ const bookSlice = createSlice({
       state.hotelPackage = action.payload;
     },
     IncrementDays: (state) => {
-      state.daysOfStaying++;
+      if (state.daysOfStaying < 30) {
+        state.daysOfStaying++;
+      }
     },
     DecrementDays: (state) => {
       if (state.daysOfStaying > 1) {

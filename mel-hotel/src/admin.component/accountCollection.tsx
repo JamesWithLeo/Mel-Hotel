@@ -1,19 +1,9 @@
 import { faTable } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { IUser } from "../redux slices/authSlice";
 
 const AccountTable = lazy(() => import("./accountTable"));
-// export type AccountTypeface = {
-//   _id: string;
-//   Gmail: string;
-//   Password: string;
-//   Age: number;
-//   Gender: GenderTypeface;
-//   FirstName: string;
-//   LastName: string;
-// };
 
 export default function AccountCollection() {
   const [isTableVisible, setIsTableVisibility] = useState<boolean>(true);
@@ -22,7 +12,6 @@ export default function AccountCollection() {
     await fetch("/admin/database/collections")
       .then(async (response) => {
         await response.json().then((dbCollections: IUser[]) => {
-          console.log(dbCollections);
           setAccountData(dbCollections);
         });
       })
@@ -36,12 +25,6 @@ export default function AccountCollection() {
 
   return (
     <div className="flex h-full w-full flex-col gap-2 px-4 py-4">
-      <Link
-        to={"/admin/collections"}
-        className="w-max rounded bg-white px-3 py-1 shadow drop-shadow"
-      >
-        back
-      </Link>
       {accountData ? (
         <>
           {isTableVisible ? (

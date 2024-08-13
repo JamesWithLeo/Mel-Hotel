@@ -7,13 +7,14 @@ import {
   faPenToSquare,
   faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Capitalize } from "../fomatString";
 import { Link } from "react-router-dom";
 
 export default function Profile() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const age = useRef(0);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -29,6 +30,8 @@ export default function Profile() {
   const [isEditFirstVisible, setEditFirstVisible] = useState<boolean>(false);
   const [isEditLastVisible, setEditLastVisible] = useState<boolean>(false);
   const [isEditGenderVisible, setEditGenderVisible] = useState<boolean>(false);
+  const [isEditBirtdateVisible, setIsEditBirthdateVisible] =
+    useState<boolean>(false);
   if (!user) {
     return <Navigate to={"/login"} />;
   }
@@ -50,36 +53,25 @@ export default function Profile() {
       </div>
 
       <div className="mb-1 flex h-max w-full items-center justify-center gap-1 px-8 py-1 sm:justify-end">
-        <div className="h-full w-[1px] bg-gray-200">
-          <hr />
-        </div>
         <Link
           to={"/book/package/" + hotelStore.getState().booking.hotelPackage}
           className="text-primarydarker h-full w-max rounded border border-gray-200 bg-gray-50 px-3 py-1 hover:shadow hover:drop-shadow-md"
         >
           Book
         </Link>
-        <div className="h-full w-[1px] bg-gray-200">
-          <hr />
-        </div>
         <button className="text-primarydarker h-full w-max rounded border border-gray-200 bg-gray-50 px-3 py-1 hover:shadow hover:drop-shadow-md">
           Write Review
         </button>
-        <div className="h-full w-[1px] bg-gray-200">
-          <hr />
-        </div>
+
         <button
           className="h-full w-max rounded border border-gray-200 bg-gray-50 px-3 py-1 text-red-400 hover:shadow hover:drop-shadow-md"
           onClick={handleLogout}
         >
           Logout
         </button>
-        <div className="h-full w-[1px] bg-gray-200">
-          <hr />
-        </div>
       </div>
 
-      <div className="text-primarydarker flex h-full w-full max-w-lg flex-col items-center gap-4 self-start px-4 pb-4 md:pl-24">
+      <div className="text-primarydarker flex h-full w-full max-w-lg flex-col items-center gap-4 self-start px-4 pb-8 md:pl-24">
         <section className="flex w-full grid-cols-2 flex-col sm:grid">
           <h1 className="font-fauna w-max align-middle">Gmail</h1>
 
@@ -369,6 +361,7 @@ export default function Profile() {
             ) : null}
           </div>
         </section>
+
         <section className="flex w-full grid-cols-2 flex-col sm:grid">
           <h1 className="font-fauna w-max align-middle">Gender</h1>
           <div className="flex w-full gap-4">
@@ -408,6 +401,79 @@ export default function Profile() {
                       value: genderElement.value.toLowerCase(),
                     }),
                   );
+                }}
+              >
+                <FontAwesomeIcon icon={faSquareCheck} />
+              </button>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="flex w-full grid-cols-2 flex-col sm:grid">
+          <h1 className="font-fauna w-max align-middle">Age</h1>
+          <div className="flex w-full gap-4">
+            <input
+              readOnly
+              type="date"
+              id="Birthdate"
+              className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
+              defaultValue={user.Birthdate}
+            />
+            <button
+              onClick={() => {
+                const Birthdate = document.getElementById(
+                  "Birthdate",
+                ) as HTMLInputElement;
+                Birthdate.readOnly = false;
+                setIsEditBirthdateVisible(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </button>
+            {isEditBirtdateVisible ? (
+              <button
+                onClick={() => {
+                  const BirthdateElement = document.getElementById(
+                    "Birthdate",
+                  ) as HTMLInputElement;
+                  setIsEditBirthdateVisible(false);
+
+                  const todayYear = new Date().getFullYear();
+                  const todayMonth = new Date().getMonth() + 1;
+                  const todayDay = new Date().getDate();
+
+                  const Birthdate = BirthdateElement.value
+                    .split("-")
+                    .map((value) => Number(value));
+                  const birthyear = Birthdate[0];
+                  const birthmonth = Birthdate[1];
+                  const birthday = Birthdate[2];
+                  const month = todayMonth - birthmonth;
+                  if (month >= 0) {
+                    if (todayDay >= birthday) {
+                      age.current = todayYear - birthyear;
+                    } else {
+                      age.current = todayYear - birthyear - 1;
+                    }
+                  } else {
+                    age.current = todayYear - birthyear - 1;
+                  }
+
+                  dispatch(
+                    update({
+                      id: user._id,
+                      field: "Birthdate",
+                      value: BirthdateElement.value,
+                    }),
+                  );
+                  dispatch(
+                    update({
+                      id: user._id,
+                      field: "Age",
+                      value: age.current,
+                    }),
+                  );
+                  BirthdateElement.readOnly = true;
                 }}
               >
                 <FontAwesomeIcon icon={faSquareCheck} />

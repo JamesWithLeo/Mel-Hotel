@@ -1,5 +1,5 @@
 import BookNav from "./bookNav";
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, Navigate } from "react-router-dom";
 import { AppState } from "../hotelStore";
 import { useSelector } from "react-redux";
 import Notification from "../notification";
@@ -8,7 +8,6 @@ import { useState } from "react";
 export default function Book() {
   const bookingState = useSelector((state: AppState) => state.booking);
   const authState = useSelector((state: AppState) => state.auth);
-  const navigate = useNavigate();
   const [isNotificationPopupVisible, setIsNotificationPopupVisible] =
     useState<boolean>(false);
 
@@ -27,7 +26,8 @@ export default function Book() {
       setIslogin(false);
     }, 2000);
   };
-
+  if (authState.user && authState.user.Active)
+    return <Navigate to={"/"} replace />;
   return (
     <>
       {isNotificationPopupVisible ? (
