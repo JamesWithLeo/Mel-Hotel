@@ -43,7 +43,6 @@ const AccountTable = ({
         enableClickToCopy: true,
         enableColumnDragging: false,
       },
-      // show password if needed
       {
         accessorKey: "Password",
         header: "Password",
