@@ -1,24 +1,12 @@
 import { useState, useRef } from "react";
-import Gallary, { carouselTypeface } from "../home.component/gallary";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../hotelStore";
 import { login } from "../redux slices/authSlice";
 import { Capitalize, toTItleCase } from "../fomatString";
-
-const setting: carouselTypeface = {
-  dots: false,
-  slidesToShow: 1,
-  centerMode: true,
-  infinite: true,
-  initialSlide: 1,
-  speed: 3000,
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 5000,
-  adaptiveHeight: true,
-};
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
 
 export default function SigninFC() {
   const [steps, setSteps] = useState<1 | 2 | 3>(1);
@@ -139,6 +127,12 @@ export default function SigninFC() {
 
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center">
+      <Link
+        to={"/"}
+        className="text-contrast absolute left-4 top-4 rounded bg-white px-3 text-xl shadow"
+      >
+        <FontAwesomeIcon icon={faArrowLeftLong} />
+      </Link>
       {steps === 1 ? (
         <div className="min-w-md absolute z-10 flex h-max w-full max-w-md flex-col gap-4 rounded-md bg-gray-100 bg-opacity-80 px-4 py-8 shadow backdrop-blur backdrop-filter sm:px-8">
           <h1 className="text-primarydark font-fauna mb-8 text-center text-3xl font-bold">
@@ -168,11 +162,21 @@ export default function SigninFC() {
             className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
           />
           <button
-            className="mt-8 rounded bg-[#f09247] py-2 text-white shadow"
+            className="rounded bg-[#f09247] py-2 text-white shadow"
             onClick={handleSignin}
           >
             Sign in
           </button>
+
+          <div>
+            <hr className="h-[4px] w-full bg-stone-400" />
+          </div>
+          <Link
+            to={"/login"}
+            className="text-contrast flex flex-col items-center rounded bg-gray-50 py-2 shadow"
+          >
+            Already have account?
+          </Link>
         </div>
       ) : null}
       {steps === 2 ? (
@@ -286,8 +290,6 @@ export default function SigninFC() {
           </div>
         </>
       ) : null}
-
-      <Gallary settings={setting} isFullscreen={true} />
     </div>
   );
 }

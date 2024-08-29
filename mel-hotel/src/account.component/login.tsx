@@ -7,20 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppDispatch, AppState } from "../hotelStore";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import Gallary from "../home.component/gallary";
-import { carouselTypeface } from "../home.component/gallary";
-const setting: carouselTypeface = {
-  dots: false,
-  slidesToShow: 1,
-  centerMode: true,
-  infinite: true,
-  initialSlide: 1,
-  speed: 3000,
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 5000,
-  adaptiveHeight: true,
-};
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
 
 export default function LoginFC() {
   const navigate = useNavigate();
@@ -61,6 +49,12 @@ export default function LoginFC() {
 
   return (
     <div className="flex h-dvh flex-col items-center justify-center bg-gray-100">
+      <Link
+        to={"/"}
+        className="text-contrast absolute left-4 top-4 rounded bg-white px-3 text-xl shadow"
+      >
+        <FontAwesomeIcon icon={faArrowLeftLong} />
+      </Link>
       <div className="min-w-md z-10 flex h-max w-full max-w-md flex-col gap-4 rounded-md bg-gray-100 bg-opacity-80 px-8 py-8 shadow drop-shadow backdrop-blur backdrop-filter">
         <h1 className="text-primarydark font-fauna mb-8 text-center text-3xl font-bold">
           Mel Hotel
@@ -121,7 +115,6 @@ export default function LoginFC() {
           Doesn't have account?
         </Link>
       </div>
-      <Gallary isFullscreen={true} settings={setting} />
     </div>
   );
 }
