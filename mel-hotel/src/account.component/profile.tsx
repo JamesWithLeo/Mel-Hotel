@@ -21,11 +21,7 @@ export default function Profile() {
     navigate("/", { replace: true });
   };
   const { user } = useSelector((state: AppState) => state.auth);
-  const [isEditPasswordVisible, setEditPasswordVisible] =
-    useState<boolean>(false);
   const [isEditAddressVisible, setEditAddressVisible] =
-    useState<boolean>(false);
-  const [isEditContactVisible, setEditContactVisible] =
     useState<boolean>(false);
   const [isEditFirstVisible, setEditFirstVisible] = useState<boolean>(false);
   const [isEditLastVisible, setEditLastVisible] = useState<boolean>(false);
@@ -44,7 +40,7 @@ export default function Profile() {
         </div>
         <div className="flex flex-col gap-2 text-center">
           <h1 className="text-primarydarker left-[32%] top-[18%] h-max rounded bg-gray-100 bg-opacity-85 px-2 py-1 text-sm sm:left-52 sm:top-44">
-            {user.FirstName} {user.LastName}
+            {user.firstName} {user.lastName}
           </h1>
           <h1 className="text-primarydarker left-[32%] top-[21%] h-max rounded bg-gray-100 bg-opacity-85 px-2 py-1 text-sm sm:left-52 sm:top-56">
             Id : {user._id}
@@ -80,64 +76,8 @@ export default function Profile() {
               type="email"
               readOnly
               className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-              defaultValue={user.Gmail}
+              defaultValue={user.email}
             />
-          </div>
-        </section>
-
-        <section className="flex w-full grid-cols-2 flex-col sm:grid">
-          <h1 className="font-fauna w-max align-middle">Password</h1>
-          <div className="flex w-full gap-4">
-            <input
-              className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-              defaultValue={user.Password}
-              onBlur={(e) => {
-                e.target.readOnly = true;
-                if (!e.target.value) {
-                  e.target.value = e.target.defaultValue;
-                }
-                if (e.target.value === e.target.defaultValue) {
-                  setEditPasswordVisible(false);
-                }
-              }}
-              readOnly
-              spellCheck={false}
-              id="Password"
-            />
-            <button
-              className="flex w-max items-center group-hover:block"
-              onClick={() => {
-                const passwordElement = document.getElementById(
-                  "Password",
-                ) as HTMLInputElement;
-                passwordElement.focus();
-                passwordElement.readOnly = false;
-                setEditPasswordVisible(true);
-              }}
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </button>
-            {isEditPasswordVisible ? (
-              <button
-                onClick={async () => {
-                  const passwordElement = document.getElementById(
-                    "Password",
-                  ) as HTMLInputElement;
-                  passwordElement.blur();
-                  passwordElement.readOnly = true;
-                  setEditPasswordVisible(false);
-                  dispatch(
-                    update({
-                      id: user._id,
-                      field: "Password",
-                      value: passwordElement.value,
-                    }),
-                  );
-                }}
-              >
-                <FontAwesomeIcon icon={faSquareCheck} />
-              </button>
-            ) : null}
           </div>
         </section>
 
@@ -158,7 +98,7 @@ export default function Profile() {
                   setEditFirstVisible(false);
                 }
               }}
-              defaultValue={user.FirstName}
+              defaultValue={user.firstName}
             />
 
             <button
@@ -184,7 +124,7 @@ export default function Profile() {
                   dispatch(
                     update({
                       id: user._id,
-                      field: "FirstName",
+                      field: "firstName",
                       value: Capitalize(FirstNameElement.value),
                     }),
                   );
@@ -214,7 +154,7 @@ export default function Profile() {
                   setEditLastVisible(false);
                 }
               }}
-              defaultValue={user.LastName}
+              defaultValue={user.lastName}
             />
 
             <button
@@ -240,7 +180,7 @@ export default function Profile() {
                   dispatch(
                     update({
                       id: user._id,
-                      field: "LastName",
+                      field: "lastName",
                       value: Capitalize(LastNameElement.value),
                     }),
                   );
@@ -258,7 +198,7 @@ export default function Profile() {
           <div className="flex w-full gap-4">
             <input
               className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-              defaultValue={user.Address}
+              defaultValue={user.address}
               onBlur={(e) => {
                 e.target.readOnly = true;
                 e.target.readOnly = true;
@@ -295,63 +235,8 @@ export default function Profile() {
                   dispatch(
                     update({
                       id: user._id,
-                      field: "Address",
+                      field: "address",
                       value: addressElement.value,
-                    }),
-                  );
-                }}
-              >
-                <FontAwesomeIcon icon={faSquareCheck} />
-              </button>
-            ) : null}
-          </div>
-        </section>
-
-        <section className="flex w-full grid-cols-2 flex-col sm:grid">
-          <h1 className="font-fauna w-max align-middle">contact</h1>
-          <div className="flex w-full gap-4">
-            <input
-              className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-              readOnly
-              id="Contact"
-              onBlur={(e) => {
-                e.target.readOnly = true;
-                if (!e.target.value) {
-                  e.target.value = e.target.defaultValue;
-                }
-                if (e.target.value === e.target.defaultValue) {
-                  setEditContactVisible(false);
-                }
-              }}
-              defaultValue={user.Contact}
-            />
-            <button
-              className="w-max group-hover:block"
-              onClick={() => {
-                const contactElement = document.getElementById(
-                  "Contact",
-                ) as HTMLInputElement;
-                contactElement.readOnly = false;
-                contactElement.focus();
-                setEditContactVisible(true);
-              }}
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </button>
-            {isEditContactVisible ? (
-              <button
-                onClick={() => {
-                  const contactElement = document.getElementById(
-                    "Contact",
-                  ) as HTMLInputElement;
-                  contactElement.blur();
-                  contactElement.readOnly = true;
-                  setEditContactVisible(false);
-                  dispatch(
-                    update({
-                      id: user._id,
-                      field: "Contact",
-                      value: contactElement.value,
                     }),
                   );
                 }}
@@ -368,7 +253,7 @@ export default function Profile() {
             <select
               id="genderInput"
               disabled
-              defaultValue={user.Gender}
+              defaultValue={user.gender}
               className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
             >
               <option value={"femlaie"}>female</option>
@@ -397,7 +282,7 @@ export default function Profile() {
                   dispatch(
                     update({
                       id: user._id,
-                      field: "Gender",
+                      field: "gender",
                       value: genderElement.value.toLowerCase(),
                     }),
                   );
@@ -417,7 +302,7 @@ export default function Profile() {
               type="date"
               id="Birthdate"
               className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-              defaultValue={user.Birthdate}
+              defaultValue={user.birthdate}
             />
             <button
               onClick={() => {
@@ -462,14 +347,14 @@ export default function Profile() {
                   dispatch(
                     update({
                       id: user._id,
-                      field: "Birthdate",
+                      field: "birthdate",
                       value: BirthdateElement.value,
                     }),
                   );
                   dispatch(
                     update({
                       id: user._id,
-                      field: "Age",
+                      field: "age",
                       value: age.current,
                     }),
                   );

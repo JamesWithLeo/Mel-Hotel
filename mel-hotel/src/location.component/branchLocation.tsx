@@ -141,18 +141,8 @@ export default function BranchLocation({
   } else if (
     !isReadOnly &&
     user &&
-    // If undefined, null or "", meaning a field doesnt exist,
     //  Required details should be completed .
-    !(
-      (
-        user.FirstName &&
-        user.LastName &&
-        user.Gender &&
-        user.Address &&
-        user.Contact
-      )
-      // user.Age &&
-    )
+    !(user.firstName && user.lastName && user.gender && user.address)
   ) {
     return <Navigate to={"/profile"} replace={true} />;
   }
@@ -164,15 +154,6 @@ export default function BranchLocation({
             Mel hotel branches
           </h1>
 
-          {/* <div className="flex w-full justify-between gap-2">
-            <input
-              type="text"
-              className="outline-primarydark w-full rounded px-2 py-1 shadow-inner outline outline-1"
-            />
-            <button className="bg-primarydarker w-max rounded px-2 py-1 text-sm text-white shadow">
-              search
-            </button>
-          </div> */}
           <div className="flex flex-col gap-2 overflow-y-auto px-2">
             {branchButton}
           </div>

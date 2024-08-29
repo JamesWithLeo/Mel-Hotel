@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function Book() {
   const bookingState = useSelector((state: AppState) => state.booking);
-  const authState = useSelector((state: AppState) => state.auth);
+  const user = useSelector((state: AppState) => state.auth.user);
   const [isNotificationPopupVisible, setIsNotificationPopupVisible] =
     useState<boolean>(false);
 
@@ -26,8 +26,7 @@ export default function Book() {
       setIslogin(false);
     }, 2000);
   };
-  if (authState.user && authState.user.Active)
-    return <Navigate to={"/"} replace />;
+  if (!user || !user._id) return <Navigate to={"/"} replace />;
   return (
     <>
       {isNotificationPopupVisible ? (
@@ -65,7 +64,7 @@ export default function Book() {
           >
             Packages
           </NavLink>
-          {authState.user ? (
+          {user ? (
             <NavLink
               to={"location"}
               replace={true}
@@ -89,7 +88,7 @@ export default function Book() {
               Branch
             </button>
           )}
-          {authState.user ? (
+          {user ? (
             <>
               {bookingState.hotelPackage && bookingState.location ? (
                 <NavLink

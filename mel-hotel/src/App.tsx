@@ -2,7 +2,8 @@ import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { hotelStore } from "./hotelStore";
+import { AppState, hotelStore } from "./hotelStore";
+import { useSelector } from "react-redux";
 
 interface INavClass {
   isActive: boolean;
@@ -12,6 +13,7 @@ interface INavClass {
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const user = useSelector((state: AppState) => state.auth.user);
   const navClass = ({ isActive, isPending, isTransitioning }: INavClass) => {
     return [
       isPending
@@ -33,7 +35,6 @@ function App() {
     };
     fetchHome();
   }, []);
-  console.log(hotelStore.getState().auth.authType);
   return (
     <>
       <div className="flex h-screen w-full flex-col items-center">
@@ -52,11 +53,11 @@ function App() {
             </NavLink>
           </div>
           <div className="flex items-center gap-8">
-            {hotelStore.getState().auth.authType === "admin" ? (
+            {user?.role === "admin" ? (
               <NavLink to={"admin"}>Admin</NavLink>
             ) : null}
 
-            {hotelStore.getState().auth.authType ? (
+            {user ? (
               <NavLink
                 to={"/profile"}
                 className={({ isPending, isActive, isTransitioning }) =>
@@ -97,7 +98,7 @@ function App() {
 
           {isNavOpen && (
             <div className="fixed right-2 top-16 z-10 flex h-max flex-col items-center gap-8 bg-gray-200 px-8 py-4 opacity-100 md:hidden">
-              {hotelStore.getState().auth.authType ? (
+              {hotelStore.getState().auth.user?.role ? (
                 <NavLink
                   to={"/profile"}
                   onClick={() => {

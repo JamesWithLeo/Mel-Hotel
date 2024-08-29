@@ -9,7 +9,7 @@ if (!process.env.PORT || !process.env.DB_CLUSTER) {
 //
 import CreateMongoCLient, {
   deleteDocument,
-  fetchDocumentByGmail,
+  fetchDocumentByEmail,
   fetchDocumentById,
   fetchDocuments as fetchDocuments,
   insertDocument,
@@ -31,12 +31,12 @@ const PORT: number = parseInt(process.env.PORT as string, 10);
 import express, { json, response } from "express";
 import cors from "cors";
 
-const SERVER = express();
-SERVER.use(json());
-SERVER.use(cors());
+const app = express();
+app.use(json());
+app.use(cors());
 
 //
-SERVER.get("/hotel", async (req, res) => {
+app.get("/hotel", async (req, res) => {
   await DATABASE.admin()
     .ping()
     .then((success) => {
@@ -48,7 +48,7 @@ SERVER.get("/hotel", async (req, res) => {
 });
 
 //
-SERVER.get("/admin/database/collections", async (req, res) => {
+app.get("/admin/database/collections", async (req, res) => {
   await fetchDocuments(ACCOUNT_COLL)
     .then((response) => {
       res.status(200).json(response);
@@ -58,8 +58,8 @@ SERVER.get("/admin/database/collections", async (req, res) => {
     });
 });
 
-SERVER.post("/login/", async (req, res) => {
-  await fetchDocumentByGmail(ACCOUNT_COLL, req.body)
+app.post("/login/", async (req, res) => {
+  await fetchDocumentByEmail(ACCOUNT_COLL, req.body)
     .then((result) => {
       res.status(200).json(result);
     })
@@ -68,53 +68,53 @@ SERVER.post("/login/", async (req, res) => {
     });
 });
 
-SERVER.post("/signin", async (req, res) => {
+app.post("/signin", async (req, res) => {
   await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
     res.status(200).json(result);
   });
 });
 
 //account request
-SERVER.post("/admin/database/account/insert", async (req, res) => {
+app.post("/admin/database/account/insert", async (req, res) => {
   await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
     res.status(200).json(result);
   });
 });
-SERVER.get("/account/:id", async (req, res) => {
+app.get("/account/:id", async (req, res) => {
   await fetchDocumentById(ACCOUNT_COLL, req.params.id).then((result) => {
     res.status(200).json(result);
   });
 });
-SERVER.delete("/admin/database/account/delete/:id", async (req, res) => {
+app.delete("/admin/database/account/delete/:id", async (req, res) => {
   await deleteDocument(ACCOUNT_COLL, req.params.id).then((result) => {
     res.status(200).json(result);
   });
 });
 
-SERVER.post("/account/update/:id", async (req, res) => {
+app.post("/account/update/:id", async (req, res) => {
   await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
     res.status(200).json(result);
   });
 });
 
 // Reservation request
-SERVER.get("/admin/database/reservation", async (req, res) => {
+app.get("/admin/database/reservation", async (req, res) => {
   await fetchDocuments(RESERVATION_COLL).then((result) => {
     res.status(200).json(result);
   });
 });
-SERVER.delete("/admin/database/reservation/delete/:id", async (req, res) => {
+app.delete("/admin/database/reservation/delete/:id", async (req, res) => {
   await deleteDocument(RESERVATION_COLL, req.params.id).then((result) => {
     res.status(200).json(result);
   });
 });
-SERVER.post("/admin/database/reservation/update/:id", async (req, res) => {
+app.post("/admin/database/reservation/update/:id", async (req, res) => {
   await updateDocument(RESERVATION_COLL, req.params.id, req.body).then(
     (result) => {
       res.status(200).json(result);
     },
   );
 });
-SERVER.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

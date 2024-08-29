@@ -55,11 +55,11 @@ const RESERVATION_COLL = DATABASE.collection("RESERVATION");
 const PORT = parseInt(process.env.PORT, 10);
 const express_1 = __importStar(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const SERVER = (0, express_1.default)();
-SERVER.use((0, express_1.json)());
-SERVER.use((0, cors_1.default)());
+const app = (0, express_1.default)();
+app.use((0, express_1.json)());
+app.use((0, cors_1.default)());
 //
-SERVER.get("/hotel", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/hotel", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield DATABASE.admin()
         .ping()
         .then((success) => {
@@ -70,7 +70,7 @@ SERVER.get("/hotel", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     });
 }));
 //
-SERVER.get("/admin/database/collections", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/admin/database/collections", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocuments)(ACCOUNT_COLL)
         .then((response) => {
         res.status(200).json(response);
@@ -79,8 +79,8 @@ SERVER.get("/admin/database/collections", (req, res) => __awaiter(void 0, void 0
         res.status(200).json({ rejected });
     });
 }));
-SERVER.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocumentByGmail)(ACCOUNT_COLL, req.body)
+app.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.fetchDocumentByEmail)(ACCOUNT_COLL, req.body)
         .then((result) => {
         res.status(200).json(result);
     })
@@ -88,48 +88,48 @@ SERVER.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(rejectResult);
     });
 }));
-SERVER.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));
 //account request
-SERVER.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));
-SERVER.get("/account/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/account/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocumentById)(ACCOUNT_COLL, req.params.id).then((result) => {
         res.status(200).json(result);
     });
 }));
-SERVER.delete("/admin/database/account/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete("/admin/database/account/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.deleteDocument)(ACCOUNT_COLL, req.params.id).then((result) => {
         res.status(200).json(result);
     });
 }));
-SERVER.post("/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.updateDocument)(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));
 // Reservation request
-SERVER.get("/admin/database/reservation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/admin/database/reservation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocuments)(RESERVATION_COLL).then((result) => {
         res.status(200).json(result);
     });
 }));
-SERVER.delete("/admin/database/reservation/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete("/admin/database/reservation/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.deleteDocument)(RESERVATION_COLL, req.params.id).then((result) => {
         res.status(200).json(result);
     });
 }));
-SERVER.post("/admin/database/reservation/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/admin/database/reservation/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.updateDocument)(RESERVATION_COLL, req.params.id, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));
-SERVER.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

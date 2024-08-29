@@ -63,21 +63,12 @@ export default function Home() {
         </h1>
       </div>
       <div className="flex flex-row-reverse gap-4">
-        {user?.Active ? (
-          <Link
-            to={"active"}
-            className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
-          >
-            View active package
-          </Link>
-        ) : (
-          <Link
-            to={"/book/package/" + hotelStore.getState().booking.hotelPackage}
-            className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
-          >
-            Book Now!
-          </Link>
-        )}
+        <Link
+          to={"/book/package/" + hotelStore.getState().booking.hotelPackage}
+          className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
+        >
+          Book Now!
+        </Link>
       </div>
 
       <div className="flex w-full flex-col gap-8 bg-gray-100 px-8 py-4 sm:flex-col">

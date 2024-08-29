@@ -3,26 +3,28 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../hotelStore";
-import { login } from "../redux slices/authSlice";
+import { login, signin } from "../redux slices/authSlice";
 import { Capitalize, toTItleCase } from "../fomatString";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeftLong, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { createUser, logoutUser } from "../firebase";
 
 export default function SigninFC() {
   const [steps, setSteps] = useState<1 | 2 | 3>(1);
   const [id, setId] = useState<string | null>(null);
-  const [gmailValue, setGmail] = useState<string | null>(null);
-  const [passwordValue, setPassword] = useState<string | null>(null);
+  const [emailValue, setEmail] = useState<string | null>(null);
+  const [uid, setUid] = useState<string | null>(null);
   const [FirstName, setFirstName] = useState<string | null>(null);
   const [LastName, setLastName] = useState<string | null>(null);
   const age = useRef(0);
-  // const [age, setAge] = useState<number>();
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSignin = async () => {
     const emailElement = document.getElementById(
-      "inputGmail",
+      "inputEmail",
     ) as HTMLInputElement;
     const passwordElement = document.getElementById(
       "inputPassword",
@@ -31,39 +33,42 @@ export default function SigninFC() {
       "confirmPassword",
     ) as HTMLInputElement;
 
-    if (
-      !(
-        emailElement.value &&
-        passwordElement.value &&
-        passwordElement.value === confirmPasswordElement.value
-      )
-    )
+    if (!(emailElement.value && passwordElement.value)) return;
+    else if (passwordElement.value !== confirmPasswordElement.value) {
+      setError("Password doesn't match");
       return;
+    }
     if (
       !window.confirm(
         `Mel Hotel confirmation! \nAgreeing to this will create a account using, ${emailElement.value}`,
       )
     )
       return;
-    axios
-      .post("/signin", {
-        Gmail: emailElement.value,
-        Password: passwordElement.value,
-        Age: null,
-        FirstName: null,
-        LastName: null,
-        Address: null,
-        Contact: null,
-        Gender: null,
-        Active: null,
+    setIsLoading(true);
+    const user = createUser(emailElement.value, passwordElement.value);
+    user
+      .then((credential) => {
+        console.log(credential.email);
+        console.log(credential.uid);
+        if (!credential.email || !credential.uid) return;
+        dispatch(signin({ email: credential.email, uid: credential.uid }))
+          .unwrap()
+          .then((value) => {
+            console.log(value);
+            setId(value.insertedId);
+            setIsLoading(false);
+            setSteps(2);
+          })
+          .catch((reason) => {
+            console.log(reason);
+            setIsLoading(false);
+            logoutUser();
+          });
       })
-      .then((value) => {
-        if (value.data.insertedId) {
-          setId(value.data.insertedId);
-          setGmail(emailElement.value);
-          setPassword(passwordElement.value);
-          setSteps(2);
-        }
+      .catch((reason) => {
+        logoutUser();
+        setError(reason);
+        setIsLoading(false);
       });
   };
   const handlePersonalInfo = async () => {
@@ -75,9 +80,6 @@ export default function SigninFC() {
     ) as HTMLInputElement;
     const addressElement = document.getElementById(
       "addressElement",
-    ) as HTMLInputElement;
-    const contactElement = document.getElementById(
-      "contactElement",
     ) as HTMLInputElement;
 
     const todayYear = new Date().getFullYear();
@@ -104,44 +106,57 @@ export default function SigninFC() {
 
     axios
       .post("/account/update/" + id, {
-        FirstName: FirstName,
-        LastName: LastName,
-        Birthdate: dateOfBirth.value,
-        Age: age.current,
-        Gender: genderElement.value,
-        Address: toTItleCase(addressElement.value),
-        Contact: contactElement.value,
+        firstName: FirstName,
+        lastName: LastName,
+        birthdate: dateOfBirth.value,
+        age: age.current,
+        gender: genderElement.value,
+        address: toTItleCase(addressElement.value),
       })
       .then((value) => {
+        console.log(value);
         setId(null);
-        if (gmailValue && passwordValue) {
-          localStorage.setItem("isRemember", JSON.stringify("true"));
-          dispatch(login({ gmail: gmailValue, password: passwordValue }))
-            .unwrap()
-            .then(() => {
-              navigate("/profile", { replace: true });
-            });
+        if (emailValue && uid) {
+          // dispatch(login({ email: emailValue, uid: uid }))
+          //   .unwrap()
+          //   .then(() => {
+          //     navigate("/profile", { replace: true });
+          //   });
         }
       });
   };
 
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center">
-      <Link
-        to={"/"}
-        className="text-contrast absolute left-4 top-4 rounded bg-white px-3 text-xl shadow"
-      >
-        <FontAwesomeIcon icon={faArrowLeftLong} />
-      </Link>
+      {steps === 1 ? (
+        <Link
+          to={"/"}
+          className="text-contrast absolute left-4 top-4 rounded bg-white px-3 text-xl shadow"
+        >
+          <FontAwesomeIcon icon={faArrowLeftLong} />
+        </Link>
+      ) : null}
       {steps === 1 ? (
         <div className="min-w-md absolute z-10 flex h-max w-full max-w-md flex-col gap-4 rounded-md bg-gray-100 bg-opacity-80 px-4 py-8 shadow backdrop-blur backdrop-filter sm:px-8">
+          {isLoading ? (
+            <div className="min-w-md absolute left-0 top-0 z-20 flex h-full w-full flex-col items-center justify-center rounded-md">
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className="text-contrast animate-spin text-3xl"
+              />
+            </div>
+          ) : null}
           <h1 className="text-primarydark font-fauna mb-8 text-center text-3xl font-bold">
             Mel Hotel
           </h1>
-          <h1>Gmail</h1>
+
+          {error ? (
+            <h1 className="text-center text-xs text-red-400">{error}</h1>
+          ) : null}
+          <h1>Email</h1>
           <input
-            id="inputGmail"
-            placeholder="Enter your gmail"
+            id="inputEmail"
+            placeholder="Enter your email"
             type="text"
             required
             className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
@@ -153,6 +168,9 @@ export default function SigninFC() {
             type="password"
             required
             className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
+            onChange={() => {
+              setError("");
+            }}
           />
           <input
             id="confirmPassword"
@@ -160,12 +178,15 @@ export default function SigninFC() {
             type="password"
             required
             className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
+            onChange={() => {
+              setError("");
+            }}
           />
           <button
             className="rounded bg-[#f09247] py-2 text-white shadow"
             onClick={handleSignin}
           >
-            Sign in
+            Sign in (step 1 of 3)
           </button>
 
           <div>
@@ -219,7 +240,7 @@ export default function SigninFC() {
                   }
                 }}
               >
-                Next
+                Next (step 2 of 3)
               </button>
             </div>
           </div>
@@ -263,14 +284,7 @@ export default function SigninFC() {
               required
               className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
             />
-            <h1>Contact number</h1>
-            <input
-              id="contactElement"
-              placeholder="Enter your contact number"
-              type="tel"
-              required
-              className="outline-primarydarker rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-            />
+
             <div className="mt-4 flex flex-row-reverse gap-8">
               <button
                 className="rounded bg-[#f09247] px-4 py-2 text-white hover:drop-shadow-md active:drop-shadow-md"

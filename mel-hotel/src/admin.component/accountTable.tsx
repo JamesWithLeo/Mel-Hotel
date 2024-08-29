@@ -124,9 +124,9 @@ const AccountTable = ({
 
   const handleCreateAccount: MRT_TableOptions<IUser>["onCreatingRowSave"] =
     async ({ table, values }) => {
-      const { Gmail, Password, Gender, Age }: IUser = { ...values };
-      if (Gmail && Password && Gender && Age) {
-        const newAccount = JSON.stringify({ Gmail, Password, Gender, Age });
+      const { email: Gmail, gender: Gender, age: Age }: IUser = { ...values };
+      if (Gmail && Gender && Age) {
+        const newAccount = JSON.stringify({ Gmail, Gender, Age });
         await fetch("/admin/database/account/insert", {
           method: "POST",
           headers: {
@@ -145,7 +145,7 @@ const AccountTable = ({
   const handleDeleteAccount = async (row: MRT_Row<IUser>) => {
     if (
       window.confirm(
-        "Are you sure you want to delete this user? " + row.original.Gmail,
+        "Are you sure you want to delete this user? " + row.original.email,
       )
     ) {
       console.log(row.original._id);
@@ -318,17 +318,10 @@ const AccountTable = ({
 
     renderDetailPanel: ({ row }) => (
       <div>
-        {row.original.Active ? (
-          <div className="rounded bg-gray-100 px-2 py-1">
-            <h1>Active booking</h1>
-            <h1>{row.original.Active.hotelPackage}</h1>
-            <h1>Location: {row.original.Active.location}</h1>
-            <h1>Rooms: {row.original.Active.numberOfRooms}</h1>
-            <h1>Days: {row.original.Active.daysOfStaying}</h1>
-          </div>
-        ) : (
+        <div className="rounded bg-gray-100 px-2 py-1">
+          <h1>Active booking</h1>
           <h1>No Active booking</h1>
-        )}
+        </div>
       </div>
     ),
   });

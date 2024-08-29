@@ -13,7 +13,7 @@ exports.default = CreateMongoCLient;
 exports.fetchDocuments = fetchDocuments;
 exports.insertDocument = insertDocument;
 exports.fetchDocumentById = fetchDocumentById;
-exports.fetchDocumentByGmail = fetchDocumentByGmail;
+exports.fetchDocumentByEmail = fetchDocumentByEmail;
 exports.deleteDocument = deleteDocument;
 exports.updateDocument = updateDocument;
 const mongodb_1 = require("mongodb");
@@ -70,15 +70,14 @@ function fetchDocumentById(collection, id) {
         }
     });
 }
-function fetchDocumentByGmail(collection, credentials) {
+function fetchDocumentByEmail(collection, credentials) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { Gmail } = credentials;
+        // const { email, uid } = credentials;
         try {
-            // prettier-ignore
-            return yield collection.findOne({ "Gmail": { $eq: Gmail } });
+            return yield collection.findOne(Object.assign({}, credentials));
         }
         catch (error) {
-            throw error;
+            console.error(error);
         }
     });
 }
