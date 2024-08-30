@@ -25,6 +25,7 @@ function App() {
       isTransitioning ? "" : "",
     ].join(" ");
   };
+
   useEffect(() => {
     const fetchHome = async () => {
       await fetch("/hotel").then(async (response) => {
@@ -114,21 +115,22 @@ function App() {
                     ].join(" ")
                   }
                 >
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className="align-bottom text-xl"
-                  />
                   Profile
                 </NavLink>
               ) : (
                 <NavLink
                   to={"/login"}
-                  className={"text-primarydarker border-b-4"}
+                  className={({ isPending, isActive, isTransitioning }) =>
+                    [
+                      isActive
+                        ? "text-contrast flex items-center gap-4"
+                        : "text-primarydarker flex items-center gap-4",
+                      isPending ? "" : "",
+                      isTransitioning ? "" : "",
+                    ].join(" ")
+                  }
                 >
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className="align-bottom text-xl"
-                  />
+                  Profile
                 </NavLink>
               )}
               <NavLink to={"/"} className={navClass}>

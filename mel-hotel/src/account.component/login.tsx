@@ -66,7 +66,7 @@ export default function LoginFC() {
   };
 
   return (
-    <div className="flex h-dvh flex-col items-center justify-center bg-white">
+    <div className="bg-radial-at-tr bg-radial-at-tr flex h-dvh flex-col items-center justify-center bg-gradient-to-tr from-orange-300 via-orange-300 to-slate-100 antialiased">
       {/* home button */}
       <Link
         to={"/"}

@@ -9,3 +9,4 @@ export declare function fetchDocumentByEmail(collection: Collection, credentials
 }): Promise<import("mongodb").WithId<import("bson").Document> | null | undefined>;
 export declare function deleteDocument(collection: Collection, id: string): Promise<import("mongodb").DeleteResult>;
 export declare function updateDocument(collection: Collection, id: string, doc: Document): Promise<import("mongodb").WithId<import("bson").Document> | null>;
+export declare function fetchByIdAndUid(collection: Collection, uid: string): Promise<import("mongodb").WithId<import("bson").Document>[]>;

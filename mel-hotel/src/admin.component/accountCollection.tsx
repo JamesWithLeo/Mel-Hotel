@@ -29,7 +29,7 @@ export default function AccountCollection() {
         <>
           {isTableVisible ? (
             <button
-              className="w-max rounded bg-white px-3 py-1 shadow drop-shadow"
+              className="w-max rounded px-3 py-1 hover:bg-white"
               onClick={() => {
                 setIsTableVisibility(!isTableVisible);
               }}
@@ -38,7 +38,7 @@ export default function AccountCollection() {
             </button>
           ) : (
             <button
-              className="bg-gr w-max rounded bg-white px-3 py-1 shadow drop-shadow"
+              className="bg-gr w-max rounded px-3 py-1 hover:bg-white"
               onClick={() => {
                 setIsTableVisibility(!isTableVisible);
               }}

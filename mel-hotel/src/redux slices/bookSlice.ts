@@ -1,18 +1,16 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { packagesData } from "../packages.component/packagesObj";
 
-import axios from "axios";
-
-import { IUser, SetUser } from "./authSlice";
 export interface IBookSlice {
   hotelPackage: "regular" | "premium" | "luxury" | "ordinary";
   daysOfStaying: number;
   numberOfRooms: number;
-  scheduledDate: string;
+  scheduledDate: number;
   location: string | null;
-  bookedDate: string;
-  time: string;
+  bookedDate: number;
   totalPrice: number;
+  _id: string | null;
+  uid: string | null;
 }
 
 const initSlice: IBookSlice = {
@@ -20,10 +18,11 @@ const initSlice: IBookSlice = {
   daysOfStaying: 1,
   numberOfRooms: 1,
   location: null,
-  scheduledDate: new Date().toLocaleDateString(),
-  bookedDate: new Date().toLocaleDateString(),
-  time: new Date().toLocaleTimeString(),
+  scheduledDate: new Date().getTime(),
+  bookedDate: new Date().getTime(),
   totalPrice: 0,
+  _id: null,
+  uid: null,
 };
 
 const bookSlice = createSlice({
@@ -57,12 +56,11 @@ const bookSlice = createSlice({
     SetBookLocation: (state, action: PayloadAction<string>) => {
       state.location = action.payload;
     },
-    SetSchedule: (state, action: PayloadAction<string>) => {
+    SetSchedule: (state, action: PayloadAction<number>) => {
       state.scheduledDate = action.payload;
     },
-    SetBookedDateAndTime: (state) => {
-      state.bookedDate = new Date().toLocaleDateString();
-      state.time = new Date().toLocaleTimeString();
+    SetBookedDate: (state) => {
+      state.bookedDate = new Date().getTime();
     },
     SetTotalPrice: (state) => {
       packagesData.forEach((value) => {
@@ -75,44 +73,16 @@ const bookSlice = createSlice({
       state.numberOfRooms = 1;
       state.location = null;
       state.daysOfStaying = 1;
-      state.bookedDate = new Date().toLocaleDateString();
-      state.scheduledDate = new Date().toLocaleDateString();
+      state.bookedDate = new Date().getTime();
+      state.scheduledDate = new Date().getTime();
       state.hotelPackage = "ordinary";
-      state.time = new Date().toLocaleTimeString();
       state.totalPrice = 0;
+      state._id = null;
+      state.uid = null;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(CheckOut.fulfilled, (state, action) => {});
-  },
+  extraReducers: (builder) => {},
 });
-
-const CheckOutRequest = async (id: string, state: IBookSlice) => {
-  return axios
-    .post("/account/update/" + id, {
-      Active: {
-        ...state,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-export const CheckOut = createAsyncThunk(
-  "booking/CheckOut",
-  async ({ id, state }: { id: string; state: IBookSlice }, { dispatch }) => {
-    try {
-      const document: IUser = await CheckOutRequest(id, state);
-      if (!document) return { user: null };
-      localStorage.removeItem("melhotelUser");
-      localStorage.setItem("melhotelUser", JSON.stringify(document));
-      dispatch(SetUser(document));
-      return { user: document };
-    } catch (error) {
-      return { user: null };
-    }
-  },
-);
 
 export const {
   SetPackage,
@@ -124,7 +94,7 @@ export const {
   SetSchedule,
   SetTotalPrice,
   SetBookLocation,
-  SetBookedDateAndTime,
+  SetBookedDate,
 } = {
   ...bookSlice.actions,
 };

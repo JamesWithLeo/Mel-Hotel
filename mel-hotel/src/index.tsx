@@ -21,13 +21,15 @@ import SigninFC from "./account.component/signin";
 import SchedLayout from "./book.component/schedLayout";
 import ProtectedRoute from "./protectedRoute";
 import AdminLayout from "./admin.component/adminLayout";
-import CollectionLayout from "./admin.component/collectionLayout";
-import AccountCollection from "./admin.component/accountCollection";
-import CollectionController from "./admin.component/collectionController";
-import ReservationCollection from "./admin.component/reservationCollection";
-import PackageLayout from "./packages.component/packageLayout";
-import ActivePackage from "./packages.component/activePackage";
 
+import AccountCollection from "./admin.component/accountCollection";
+import BookCollection from "./admin.component/bookCollection";
+import PackageLayout from "./packages.component/packageLayout";
+import BookedPackage from "./packages.component/BookedPackage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ViewPackage from "./packages.component/viewPackage";
+
+const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,7 +45,15 @@ const router = createBrowserRouter([
       { path: "location", element: <Location isReadOnly={true} /> },
       { path: "contact", element: <Contact /> },
       { path: "profile", element: <Profile /> },
-      { path: "active", element: <ActivePackage /> },
+      {
+        path: "package",
+        element: (
+          <QueryClientProvider client={queryClient}>
+            <BookedPackage />
+          </QueryClientProvider>
+        ),
+      },
+      { path: "view", element: <ViewPackage /> },
     ],
   },
   {
@@ -83,18 +93,8 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      {
-        path: "collections",
-        element: <CollectionLayout />,
-        children: [
-          {
-            element: <CollectionController />,
-            index: true,
-          },
-          { path: "account", element: <AccountCollection /> },
-          { path: "reservation", element: <ReservationCollection /> },
-        ],
-      },
+      { path: "account", element: <AccountCollection /> },
+      { path: "book", element: <BookCollection /> },
     ],
   },
   { path: "ordinary", element: <Ordinary isReadOnly={true} /> },

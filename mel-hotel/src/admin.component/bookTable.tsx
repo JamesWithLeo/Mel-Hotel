@@ -3,26 +3,24 @@ import {
   MRT_Row,
   MRT_ColumnDef,
   useMaterialReactTable,
-  MRT_TableOptions,
 } from "material-react-table";
 import { useMemo } from "react";
-import { ReservationTypeface } from "./reservationCollection";
-
-const pacakgeDropDownOption = ["ordinary", "regular", "premium", "luxury"];
+import { IBookSlice } from "../redux slices/bookSlice";
+import { Link } from "react-router-dom";
 const countryDropDownOption = [
   "Philippines",
   "Swizterland",
   "Shanghai",
   "Saudi Arabia",
 ];
-export default function ReservationTable({
+export default function BookTable({
   data,
   RefreshData,
 }: {
-  data: ReservationTypeface[];
+  data: IBookSlice[];
   RefreshData: () => void;
 }) {
-  const handleDeleteReservation = async (row: MRT_Row<ReservationTypeface>) => {
+  const handleDeleteReservation = async (row: MRT_Row<IBookSlice>) => {
     if (window.confirm("Are you sure want to delete this Reservation? ")) {
       await fetch(`/admin/database/reservation/delete/${row.original._id}`, {
         method: "DELETE",
@@ -42,33 +40,12 @@ export default function ReservationTable({
     }
   };
 
-  const handleSaveEditReservation: MRT_TableOptions<ReservationTypeface>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      const editedReservation = JSON.stringify({
-        PackageType: values.PackageType,
-        ReservedDate: values.ReservedDate,
-      });
-      await fetch(`/admin/database/reservation/update/${values._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: editedReservation,
-      }).then(async (response) => {
-        await response.json().then((values) => {
-          console.log(values);
-        });
-      });
-      table.setEditingRow(null);
-    };
-
-  const columns = useMemo<MRT_ColumnDef<ReservationTypeface>[]>(
+  const columns = useMemo<MRT_ColumnDef<IBookSlice>[]>(
     () => [
       {
-        id: "_id",
         accessorKey: "_id",
-        header: "Reservation Id",
-        size: 150,
+        header: "_id",
+        size: 100,
         maxSize: 240,
         enableClickToCopy: true,
         enableEditing: false,
@@ -78,40 +55,39 @@ export default function ReservationTable({
         enablePinning: false,
       },
       {
-        id: "ReservedDate",
-        accessorKey: "ReservedDate",
-        header: "ReservedDate",
-        size: 150,
-      },
-      {
-        id: "DateOfBooking",
-        accessorKey: "DateOfBooking",
-        header: "Data of booking",
-        enableEditing: false,
-        size: 150,
-      },
-      {
-        id: "PackageType",
-        accessorKey: "PackageType",
-        header: "Package",
+        accessorKey: "uid",
+        header: "uid",
         size: 100,
-        editVariant: "select",
+        maxSize: 240,
+        enableClickToCopy: true,
+        enableEditing: false,
         enableSorting: false,
-        editSelectOptions: pacakgeDropDownOption,
       },
       {
-        id: "AccountId",
-        accessorKey: "AccountId",
-        header: "User id",
-        size: 150,
+        accessorKey: "hotelPackage",
+        header: "Type",
+        enableEditing: false,
+        enableSorting: false,
+        size: 100,
+      },
+      {
+        accessorKey: "daysOfStaying",
+        header: "days",
+        size: 50,
+        enableSorting: true,
+        enableEditing: false,
+      },
+      {
+        accessorKey: "numberOfRooms",
+        header: "rooms",
+        size: 50,
         enableEditing: false,
         enableClickToCopy: true,
-        enableSorting: false,
+        enableSorting: true,
       },
       {
-        id: "Country",
-        accessorKey: "Country",
-        header: "Country",
+        accessorKey: "location",
+        header: "location",
         enableEditing: true,
         enableSorting: false,
         editVariant: "select",
@@ -127,14 +103,15 @@ export default function ReservationTable({
     enableColumnResizing: true,
     enableColumnPinning: true,
     enableColumnActions: false,
-    getRowId: (row) => row._id,
+    // getRowId: (row) => row._id,
     enableRowActions: true,
     muiTableBodyCellProps: {
       sx: {
-        border: "1px solid rgb(243 244 246)",
+        border: "1px dashed rgb(243 244 246)",
       },
     },
     initialState: {
+      density: "compact",
       showColumnFilters: false,
       showGlobalFilter: false,
       columnPinning: {
@@ -143,9 +120,19 @@ export default function ReservationTable({
       },
     },
     editDisplayMode: "modal",
-    enableEditing: true,
-    onEditingRowSave: handleSaveEditReservation,
-
+    enableEditing: false,
+    renderTopToolbarCustomActions: () => {
+      return [
+        <div className="flex items-center gap-2 font-bold text-gray-500">
+          <Link
+            to={"/admin/"}
+            className="w-max rounded bg-white px-3 py-1 hover:bg-gray-100"
+          >
+            Back
+          </Link>
+        </div>,
+      ];
+    },
     renderRowActionMenuItems: ({ row }) => {
       const handleDelete = () => {
         handleDeleteReservation(row);

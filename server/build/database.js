@@ -16,6 +16,7 @@ exports.fetchDocumentById = fetchDocumentById;
 exports.fetchDocumentByEmail = fetchDocumentByEmail;
 exports.deleteDocument = deleteDocument;
 exports.updateDocument = updateDocument;
+exports.fetchByIdAndUid = fetchByIdAndUid;
 const mongodb_1 = require("mongodb");
 function CreateMongoCLient(uri) {
     const OPTIONS = {
@@ -96,6 +97,21 @@ function updateDocument(collection, id, doc) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             return yield collection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: doc, $currentDate: { lastModified: true } }, { returnDocument: "after" });
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+function fetchByIdAndUid(collection, uid) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield collection
+                .find({
+                uid: new mongodb_1.ObjectId(uid),
+            })
+                .toArray();
         }
         catch (error) {
             console.log(error);

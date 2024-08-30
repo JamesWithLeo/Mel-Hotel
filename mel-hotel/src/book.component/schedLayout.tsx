@@ -7,20 +7,32 @@ import {
   DecrementRoom,
   SetSchedule,
   IncrementRoom,
-  SetBookedDateAndTime,
-  CheckOut,
+  SetBookedDate,
+  // CheckOut,
   SetTotalPrice,
 } from "../redux slices/bookSlice";
 import { AppDispatch, AppState, hotelStore } from "../hotelStore";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function SchedLayout() {
   const [isSummaryVisible, setIsSummaryVisible] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const auth = useSelector((state: AppState) => state.auth);
   const bookingState = useSelector((state: AppState) => state.booking);
+
+  const HandleCheckOut = async () => {
+    const newBooking = { ...bookingState, uid: auth.user?._id };
+    const document = await axios.post("/melhotel/book/", newBooking);
+    if (document.data.insertedId) {
+      setIsSummaryVisible(false);
+      navigate("/package", { replace: true });
+    }
+  };
+
   const onIncrementRooms = () => {
     dispatch(IncrementRoom());
   };
@@ -44,8 +56,8 @@ export default function SchedLayout() {
     let date = document.getElementById("scheduleDateInput") as HTMLInputElement;
     // if book, current or later
     if (date.value) {
-      let sep = date.value.split("-");
-      dispatch(SetSchedule([sep[1], sep[2], sep[0]].join("/")));
+      console.log(new Date(date.value).getTime());
+      dispatch(SetSchedule(new Date(date.value).getTime()));
     }
   };
   const { user } = useSelector((state: AppState) => state.auth);
@@ -102,7 +114,8 @@ export default function SchedLayout() {
               htmlFor="scheduleDateInput"
               className="flex items-center font-mono text-neutral-500"
             >
-              Scheduled date: {bookingState.scheduledDate}
+              Scheduled date:{" "}
+              {new Date(bookingState.scheduledDate).toDateString()}
             </label>
             <input
               className="text-contrast bg-gray-100 px-2 outline-none drop-shadow"
@@ -133,13 +146,14 @@ export default function SchedLayout() {
           </button>
         </div>
       </div>
+
       {isSummaryVisible ? (
         <>
           <div
             className="bg-primarydark absolute left-0 top-0 z-10 h-full w-full opacity-50 backdrop-blur-sm"
             onClick={() => {
               setIsSummaryVisible(false);
-              dispatch(SetBookedDateAndTime());
+              dispatch(SetBookedDate());
             }}
           />
           <div className="bg-contrast absolute left-1/2 top-1/4 z-10 flex w-full max-w-md -translate-x-1/2 flex-col gap-4 rounded border-4 border-dashed px-4 py-8 shadow drop-shadow">
@@ -154,21 +168,19 @@ export default function SchedLayout() {
               {bookingState.daysOfStaying === 1 ? "day" : "days"}
             </h1>
             <h1>
-              book on {bookingState.bookedDate} {bookingState.time}
+              book on {new Date(bookingState.bookedDate).toLocaleString()}
             </h1>
-            <h1>scheduled on {bookingState.scheduledDate}</h1>
+            <h1>
+              scheduled on{" "}
+              {new Date(bookingState.scheduledDate).toLocaleString()}
+            </h1>
             <hr className="border-2" />
             <h1 className="self-end text-sm">
               Total Amounting of : ${bookingState.totalPrice}{" "}
             </h1>
             <button
               className="w-max self-end rounded bg-white px-3 py-1 font-mono text-xs"
-              onClick={() => {
-                dispatch(CheckOut({ id: user._id, state: bookingState }));
-                setIsSummaryVisible(false);
-                dispatch(Reset());
-                navigate("/", { replace: true });
-              }}
+              onClick={HandleCheckOut}
             >
               Check out
             </button>

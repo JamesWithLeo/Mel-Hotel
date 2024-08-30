@@ -19,8 +19,8 @@ const AccountTable = ({
   RefreshData: () => Promise<void>;
 }) => {
   const navigate = useNavigate();
-  const genderDropDownOption: GenderTypeface[] = ["male", "female", "others"];
-  const authTypeDropDownOption: AuthTypeface[] = ["user", "admin"];
+  const genderDropDownOption: GenderTypeface[] = ["male", "female", "other"];
+  const roleDropDownOption: AuthTypeface[] = ["user", "admin"];
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IUser>[]>(
     () => [
@@ -36,41 +36,33 @@ const AccountTable = ({
         enableColumnDragging: false,
       },
       {
-        accessorKey: "Gmail",
-        header: "Gmail",
+        accessorKey: "email",
+        header: "email",
         size: 130,
         maxSize: 240,
         enableClickToCopy: true,
         enableColumnDragging: false,
       },
+
       {
-        accessorKey: "Password",
-        header: "Password",
-        maxSize: 240,
-        size: 150,
-        enableSorting: false,
-        enableGrouping: false,
-        enableHiding: true,
-      },
-      {
-        accessorKey: "AuthType",
-        header: "Type",
+        accessorKey: "role",
+        header: "role",
         size: 100,
         maxSize: 150,
         enableEditing: true,
         enableSorting: false,
         editVariant: "select",
-        editSelectOptions: authTypeDropDownOption,
+        editSelectOptions: roleDropDownOption,
       },
       {
-        accessorKey: "Age",
-        header: "Age",
+        accessorKey: "age",
+        header: "age",
         size: 100,
         maxSize: 140,
         enableSorting: true,
       },
       {
-        accessorKey: "Gender",
+        accessorKey: "gender",
         header: "Gender",
         size: 100,
         maxSize: 140,
@@ -79,7 +71,7 @@ const AccountTable = ({
         editSelectOptions: genderDropDownOption,
       },
       {
-        accessorKey: "FirstName",
+        accessorKey: "firstName",
         header: "First name",
         size: 100,
         enableSorting: true,
@@ -87,36 +79,28 @@ const AccountTable = ({
         enableColumnDragging: false,
       },
       {
-        accessorKey: "LastName",
-        header: "Surname",
+        accessorKey: "lastName",
+        header: "Last Name",
         size: 100,
         enableSorting: true,
         enableClickToCopy: true,
         enableColumnDragging: false,
       },
       {
-        accessorKey: "Address",
-        header: "Address",
+        accessorKey: "address",
+        header: "address",
         size: 130,
         enableSorting: true,
         enableClickToCopy: true,
         enableColumnDragging: true,
       },
       {
-        accessorKey: "Birthdate",
+        accessorKey: "birthdate",
         header: "birthdate y-m-d",
         enableSorting: true,
         size: 100,
         enableClickToCopy: true,
         enableColumnDragging: true,
-      },
-      {
-        accessorKey: "Contact",
-        header: "Contact",
-        enableSorting: false,
-        size: 100,
-        enableClickToCopy: true,
-        enableColumnDragging: false,
       },
     ],
     [],
@@ -124,9 +108,9 @@ const AccountTable = ({
 
   const handleCreateAccount: MRT_TableOptions<IUser>["onCreatingRowSave"] =
     async ({ table, values }) => {
-      const { email: Gmail, gender: Gender, age: Age }: IUser = { ...values };
-      if (Gmail && Gender && Age) {
-        const newAccount = JSON.stringify({ Gmail, Gender, Age });
+      const { email, gender, age }: IUser = { ...values };
+      if (email && gender && age) {
+        const newAccount = JSON.stringify({ email, gender, age });
         await fetch("/admin/database/account/insert", {
           method: "POST",
           headers: {
@@ -169,14 +153,13 @@ const AccountTable = ({
   const handleEditAccount: MRT_TableOptions<IUser>["onEditingRowSave"] =
     async ({ values, table }) => {
       const accountBody = JSON.stringify({
-        Gmail: values.Gmail,
-        Password: values.Password,
-        AuthType: values.AuthType,
-        Age: values.Age,
-        Gender: values.Gender,
-        FirstName: values.FirstName,
-        LastName: values.LastName,
-        Address: values.Address,
+        gmail: values.gmail,
+        role: values.role,
+        age: values.age,
+        gender: values.gender,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        address: values.address,
       });
       await fetch(`/account/update/${values._id}`, {
         method: "POST",
@@ -191,7 +174,7 @@ const AccountTable = ({
     };
 
   const handleback = () => {
-    navigate("/admin/collections");
+    navigate("/admin/");
   };
 
   const table = useMaterialReactTable({
@@ -223,12 +206,10 @@ const AccountTable = ({
         right: ["mrt-row-actions"],
       },
       columnVisibility: {
-        Password: false,
-        AuthType: false,
-        Birthdate: false,
-        Address: false,
-        Gender: false,
-        Contact: false,
+        role: false,
+        birthdate: false,
+        address: false,
+        gender: false,
       },
     },
 
@@ -320,7 +301,6 @@ const AccountTable = ({
       <div>
         <div className="rounded bg-gray-100 px-2 py-1">
           <h1>Active booking</h1>
-          <h1>No Active booking</h1>
         </div>
       </div>
     ),

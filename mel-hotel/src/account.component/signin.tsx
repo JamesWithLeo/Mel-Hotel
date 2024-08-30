@@ -117,17 +117,17 @@ export default function SigninFC() {
         console.log(value);
         setId(null);
         if (emailValue && uid) {
-          // dispatch(login({ email: emailValue, uid: uid }))
-          //   .unwrap()
-          //   .then(() => {
-          //     navigate("/profile", { replace: true });
-          //   });
+          dispatch(login({ email: emailValue, uid: uid, rememberMe: true }))
+            .unwrap()
+            .finally(() => {
+              navigate("/profile", { replace: true });
+            });
         }
       });
   };
 
   return (
-    <div className="flex h-dvh w-full flex-col items-center justify-center">
+    <div className="bg-radial-at-tr bg-radial-at-tr flex h-dvh flex-col items-center justify-center bg-gradient-to-tr from-orange-300 via-orange-300 to-slate-100 antialiased">
       {steps === 1 ? (
         <Link
           to={"/"}
@@ -272,7 +272,7 @@ export default function SigninFC() {
                 name="gender"
               >
                 <option value={"male"}>male</option>
-                <option value={"femlaie"}>female</option>
+                <option value={"female"}>female</option>
                 <option value={"other"}>other</option>
               </select>
             </div>

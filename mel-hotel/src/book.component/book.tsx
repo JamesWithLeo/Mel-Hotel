@@ -26,7 +26,7 @@ export default function Book() {
       setIslogin(false);
     }, 2000);
   };
-  if (!user || !user._id) return <Navigate to={"/"} replace />;
+  // if (!user || !user._id) return <Navigate to={"/"} replace />;
   return (
     <>
       {isNotificationPopupVisible ? (
@@ -44,7 +44,7 @@ export default function Book() {
 
       <div className="flex h-dvh flex-col items-center overflow-hidden bg-gray-50">
         <BookNav linkTo={"/"} destination={"home"} />
-        <div className="flex w-full justify-center bg-gray-100 py-2">
+        <div className="flex w-full max-w-7xl justify-center bg-gray-100 py-2">
           <NavLink
             to={"package/" + bookingState.hotelPackage}
             replace={true}

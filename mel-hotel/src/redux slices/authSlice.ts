@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type GenderTypeface = "male" | "female" | "others";
+export type GenderTypeface = "male" | "female" | "other";
 export type AuthTypeface = "guest" | "user" | "admin";
 export type IUserEditableFields =
   | "firstName"

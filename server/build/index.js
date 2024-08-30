@@ -43,6 +43,7 @@ if (!process.env.PORT || !process.env.DB_CLUSTER) {
 }
 //
 const database_1 = __importStar(require("./database"));
+const mongodb_1 = require("mongodb");
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const cluster = process.env.DB_CLUSTER;
@@ -50,6 +51,7 @@ const DB_URI = `mongodb+srv://${user}:${password}@${cluster}.wadd7q8.mongodb.net
 const DATABASE_CLIENT = (0, database_1.default)(DB_URI);
 const DATABASE = DATABASE_CLIENT.db("MelHotel");
 const ACCOUNT_COLL = DATABASE.collection("ACCOUNT");
+const BOOK_COLL = DATABASE.collection("BOOK");
 const RESERVATION_COLL = DATABASE.collection("RESERVATION");
 //
 const PORT = parseInt(process.env.PORT, 10);
@@ -114,20 +116,54 @@ app.post("/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(200).json(result);
     });
 }));
-// Reservation request
-app.get("/admin/database/reservation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocuments)(RESERVATION_COLL).then((result) => {
+// book admin request
+app
+    .route("/admin/database/book/:id?")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.fetchDocuments)(BOOK_COLL).then((result) => {
         res.status(200).json(result);
     });
+}))
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.params.id)
+        yield (0, database_1.deleteDocument)(BOOK_COLL, req.params.id).then((result) => {
+            res.status(200).json(result);
+        });
+}))
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.params.id)
+        yield (0, database_1.updateDocument)(BOOK_COLL, req.params.id, req.body).then((result) => {
+            res.status(200).json(result);
+        });
 }));
-app.delete("/admin/database/reservation/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.deleteDocument)(RESERVATION_COLL, req.params.id).then((result) => {
+app
+    .route("/melhotel/book/:uid?")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.fetchByIdAndUid)(BOOK_COLL, req.params.uid)
+        .then((result) => {
         res.status(200).json(result);
+    })
+        .catch(() => {
+        res.sendStatus(500);
     });
-}));
-app.post("/admin/database/reservation/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.updateDocument)(RESERVATION_COLL, req.params.id, req.body).then((result) => {
+}))
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    req.body.uid = new mongodb_1.ObjectId(req.body.uid);
+    yield (0, database_1.insertDocument)(BOOK_COLL, req.body)
+        .then((result) => {
         res.status(200).json(result);
+    })
+        .catch(() => {
+        res.sendStatus(500);
+    });
+}))
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, database_1.deleteDocument)(BOOK_COLL, req.params.uid)
+        .then((result) => {
+        res.status(200).json(result);
+    })
+        .catch(() => {
+        res.sendStatus(500);
     });
 }));
 app.listen(PORT, () => {

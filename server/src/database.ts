@@ -88,3 +88,16 @@ export async function updateDocument(
     throw error;
   }
 }
+
+export async function fetchByIdAndUid(collection: Collection, uid: string) {
+  try {
+    return await collection
+      .find({
+        uid: new ObjectId(uid),
+      })
+      .toArray();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

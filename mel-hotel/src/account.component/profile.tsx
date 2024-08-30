@@ -33,7 +33,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex h-max w-full max-w-7xl flex-col items-center bg-gray-100">
+    <div className="flex h-dvh w-full max-w-7xl flex-col items-center bg-gray-100">
       <div className="z-10 flex h-max w-full flex-col items-center gap-2 px-4 py-4 sm:flex-row sm:py-8 md:px-16">
         <div className="h-20 w-20 rounded bg-gray-200 p-2 sm:h-32 sm:w-32">
           .

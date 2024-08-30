@@ -7,8 +7,11 @@ import { Link } from "react-router-dom";
 import Gallary, { carouselTypeface } from "./gallary";
 import Footer from "../footer.component/footer";
 import { AppState, hotelStore } from "../hotelStore";
+import { useLayoutEffect, useState } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
-
+import { IBookSlice } from "../redux slices/bookSlice";
+import { useQuery } from "@tanstack/react-query";
 const settings: carouselTypeface = {
   dots: false,
   infinite: true,
@@ -46,7 +49,9 @@ const settings: carouselTypeface = {
   ],
 };
 export default function Home() {
-  const { user } = useSelector((state: AppState) => state.auth);
+  const user = useSelector((state: AppState) => state.auth.user);
+  const [activeBooking, setActiveBooking] = useState<IBookSlice[] | null>(null);
+
   return (
     <div
       className="flex h-full w-full max-w-7xl flex-col items-center bg-gray-100"
@@ -62,13 +67,21 @@ export default function Home() {
           Affordable Elegance, Unforgettable Escapes
         </h1>
       </div>
-      <div className="flex flex-row-reverse gap-4">
+      <div className="flex flex-row gap-4">
         <Link
           to={"/book/package/" + hotelStore.getState().booking.hotelPackage}
           className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
         >
           Book Now!
         </Link>
+        {user ? (
+          <Link
+            to={"package"}
+            className="bg-contrast font-fauna active:text-primarydark mb-4 rounded-full px-5 py-1 shadow drop-shadow duration-200 ease-in-out hover:scale-x-[1.05] active:shadow-[inset_0px_2px_5px_5px_#0000004d]"
+          >
+            View schedule
+          </Link>
+        ) : null}
       </div>
 
       <div className="flex w-full flex-col gap-8 bg-gray-100 px-8 py-4 sm:flex-col">
