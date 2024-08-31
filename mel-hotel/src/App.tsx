@@ -13,6 +13,7 @@ interface INavClass {
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const active = useSelector((state: AppState) => state.auth.isActive);
   const user = useSelector((state: AppState) => state.auth.user);
   const navClass = ({ isActive, isPending, isTransitioning }: INavClass) => {
     return [
@@ -26,14 +27,14 @@ function App() {
     ].join(" ");
   };
 
-  useEffect(() => {
-    const fetchHome = async () => {
-      await fetch("/hotel").then(async (response) => {
-        await response.json().then((value) => {
-          console.log(value);
-        });
+  const fetchHome = async () => {
+    await fetch("/hotel").then(async (response) => {
+      await response.json().then((value) => {
+        console.log(value);
       });
-    };
+    });
+  };
+  useEffect(() => {
     fetchHome();
   }, []);
   return (

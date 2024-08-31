@@ -114,8 +114,7 @@ export default function SchedLayout() {
               htmlFor="scheduleDateInput"
               className="flex items-center font-mono text-neutral-500"
             >
-              Scheduled date:{" "}
-              {new Date(bookingState.scheduledDate).toDateString()}
+              Scheduled date: {new Date(bookingState.bookedDate).toDateString()}
             </label>
             <input
               className="text-contrast bg-gray-100 px-2 outline-none drop-shadow"
@@ -168,11 +167,10 @@ export default function SchedLayout() {
               {bookingState.daysOfStaying === 1 ? "day" : "days"}
             </h1>
             <h1>
-              book on {new Date(bookingState.bookedDate).toLocaleString()}
+              Today's date {new Date(bookingState.createdAt).toLocaleString()}
             </h1>
             <h1>
-              scheduled on{" "}
-              {new Date(bookingState.scheduledDate).toLocaleString()}
+              scheduled on {new Date(bookingState.bookedDate).toLocaleString()}
             </h1>
             <hr className="border-2" />
             <h1 className="self-end text-sm">

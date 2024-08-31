@@ -72,14 +72,31 @@ app.get("/hotel", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     });
 }));
 //
-app.get("/admin/database/collections", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocuments)(ACCOUNT_COLL)
-        .then((response) => {
-        res.status(200).json(response);
-    })
-        .catch((rejected) => {
-        res.status(200).json({ rejected });
-    });
+app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = req.query.collection;
+    switch (collection) {
+        case "account":
+            yield (0, database_1.fetchDocuments)(ACCOUNT_COLL)
+                .then((response) => {
+                res.status(200).json(response);
+            })
+                .catch((rejected) => {
+                res.status(200).json({ rejected });
+            });
+            break;
+        case "book":
+            yield (0, database_1.fetchDocuments)(BOOK_COLL)
+                .then((response) => {
+                res.status(200).json(response);
+            })
+                .catch((rejected) => {
+                res.status(200).json({ rejected });
+            });
+            break;
+        default:
+            res.sendStatus(500);
+            break;
+    }
 }));
 app.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.fetchDocumentByEmail)(ACCOUNT_COLL, req.body)
@@ -96,25 +113,30 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     });
 }));
 //account request
-app.post("/admin/database/account/insert", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app
+    .route("/melhotel/account/:id?")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
         res.status(200).json(result);
     });
-}));
-app.get("/account/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocumentById)(ACCOUNT_COLL, req.params.id).then((result) => {
-        res.status(200).json(result);
-    });
-}));
-app.delete("/admin/database/account/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.deleteDocument)(ACCOUNT_COLL, req.params.id).then((result) => {
-        res.status(200).json(result);
-    });
-}));
-app.post("/account/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.updateDocument)(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
-        res.status(200).json(result);
-    });
+}))
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.params.id)
+        yield (0, database_1.fetchDocumentById)(ACCOUNT_COLL, req.params.id).then((result) => {
+            res.status(200).json(result);
+        });
+}))
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.params.id)
+        yield (0, database_1.deleteDocument)(ACCOUNT_COLL, req.params.id).then((result) => {
+            res.status(200).json(result);
+        });
+}))
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.params.id)
+        yield (0, database_1.updateDocument)(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
+            res.status(200).json(result);
+        });
 }));
 // book admin request
 app

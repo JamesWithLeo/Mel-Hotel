@@ -1,30 +1,58 @@
 import { useSelector } from "react-redux";
-import { Outlet, Link, Navigate } from "react-router-dom";
+import { Outlet, Link, Navigate, NavLink } from "react-router-dom";
 import { AppState } from "../hotelStore";
 
 export default function AdminLayout() {
   const user = useSelector((state: AppState) => state.auth.user);
   if (user?.role !== "admin") return <Navigate to={"/"} />;
   return (
-    <main className="flex h-dvh w-full flex-col gap-2 bg-gray-100">
-      <Link to={"/"}>Back to homepage</Link>
-      <div className="flex flex-row items-center gap-2">
-        <h1 className="text-contrast w-max font-bold">Collections</h1>
-        <Link
-          to={"account"}
-          className="w-max rounded px-2 py-1 text-neutral-500 outline-1 outline-gray-200 hover:bg-gray-100 hover:text-gray-600 hover:shadow hover:outline"
+    <main className="flex-row2 flex h-dvh w-full">
+      <div className="font-fauna flex w-1/5 flex-col gap-2 border-r bg-[#fdedd7] px-2 py-4 lg:w-1/6">
+        <Link to={"/"} className="font-cinzel text-center text-xl">
+          Mel Hotel
+        </Link>
+        <hr className="border-gray-400" />
+        <NavLink
+          to={"/admin/dashboard"}
+          className={({ isActive }) =>
+            [
+              isActive
+                ? "bg-contrast w-full rounded-lg text-center text-sm text-gray-800"
+                : "text-center text-sm",
+            ].join(" ")
+          }
+        >
+          dashboard
+        </NavLink>
+        <hr className="border-gray-400" />
+        <h1 className="text-contrast w-max text-xs">collections</h1>
+        <NavLink
+          to={"/admin/account"}
+          className={({ isActive }) =>
+            [
+              isActive
+                ? "bg-contrast w-full rounded-lg text-center text-sm text-gray-800"
+                : "text-center text-sm",
+            ].join(" ")
+          }
         >
           Account
-        </Link>
-        <Link
-          to={"book"}
-          className="w-max rounded px-2 py-1 text-neutral-500 outline-1 outline-gray-200 hover:bg-gray-100 hover:text-gray-600 hover:shadow hover:outline"
+        </NavLink>
+        <NavLink
+          to={"/admin/book"}
+          className={({ isActive }) =>
+            [
+              isActive
+                ? "bg-contrast w-full rounded-lg text-center text-sm text-gray-800"
+                : "text-center text-sm",
+            ].join(" ")
+          }
         >
           Book
-        </Link>
+        </NavLink>
       </div>
 
-      <div className="h-full w-full">
+      <div className="h-full w-10/12">
         <Outlet />
       </div>
     </main>

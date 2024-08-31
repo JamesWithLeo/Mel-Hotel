@@ -50,14 +50,31 @@ app.get("/hotel", async (req, res) => {
 });
 
 //
-app.get("/admin/database/collections", async (req, res) => {
-  await fetchDocuments(ACCOUNT_COLL)
-    .then((response) => {
-      res.status(200).json(response);
-    })
-    .catch((rejected) => {
-      res.status(200).json({ rejected });
-    });
+app.get("/melhotel/collection", async (req, res) => {
+  const collection = req.query.collection as string;
+  switch (collection) {
+    case "account":
+      await fetchDocuments(ACCOUNT_COLL)
+        .then((response) => {
+          res.status(200).json(response);
+        })
+        .catch((rejected) => {
+          res.status(200).json({ rejected });
+        });
+      break;
+    case "book":
+      await fetchDocuments(BOOK_COLL)
+        .then((response) => {
+          res.status(200).json(response);
+        })
+        .catch((rejected) => {
+          res.status(200).json({ rejected });
+        });
+      break;
+    default:
+      res.sendStatus(500);
+      break;
+  }
 });
 
 app.post("/login/", async (req, res) => {
@@ -77,27 +94,33 @@ app.post("/signin", async (req, res) => {
 });
 
 //account request
-app.post("/admin/database/account/insert", async (req, res) => {
-  await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
-    res.status(200).json(result);
+app
+  .route("/melhotel/account/:id?")
+  .post(async (req, res) => {
+    await insertDocument(ACCOUNT_COLL, req.body).then((result) => {
+      res.status(200).json(result);
+    });
+  })
+  .get(async (req, res) => {
+    if (req.params.id)
+      await fetchDocumentById(ACCOUNT_COLL, req.params.id).then((result) => {
+        res.status(200).json(result);
+      });
+  })
+  .delete(async (req, res) => {
+    if (req.params.id)
+      await deleteDocument(ACCOUNT_COLL, req.params.id).then((result) => {
+        res.status(200).json(result);
+      });
+  })
+  .put(async (req, res) => {
+    if (req.params.id)
+      await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then(
+        (result) => {
+          res.status(200).json(result);
+        },
+      );
   });
-});
-app.get("/account/:id", async (req, res) => {
-  await fetchDocumentById(ACCOUNT_COLL, req.params.id).then((result) => {
-    res.status(200).json(result);
-  });
-});
-app.delete("/admin/database/account/delete/:id", async (req, res) => {
-  await deleteDocument(ACCOUNT_COLL, req.params.id).then((result) => {
-    res.status(200).json(result);
-  });
-});
-
-app.post("/account/update/:id", async (req, res) => {
-  await updateDocument(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
-    res.status(200).json(result);
-  });
-});
 
 // book admin request
 app

@@ -50,6 +50,8 @@ export default function SigninFC() {
       .then((credential) => {
         console.log(credential.email);
         console.log(credential.uid);
+        setEmail(credential.email);
+        setUid(credential.uid);
         if (!credential.email || !credential.uid) return;
         dispatch(signin({ email: credential.email, uid: credential.uid }))
           .unwrap()
@@ -105,10 +107,10 @@ export default function SigninFC() {
     }
 
     axios
-      .post("/account/update/" + id, {
+      .put("/melhotel/account/" + id, {
         firstName: FirstName,
         lastName: LastName,
-        birthdate: dateOfBirth.value,
+        birthdate: new Date(dateOfBirth.value).getTime(),
         age: age.current,
         gender: genderElement.value,
         address: toTItleCase(addressElement.value),
@@ -120,7 +122,7 @@ export default function SigninFC() {
           dispatch(login({ email: emailValue, uid: uid, rememberMe: true }))
             .unwrap()
             .finally(() => {
-              navigate("/profile", { replace: true });
+              navigate("/", { replace: true });
             });
         }
       });

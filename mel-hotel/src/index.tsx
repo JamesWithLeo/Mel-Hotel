@@ -19,15 +19,14 @@ import LoginFC from "./account.component/login";
 import Profile from "./account.component/profile";
 import SigninFC from "./account.component/signin";
 import SchedLayout from "./book.component/schedLayout";
-import ProtectedRoute from "./protectedRoute";
 import AdminLayout from "./admin.component/adminLayout";
-
 import AccountCollection from "./admin.component/accountCollection";
 import BookCollection from "./admin.component/bookCollection";
 import PackageLayout from "./packages.component/packageLayout";
 import BookedPackage from "./packages.component/BookedPackage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ViewPackage from "./packages.component/viewPackage";
+import AdminDashboard from "./admin.component/adminDashboard";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -88,11 +87,13 @@ const router = createBrowserRouter([
   {
     path: "admin",
     element: (
-      <ProtectedRoute>
+      <QueryClientProvider client={queryClient}>
         <AdminLayout />
-      </ProtectedRoute>
+      </QueryClientProvider>
     ),
     children: [
+      { index: true, element: <AdminDashboard /> },
+      { path: "dashboard", element: <AdminDashboard /> },
       { path: "account", element: <AccountCollection /> },
       { path: "book", element: <BookCollection /> },
     ],

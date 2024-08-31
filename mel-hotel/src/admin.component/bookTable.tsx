@@ -6,7 +6,6 @@ import {
 } from "material-react-table";
 import { useMemo } from "react";
 import { IBookSlice } from "../redux slices/bookSlice";
-import { Link } from "react-router-dom";
 const countryDropDownOption = [
   "Philippines",
   "Swizterland",
@@ -69,10 +68,12 @@ export default function BookTable({
         enableEditing: false,
         enableSorting: false,
         size: 100,
+        maxSize: 150,
       },
       {
         accessorKey: "daysOfStaying",
         header: "days",
+        maxSize: 100,
         size: 50,
         enableSorting: true,
         enableEditing: false,
@@ -81,6 +82,7 @@ export default function BookTable({
         accessorKey: "numberOfRooms",
         header: "rooms",
         size: 50,
+        maxSize: 100,
         enableEditing: false,
         enableClickToCopy: true,
         enableSorting: true,
@@ -92,6 +94,29 @@ export default function BookTable({
         enableSorting: false,
         editVariant: "select",
         editSelectOptions: countryDropDownOption,
+        maxSize: 200,
+      },
+      {
+        accessorKey: "createdAt",
+        accessorFn(originalRow) {
+          return new Date(originalRow.createdAt).toLocaleString();
+        },
+        header: "createdAt",
+        enableSorting: false,
+        maxSize: 200,
+      },
+      {
+        header: "BookedDate",
+        accessorFn(originalRow) {
+          return new Date(originalRow.bookedDate).toLocaleDateString();
+        },
+        maxSize: 200,
+      },
+      {
+        header: "Amount",
+        accessorKey: "totalPrice",
+        size: 150,
+        maxSize: 200,
       },
     ],
     [],
@@ -103,13 +128,7 @@ export default function BookTable({
     enableColumnResizing: true,
     enableColumnPinning: true,
     enableColumnActions: false,
-    // getRowId: (row) => row._id,
     enableRowActions: true,
-    muiTableBodyCellProps: {
-      sx: {
-        border: "1px dashed rgb(243 244 246)",
-      },
-    },
     initialState: {
       density: "compact",
       showColumnFilters: false,
@@ -118,19 +137,117 @@ export default function BookTable({
         left: ["mrt-row-expand", "mrt-row-select"],
         right: ["mrt-row-actions"],
       },
+      columnVisibility: {
+        _id: false,
+        uid: false,
+        totalPrice: false,
+      },
     },
+    muiColumnActionsButtonProps: {
+      size: "small",
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiFilterSliderProps: {
+      size: "small",
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiSkeletonProps: {
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiTableFooterProps: {
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiTableContainerProps: {
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiTableFooterRowProps: {
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiBottomToolbarProps: {
+      fontSize: "10px",
+      sx: {
+        fontSize: "10px",
+      },
+    },
+    muiSearchTextFieldProps: {
+      size: "small",
+      sx: {},
+      variant: "standard",
+    },
+
+    muiPaginationProps: {
+      size: "small",
+      color: "primary",
+      rowsPerPageOptions: [10, 20, 30, 50, 100],
+      shape: "rounded",
+      variant: "outlined",
+      sx: {
+        backgroundColor: "pink",
+        fontSize: "10px",
+      },
+    },
+    positionPagination: "bottom",
+    muiTableHeadCellProps: {
+      size: "small",
+      sx: {
+        fontSize: "12px",
+        fontFamily: "monospace",
+        paddingX: "1rem",
+        boxShadow: "none",
+        fontWeight: "600",
+      },
+    },
+    muiTableBodyCellProps: {
+      size: "small",
+      sx: {
+        paddingX: "1rem",
+        fontSize: "12px",
+        color: "GrayText",
+        boxShadow: "none",
+        fontFamily: "monospace",
+      },
+    },
+    muiTablePaperProps: {
+      sx: {
+        fontSize: "10px",
+        borderRadius: "1rem",
+        boxShadow:
+          " rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;",
+      },
+    },
+    muiTableBodyProps: {
+      sx: {
+        boxShadow: "none",
+      },
+    },
+
+    muiTableProps: {
+      sx: {
+        fontSize: "10px",
+        boxShadow: "none",
+      },
+    },
+
     editDisplayMode: "modal",
     enableEditing: false,
+    autoResetExpanded: true,
+
+    autoResetPageIndex: false,
     renderTopToolbarCustomActions: () => {
       return [
-        <div className="flex items-center gap-2 font-bold text-gray-500">
-          <Link
-            to={"/admin/"}
-            className="w-max rounded bg-white px-3 py-1 hover:bg-gray-100"
-          >
-            Back
-          </Link>
-        </div>,
+        <div className="flex items-center gap-2 font-bold text-gray-500"></div>,
       ];
     },
     renderRowActionMenuItems: ({ row }) => {

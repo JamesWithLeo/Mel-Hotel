@@ -36,8 +36,6 @@ export default function LoginFC() {
     const user = loginUser(email, password);
     user
       .then((value) => {
-        console.log(value.email);
-        console.log(value.uid);
         if (!value.email || !value.uid) return;
         dispatch(
           login({

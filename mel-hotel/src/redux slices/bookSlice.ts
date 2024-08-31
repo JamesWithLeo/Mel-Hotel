@@ -5,9 +5,9 @@ export interface IBookSlice {
   hotelPackage: "regular" | "premium" | "luxury" | "ordinary";
   daysOfStaying: number;
   numberOfRooms: number;
-  scheduledDate: number;
-  location: string | null;
   bookedDate: number;
+  location: string | null;
+  createdAt: number;
   totalPrice: number;
   _id: string | null;
   uid: string | null;
@@ -18,8 +18,8 @@ const initSlice: IBookSlice = {
   daysOfStaying: 1,
   numberOfRooms: 1,
   location: null,
-  scheduledDate: new Date().getTime(),
   bookedDate: new Date().getTime(),
+  createdAt: new Date().getTime(),
   totalPrice: 0,
   _id: null,
   uid: null,
@@ -57,10 +57,10 @@ const bookSlice = createSlice({
       state.location = action.payload;
     },
     SetSchedule: (state, action: PayloadAction<number>) => {
-      state.scheduledDate = action.payload;
+      state.bookedDate = action.payload;
     },
     SetBookedDate: (state) => {
-      state.bookedDate = new Date().getTime();
+      state.createdAt = new Date().getTime();
     },
     SetTotalPrice: (state) => {
       packagesData.forEach((value) => {
@@ -73,8 +73,8 @@ const bookSlice = createSlice({
       state.numberOfRooms = 1;
       state.location = null;
       state.daysOfStaying = 1;
+      state.createdAt = new Date().getTime();
       state.bookedDate = new Date().getTime();
-      state.scheduledDate = new Date().getTime();
       state.hotelPackage = "ordinary";
       state.totalPrice = 0;
       state._id = null;

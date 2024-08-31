@@ -20,8 +20,11 @@ export interface IUser {
   address: string;
   contact: string;
   gender: GenderTypeface;
-  birthdate: string;
+  birthdate: number;
   role: AuthTypeface;
+  createdAt: number;
+  timeCreated: string;
+  isActive: boolean;
 }
 const localStorageKey = "melhotelUser";
 const userlocal: string | null = localStorage.getItem(localStorageKey);
@@ -30,10 +33,12 @@ var user: IUser | null = userlocal ? JSON.parse(userlocal) : null;
 
 interface IAuthSlice {
   user: IUser | null;
+  isActive: boolean;
 }
 
 const authSliceInitState: IAuthSlice = {
   user: user ? user : null,
+  isActive: false,
 };
 
 const updateRequest = async (
@@ -151,7 +156,7 @@ export const signin = createAsyncThunk(
       birthdate: null,
       role: "user",
       timeCreated: new Date().getHours() + ":" + new Date().getMinutes(),
-      dateCreated: new Date().toLocaleDateString(),
+      createdAt: new Date().getTime(),
     });
 
     if (document.data.insertedId) {
@@ -176,6 +181,7 @@ const authSlice = createSlice({
       const payload = action.payload;
       return {
         ...state,
+        isActive: payload.isActive,
         user: {
           ...payload,
         },
@@ -190,6 +196,7 @@ const authSlice = createSlice({
       const payload = action.payload;
       return {
         ...state,
+        isActive: payload.isActive,
         user: {
           ...payload,
         },

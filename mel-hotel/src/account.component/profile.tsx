@@ -28,6 +28,7 @@ export default function Profile() {
   const [isEditGenderVisible, setEditGenderVisible] = useState<boolean>(false);
   const [isEditBirtdateVisible, setIsEditBirthdateVisible] =
     useState<boolean>(false);
+
   if (!user) {
     return <Navigate to={"/login"} />;
   }
@@ -302,7 +303,6 @@ export default function Profile() {
               type="date"
               id="Birthdate"
               className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
-              defaultValue={user.birthdate}
             />
             <button
               onClick={() => {

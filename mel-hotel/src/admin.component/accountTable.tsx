@@ -181,10 +181,6 @@ const AccountTable = ({
     columns,
     data,
     //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
-    // enableRowPinning: true,
-    // enableTopToolbar: false,
-    // enableBottomToolbar: false,
-
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableGrouping: true,
@@ -200,7 +196,7 @@ const AccountTable = ({
     initialState: {
       showColumnFilters: false,
       showGlobalFilter: false,
-
+      density: "compact",
       columnPinning: {
         left: ["mrt-row-expand", "mrt-row-select"],
         right: ["mrt-row-actions"],
@@ -213,28 +209,61 @@ const AccountTable = ({
       },
     },
 
-    paginationDisplayMode: "pages",
+    paginationDisplayMode: "default",
     positionToolbarAlertBanner: "bottom",
-    muiTableProps: {
-      size: "small",
-    },
-    muiTableBodyCellProps: {
-      size: "small",
-    },
-    muiTableHeadCellProps: {
-      size: "small",
-    },
+
     muiSearchTextFieldProps: {
       size: "small",
-      variant: "outlined",
+      sx: {},
+      variant: "standard",
     },
     muiPaginationProps: {
+      size: "small",
       color: "standard",
       rowsPerPageOptions: [10, 20, 30, 50, 100],
       shape: "rounded",
       variant: "text",
     },
+    muiTableHeadCellProps: {
+      size: "small",
+      sx: {
+        fontSize: "12px",
+        fontFamily: "monospace",
+        paddingX: "1rem",
+        boxShadow: "none",
+        fontWeight: "600",
+      },
+    },
+    muiTableBodyCellProps: {
+      size: "small",
+      sx: {
+        paddingX: "1rem",
+        fontSize: "12px",
+        color: "GrayText",
+        boxShadow: "none",
+        fontFamily: "monospace",
+      },
+    },
+    muiTablePaperProps: {
+      sx: {
+        fontSize: "10px",
+        borderRadius: "1rem",
+        boxShadow:
+          " rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;",
+      },
+    },
+    muiTableBodyProps: {
+      sx: {
+        boxShadow: "none",
+      },
+    },
 
+    muiTableProps: {
+      sx: {
+        fontSize: "10px",
+        boxShadow: "none",
+      },
+    },
     enableEditing: true,
     editDisplayMode: "modal",
     onEditingRowSave: handleEditAccount,
@@ -255,12 +284,6 @@ const AccountTable = ({
     onCreatingRowSave: handleCreateAccount,
     renderTopToolbarCustomActions: ({ table }) => (
       <div className="flex gap-2 p-2">
-        <button
-          className="rounded bg-white px-2 py-1 text-gray-700 shadow hover:text-gray-600 hover:drop-shadow"
-          onClick={handleback}
-        >
-          Back
-        </button>
         <button
           className="rounded bg-white px-2 py-1 text-gray-700 shadow hover:text-gray-600 hover:drop-shadow"
           onClick={() => {
@@ -308,5 +331,4 @@ const AccountTable = ({
 
   return <MaterialReactTable table={table} />;
 };
-
 export default AccountTable;

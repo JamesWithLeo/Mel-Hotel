@@ -76,7 +76,7 @@ export default function ViewPackage() {
             <h1 className="font-edu">{packageObject.location}</h1>
           </span>
           <h1 className="text-sm font-light">
-            Scheduled on : {new Date(packageObject.scheduledDate).toUTCString()}
+            Scheduled on : {new Date(packageObject.bookedDate).toUTCString()}{" "}
           </h1>
           <h1 className="text-sm font-light">
             {packageObject.numberOfRooms} rooms for{" "}

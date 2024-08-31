@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import BookTable from "./bookTable";
+import { lazy, Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import { IBookSlice } from "../redux slices/bookSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTable } from "@fortawesome/free-solid-svg-icons";
+
+const BookTable = lazy(() => import("./bookTable"));
 export type ReservationTypeface = {
   _id: string;
   AccountId: string;
@@ -12,45 +14,33 @@ export type ReservationTypeface = {
   Country: string;
 };
 export default function BookCollection() {
-  const [isTableVisible, setIsTableVisibility] = useState<boolean>(true);
   const [bookData, setBookData] = useState<IBookSlice[] | null>(null);
-  const fetchReservation = async () => {
+  const fetchBookings = async () => {
     await axios.get("/admin/database/book").then(async (response) => {
-      console.log(response.data);
       setBookData(response.data);
     });
   };
   useEffect(() => {
-    fetchReservation();
+    fetchBookings();
   }, []);
   return (
     <div className="flex h-full w-full flex-col gap-2 px-4 py-4">
-      {isTableVisible ? (
-        <button
-          className="w-max rounded px-3 py-1 hover:bg-white"
-          onClick={() => {
-            setIsTableVisibility(!isTableVisible);
-          }}
+      <>
+        <Suspense
+          fallback={
+            <div className="flex h-full w-full items-center justify-center">
+              <FontAwesomeIcon
+                icon={faTable}
+                className="text-4xl text-slate-400 md:text-5xl"
+              />
+            </div>
+          }
         >
-          Hide Table
-        </button>
-      ) : (
-        <button
-          className="bg-gr w-max rounded px-3 py-1 hover:bg-white"
-          onClick={() => {
-            setIsTableVisibility(!isTableVisible);
-          }}
-        >
-          Show table
-        </button>
-      )}
-      {isTableVisible ? (
-        <>
           {bookData ? (
-            <BookTable data={bookData} RefreshData={fetchReservation} />
+            <BookTable data={bookData} RefreshData={fetchBookings} />
           ) : null}
-        </>
-      ) : null}
+        </Suspense>
+      </>
     </div>
   );
 }

@@ -20,7 +20,6 @@
     "firebase-admin": "^12.4.0",
     "leaflet": "^1.9.4",
     "material-react-table": "^2.13.1",
-    "mongodb": "^6.8.0",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
