@@ -9,7 +9,6 @@ import {
 import { IUser } from "../redux slices/authSlice";
 import { useMemo } from "react";
 import { GenderTypeface, AuthTypeface } from "../redux slices/authSlice";
-import { useNavigate } from "react-router-dom";
 
 const AccountTable = ({
   data,
@@ -18,7 +17,6 @@ const AccountTable = ({
   data: IUser[];
   RefreshData: () => Promise<void>;
 }) => {
-  const navigate = useNavigate();
   const genderDropDownOption: GenderTypeface[] = ["male", "female", "other"];
   const roleDropDownOption: AuthTypeface[] = ["user", "admin"];
   //should be memoized or stable
@@ -173,10 +171,6 @@ const AccountTable = ({
       table.setEditingRow(null);
     };
 
-  const handleback = () => {
-    navigate("/admin/");
-  };
-
   const table = useMaterialReactTable({
     columns,
     data,
@@ -322,9 +316,7 @@ const AccountTable = ({
 
     renderDetailPanel: ({ row }) => (
       <div>
-        <div className="rounded bg-gray-100 px-2 py-1">
-          <h1>Active booking</h1>
-        </div>
+        <div className="rounded bg-gray-100 px-2 py-1"></div>
       </div>
     ),
   });

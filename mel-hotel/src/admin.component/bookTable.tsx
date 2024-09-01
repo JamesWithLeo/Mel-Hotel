@@ -97,12 +97,27 @@ export default function BookTable({
         maxSize: 200,
       },
       {
+        accessorKey: "timeCreated",
+        accessorFn(originalRow) {
+          return new Date(originalRow.createdAt).toLocaleTimeString();
+        },
+        header: "timeCreated",
+        enableSorting: false,
+        maxSize: 150,
+      },
+      {
         accessorKey: "createdAt",
         accessorFn(originalRow) {
-          return new Date(originalRow.createdAt).toLocaleString();
+          return new Date(originalRow.createdAt).toDateString();
         },
         header: "createdAt",
         enableSorting: false,
+        maxSize: 150,
+      },
+      {
+        header: "Amount",
+        accessorKey: "totalPrice",
+        size: 150,
         maxSize: 200,
       },
       {
@@ -110,12 +125,6 @@ export default function BookTable({
         accessorFn(originalRow) {
           return new Date(originalRow.bookedDate).toLocaleDateString();
         },
-        maxSize: 200,
-      },
-      {
-        header: "Amount",
-        accessorKey: "totalPrice",
-        size: 150,
         maxSize: 200,
       },
     ],
@@ -143,6 +152,7 @@ export default function BookTable({
         totalPrice: false,
       },
     },
+
     muiColumnActionsButtonProps: {
       size: "small",
       sx: {
@@ -193,10 +203,6 @@ export default function BookTable({
       rowsPerPageOptions: [10, 20, 30, 50, 100],
       shape: "rounded",
       variant: "outlined",
-      sx: {
-        backgroundColor: "pink",
-        fontSize: "10px",
-      },
     },
     positionPagination: "bottom",
     muiTableHeadCellProps: {

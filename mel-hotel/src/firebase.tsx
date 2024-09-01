@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -18,7 +19,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
 export const createUser = async (email: string, password: string) => {
   return createUserWithEmailAndPassword(auth, email, password)
     .then((value) => {
@@ -48,3 +48,13 @@ export const logoutUser = async () => {
 onAuthStateChanged(auth, (user) => {
   console.log(user?.email);
 });
+
+export const getPhotoUrl = () => {
+  if (auth.currentUser) return auth.currentUser.photoURL;
+  return "";
+};
+
+export const updatePhotoUrl = (photoURL: string) => {
+  if (auth.currentUser)
+    updateProfile(auth.currentUser, { displayName: null, photoURL: photoURL });
+};

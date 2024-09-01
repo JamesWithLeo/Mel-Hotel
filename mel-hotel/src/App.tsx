@@ -1,4 +1,9 @@
-import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faCog,
+  faCogs,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
@@ -56,7 +61,20 @@ function App() {
           </div>
           <div className="flex items-center gap-8">
             {user?.role === "admin" ? (
-              <NavLink to={"admin"}>Admin</NavLink>
+              <NavLink
+                to={"admin"}
+                className={({ isPending, isActive, isTransitioning }) =>
+                  [
+                    isActive
+                      ? "text-contrast hidden items-center gap-4 text-xl md:flex"
+                      : "text-primarydarker hidden items-center gap-4 text-xl md:flex",
+                    isPending ? "" : "",
+                    isTransitioning ? "" : "",
+                  ].join(" ")
+                }
+              >
+                <FontAwesomeIcon icon={faCogs} />
+              </NavLink>
             ) : null}
 
             {user ? (
@@ -140,15 +158,10 @@ function App() {
               <NavLink to={"pricing"} className={navClass}>
                 Pricing
               </NavLink>
-              {/* <NavLink to={"review"} className={navClass}>
-                Reviews
-              </NavLink> */}
+
               <NavLink to={"location"} className={navClass}>
                 Location
               </NavLink>
-              {/* <NavLink to={"contact"} className={navClass}>
-                Contact us
-              </NavLink> */}
             </div>
           )}
         </header>

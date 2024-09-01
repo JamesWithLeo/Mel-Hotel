@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = CreateMongoCLient;
 exports.fetchDocuments = fetchDocuments;
 exports.insertDocument = insertDocument;
+exports.insertManyDocument = insertManyDocument;
 exports.fetchDocumentById = fetchDocumentById;
+exports.fetchBYUid = fetchBYUid;
 exports.fetchDocumentByEmail = fetchDocumentByEmail;
 exports.deleteDocument = deleteDocument;
 exports.updateDocument = updateDocument;
-exports.fetchByIdAndUid = fetchByIdAndUid;
 const mongodb_1 = require("mongodb");
 function CreateMongoCLient(uri) {
     const OPTIONS = {
@@ -59,11 +60,38 @@ function insertDocument(collection, doc) {
         }
     });
 }
+function insertManyDocument(collection, doc) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            console.log(doc);
+            return yield collection.insertMany(doc, { ordered: false });
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
 function fetchDocumentById(collection, id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const filter = { _id: new mongodb_1.ObjectId(id) };
             return yield collection.findOne(filter);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+function fetchBYUid(collection, uid) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield collection
+                .find({
+                uid: new mongodb_1.ObjectId(uid),
+            })
+                .toArray();
         }
         catch (error) {
             console.log(error);
@@ -97,21 +125,6 @@ function updateDocument(collection, id, doc) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             return yield collection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: doc, $currentDate: { lastModified: true } }, { returnDocument: "after" });
-        }
-        catch (error) {
-            console.log(error);
-            throw error;
-        }
-    });
-}
-function fetchByIdAndUid(collection, uid) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            return yield collection
-                .find({
-                uid: new mongodb_1.ObjectId(uid),
-            })
-                .toArray();
         }
         catch (error) {
             console.log(error);

@@ -38,9 +38,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 dotenv.configDotenv({ debug: true });
 dotenv.config();
-if (!process.env.PORT || !process.env.DB_CLUSTER) {
+if (!process.env.PORT ||
+    !process.env.DB_CLUSTER ||
+    !process.env.API_KEY ||
+    !process.env.CLOUDNAME ||
+    !process.env.API_SECRET) {
     process.exit(1);
 }
+const cloudinary_1 = __importDefault(require("cloudinary"));
+cloudinary_1.default.v2.config({
+    cloud_name: process.env.CLOUDNAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+    secure: true,
+});
+const path_1 = __importDefault(require("path"));
+const multer_1 = __importDefault(require("multer"));
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/"); // Save files to the 'uploads/' directory
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "-" + Date.now() + path_1.default.extname(file.originalname));
+    },
+});
+const upload = (0, multer_1.default)({ dest: "uploads/", storage: storage });
 //
 const database_1 = __importStar(require("./database"));
 const mongodb_1 = require("mongodb");
@@ -50,9 +72,10 @@ const cluster = process.env.DB_CLUSTER;
 const DB_URI = `mongodb+srv://${user}:${password}@${cluster}.wadd7q8.mongodb.net/?authMechanism=SCRAM-SHA-1`;
 const DATABASE_CLIENT = (0, database_1.default)(DB_URI);
 const DATABASE = DATABASE_CLIENT.db("MelHotel");
-const ACCOUNT_COLL = DATABASE.collection("ACCOUNT");
-const BOOK_COLL = DATABASE.collection("BOOK");
-const RESERVATION_COLL = DATABASE.collection("RESERVATION");
+const ACCOUNT = DATABASE.collection("ACCOUNT");
+const ACTIVE = DATABASE.collection("ACTIVE");
+const EXPIRE = DATABASE.collection("EXPIRE");
+const PENDING = DATABASE.collection("PENDING");
 //
 const PORT = parseInt(process.env.PORT, 10);
 const express_1 = __importStar(require("express"));
@@ -76,7 +99,7 @@ app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, 
     const collection = req.query.collection;
     switch (collection) {
         case "account":
-            yield (0, database_1.fetchDocuments)(ACCOUNT_COLL)
+            yield (0, database_1.fetchDocuments)(ACCOUNT)
                 .then((response) => {
                 res.status(200).json(response);
             })
@@ -84,8 +107,26 @@ app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, 
                 res.status(200).json({ rejected });
             });
             break;
-        case "book":
-            yield (0, database_1.fetchDocuments)(BOOK_COLL)
+        case "active":
+            yield (0, database_1.fetchDocuments)(ACTIVE)
+                .then((response) => {
+                res.status(200).json(response);
+            })
+                .catch((rejected) => {
+                res.status(200).json({ rejected });
+            });
+            break;
+        case "pending":
+            yield (0, database_1.fetchDocuments)(PENDING)
+                .then((response) => {
+                res.status(200).json(response);
+            })
+                .catch((rejected) => {
+                res.status(200).json({ rejected });
+            });
+            break;
+        case "expire":
+            yield (0, database_1.fetchDocuments)(EXPIRE)
                 .then((response) => {
                 res.status(200).json(response);
             })
@@ -99,7 +140,7 @@ app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 }));
 app.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocumentByEmail)(ACCOUNT_COLL, req.body)
+    yield (0, database_1.fetchDocumentByEmail)(ACCOUNT, req.body)
         .then((result) => {
         res.status(200).json(result);
     })
@@ -108,7 +149,7 @@ app.post("/login/", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     });
 }));
 app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
+    yield (0, database_1.insertDocument)(ACCOUNT, req.body).then((result) => {
         res.status(200).json(result);
     });
 }));
@@ -116,25 +157,25 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 app
     .route("/melhotel/account/:id?")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.insertDocument)(ACCOUNT_COLL, req.body).then((result) => {
+    yield (0, database_1.insertDocument)(ACCOUNT, req.body).then((result) => {
         res.status(200).json(result);
     });
 }))
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.params.id)
-        yield (0, database_1.fetchDocumentById)(ACCOUNT_COLL, req.params.id).then((result) => {
+        yield (0, database_1.fetchDocumentById)(ACCOUNT, req.params.id).then((result) => {
             res.status(200).json(result);
         });
 }))
     .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.params.id)
-        yield (0, database_1.deleteDocument)(ACCOUNT_COLL, req.params.id).then((result) => {
+        yield (0, database_1.deleteDocument)(ACCOUNT, req.params.id).then((result) => {
             res.status(200).json(result);
         });
 }))
     .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.params.id)
-        yield (0, database_1.updateDocument)(ACCOUNT_COLL, req.params.id, req.body).then((result) => {
+        yield (0, database_1.updateDocument)(ACCOUNT, req.params.id, req.body).then((result) => {
             res.status(200).json(result);
         });
 }));
@@ -142,36 +183,90 @@ app
 app
     .route("/admin/database/book/:id?")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocuments)(BOOK_COLL).then((result) => {
+    yield (0, database_1.fetchDocuments)(ACTIVE).then((result) => {
         res.status(200).json(result);
     });
 }))
     .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.params.id)
-        yield (0, database_1.deleteDocument)(BOOK_COLL, req.params.id).then((result) => {
+        yield (0, database_1.deleteDocument)(ACTIVE, req.params.id).then((result) => {
             res.status(200).json(result);
         });
 }))
     .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.params.id)
-        yield (0, database_1.updateDocument)(BOOK_COLL, req.params.id, req.body).then((result) => {
+        yield (0, database_1.updateDocument)(ACTIVE, req.params.id, req.body).then((result) => {
             res.status(200).json(result);
         });
 }));
 app
     .route("/melhotel/book/:uid?")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchByIdAndUid)(BOOK_COLL, req.params.uid)
-        .then((result) => {
-        res.status(200).json(result);
-    })
-        .catch(() => {
+    function checkExistenceAndInsert(coll, doc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existDocument = yield coll.findOne(doc);
+            if (!existDocument) {
+                const insertResult = yield coll.insertOne(doc);
+                if (insertResult.insertedId)
+                    return true;
+                return false;
+            }
+            return false;
+        });
+    }
+    try {
+        const userBookings = yield (0, database_1.fetchBYUid)(ACTIVE, req.params.uid);
+        const expireBookingsDocuments = yield (0, database_1.fetchBYUid)(EXPIRE, req.params.uid);
+        const pendingBookingsDocuments = yield (0, database_1.fetchBYUid)(PENDING, req.params.uid);
+        // THE COLLECTION CYCLE ON ITS DOCUMENTS,  CHECK THE STATES OF DOCUMENT AND
+        //  REMOVING THE DOCUMENT IF IT DOESNT BELONG TO THE COLLECTION.
+        // separate each bookings depending whether if its active, pending or expired
+        const newActiveBookings = pendingBookingsDocuments.filter((value) => new Date(value.bookedDate).toDateString() ===
+            new Date().toDateString());
+        const pendingBookings = userBookings.filter((value) => value.bookedDate > new Date().getTime());
+        const expireBookings = userBookings.filter((bookings) => {
+            let diff = bookings.bookedDate - new Date().getTime();
+            if (diff / (1000 * 60 * 60 * 24) <= -1)
+                return true;
+            return false;
+        });
+        const insertedNewActive = newActiveBookings.filter((value) => {
+            checkExistenceAndInsert(ACTIVE, value);
+        });
+        const insertPendingBookings = pendingBookings.filter((value) => checkExistenceAndInsert(PENDING, value));
+        const insertedExpireBookings = expireBookings.filter((value) => checkExistenceAndInsert(EXPIRE, value));
+        if (insertedNewActive.length) {
+            console.log("new active bookings");
+            // empty array will delete all the documents
+            const deletedExpire = yield ACTIVE.deleteMany(...insertedNewActive);
+            console.log(deletedExpire);
+        }
+        if (insertPendingBookings.length) {
+            console.log("new pending bookings");
+            // empty array will delete all the documents
+            const deletedExpire = yield ACTIVE.deleteMany(...insertPendingBookings);
+            console.log(deletedExpire);
+        }
+        if (insertedExpireBookings.length) {
+            console.log("a new booking expired ");
+            // empty array will delete all the documents
+            const deletedExpire = yield ACTIVE.deleteMany(...insertedExpireBookings);
+            console.log(deletedExpire);
+        }
+        res.status(200).json({
+            expire: expireBookingsDocuments,
+            pending: pendingBookingsDocuments,
+            active: userBookings,
+        });
+    }
+    catch (error) {
+        console.log(error);
         res.sendStatus(500);
-    });
+    }
 }))
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     req.body.uid = new mongodb_1.ObjectId(req.body.uid);
-    yield (0, database_1.insertDocument)(BOOK_COLL, req.body)
+    yield (0, database_1.insertDocument)(ACTIVE, req.body)
         .then((result) => {
         res.status(200).json(result);
     })
@@ -180,13 +275,25 @@ app
     });
 }))
     .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.deleteDocument)(BOOK_COLL, req.params.uid)
+    yield (0, database_1.deleteDocument)(ACTIVE, req.params.uid)
         .then((result) => {
         res.status(200).json(result);
     })
         .catch(() => {
         res.sendStatus(500);
     });
+}));
+app.post("/melhotel/upload/", upload.single("image"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    console.log("clodinary is uploading:");
+    if ((_a = req.file) === null || _a === void 0 ? void 0 : _a.path)
+        cloudinary_1.default.v2.uploader.upload(req.file.path).then((value) => {
+            console.log(value);
+            res.status(200).json(value);
+        });
+    else {
+        res.sendStatus(500);
+    }
 }));
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

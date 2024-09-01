@@ -7,9 +7,11 @@ import {
   faPenToSquare,
   faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Capitalize } from "../fomatString";
 import { Link } from "react-router-dom";
+import { getPhotoUrl, updatePhotoUrl } from "../firebase";
+import axios from "axios";
 
 export default function Profile() {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,16 +30,59 @@ export default function Profile() {
   const [isEditGenderVisible, setEditGenderVisible] = useState<boolean>(false);
   const [isEditBirtdateVisible, setIsEditBirthdateVisible] =
     useState<boolean>(false);
+  const [photoURL, setPhotoUrl] = useState<string | null>();
 
+  const HandleUpdatePhotoUrl = async () => {
+    const photoUrlElement = document.getElementById(
+      "photoUrlElement",
+    ) as HTMLInputElement;
+    if (!photoUrlElement.files || !photoUrlElement.files[0]) return;
+
+    const formData = new FormData();
+    formData.append("image", photoUrlElement.files[0]);
+    // {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // }
+    try {
+      const response = await axios.post("/melhotel/upload/", formData);
+      if (response.data) {
+        console.log("Image uploaded successfully:", response.data);
+        updatePhotoUrl(response.data.secure_url);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+  useLayoutEffect(() => {
+    setPhotoUrl(getPhotoUrl());
+  }, []);
   if (!user) {
     return <Navigate to={"/login"} />;
   }
-
   return (
     <div className="flex h-dvh w-full max-w-7xl flex-col items-center bg-gray-100">
       <div className="z-10 flex h-max w-full flex-col items-center gap-2 px-4 py-4 sm:flex-row sm:py-8 md:px-16">
-        <div className="h-20 w-20 rounded bg-gray-200 p-2 sm:h-32 sm:w-32">
-          .
+        <div className="group h-20 w-20 overflow-hidden rounded bg-gray-200 sm:h-32 sm:w-32">
+          <label
+            htmlFor="photoUrlElement"
+            className="bg-contrast absolute z-10 hidden h-[inherit] w-[inherit] items-center justify-center rounded font-mono opacity-50 group-hover:flex"
+          >
+            change
+          </label>
+          <input
+            onInput={HandleUpdatePhotoUrl}
+            type="file"
+            name="image"
+            id="photoUrlElement"
+            style={{ display: "none" }}
+            accept=".jpg, .jpeg, .png"
+            multiple={false}
+          />
+          {photoURL ? (
+            <img src={photoURL} alt="" className="h-full w-full" />
+          ) : null}
         </div>
         <div className="flex flex-col gap-2 text-center">
           <h1 className="text-primarydarker left-[32%] top-[18%] h-max rounded bg-gray-100 bg-opacity-85 px-2 py-1 text-sm sm:left-52 sm:top-44">

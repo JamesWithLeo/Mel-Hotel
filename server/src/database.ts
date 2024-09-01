@@ -41,6 +41,19 @@ export async function insertDocument(collection: Collection, doc: any) {
     throw error;
   }
 }
+
+export async function insertManyDocument(
+  collection: Collection,
+  doc: Document[],
+) {
+  try {
+    console.log(doc);
+    return await collection.insertMany(doc, { ordered: false });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 export async function fetchDocumentById(collection: Collection, id: string) {
   try {
     const filter = { _id: new ObjectId(id) };
@@ -50,6 +63,20 @@ export async function fetchDocumentById(collection: Collection, id: string) {
     throw error;
   }
 }
+
+export async function fetchBYUid(collection: Collection, uid: string) {
+  try {
+    return await collection
+      .find({
+        uid: new ObjectId(uid),
+      })
+      .toArray();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export async function fetchDocumentByEmail(
   collection: Collection,
   credentials: {
@@ -83,19 +110,6 @@ export async function updateDocument(
       { $set: doc, $currentDate: { lastModified: true } },
       { returnDocument: "after" },
     );
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
-export async function fetchByIdAndUid(collection: Collection, uid: string) {
-  try {
-    return await collection
-      .find({
-        uid: new ObjectId(uid),
-      })
-      .toArray();
   } catch (error) {
     console.log(error);
     throw error;

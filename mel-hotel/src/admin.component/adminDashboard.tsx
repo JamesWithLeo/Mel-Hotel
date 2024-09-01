@@ -28,33 +28,38 @@ export default function AdminDashboard() {
       }
     });
   };
-  const [bookings, setBookings] = useState<IBookSlice[]>([]);
-  const [newBookings, setNewBookings] = useState<IBookSlice[]>([]);
+  // const [bookings, setBookings] = useState<IBookSlice[]>([]);
   const [activeBookings, setActiveBookings] = useState<IBookSlice[]>([]);
-  const [isFetchingBookings, setIsFetchingBookings] = useState<boolean>(true);
+  const [pendingBookings, setPendingBookings] = useState<IBookSlice[]>([]);
   const [expireBookings, setExpireBookings] = useState<IBookSlice[]>([]);
+
+  const [isFetchingBookings, setIsFetchingBookings] = useState<boolean>(true);
   const fetchBookings = async () => {
-    const response = axios.get("/melhotel/collection", {
-      params: { collection: "book" },
+    const active = axios.get("/melhotel/collection", {
+      params: { collection: "active" },
     });
-    response.then((value) => {
+    active.then((value) => {
       setIsFetchingBookings(false);
       if (value && value.data.length) {
-        setBookings(value.data);
-        setNewBookings(
-          value.data.filter(
-            (value: IBookSlice) =>
-              new Date(value.createdAt).toDateString() ===
-              new Date().toDateString(),
-          ),
-        );
-        setActiveBookings(
-          value.data.filter(
-            (value: IBookSlice) =>
-              new Date(value.bookedDate).toDateString() ===
-              new Date().toDateString(),
-          ),
-        );
+        setActiveBookings(value.data);
+      }
+    });
+    const pending = axios.get("/melhotel/collection", {
+      params: { collection: "pending" },
+    });
+    pending.then((value) => {
+      setIsFetchingBookings(false);
+      if (value && value.data.length) {
+        setPendingBookings(value.data);
+      }
+    });
+    const expire = axios.get("/melhotel/collection", {
+      params: { collection: "expire" },
+    });
+    expire.then((value) => {
+      setIsFetchingBookings(false);
+      if (value && value.data.length) {
+        setExpireBookings(value.data);
       }
     });
   };
@@ -84,12 +89,12 @@ export default function AdminDashboard() {
 
       <section className="font-fauna rounded border p-6">
         <div className="flex gap-1">
-          <h1>Total Bookings : </h1>
-          {isFetchingBookings ? <h1>Loading...</h1> : <>{bookings.length}</>}
-        </div>
-        <div className="flex gap-1">
-          <h1>Todays Bookings : </h1>
-          {isFetchingBookings ? <h1>Loading...</h1> : <>{newBookings.length}</>}
+          <h1>Pending Bookings : </h1>
+          {isFetchingBookings ? (
+            <h1>Loading...</h1>
+          ) : (
+            <>{pendingBookings.length}</>
+          )}
         </div>
 
         <div className="flex gap-1">
@@ -98,6 +103,15 @@ export default function AdminDashboard() {
             <h1>Loading...</h1>
           ) : (
             <>{activeBookings.length}</>
+          )}
+        </div>
+
+        <div className="flex gap-1">
+          <h1>Expire Bookings : </h1>
+          {isFetchingBookings ? (
+            <h1>Loading...</h1>
+          ) : (
+            <h1>{expireBookings.length}</h1>
           )}
         </div>
       </section>
