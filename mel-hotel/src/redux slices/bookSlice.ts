@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { packagesData } from "../packages.component/packagesObj";
-
+export const countryDropDownOption = [
+  "Philippines",
+  "Swizterland",
+  "Shanghai",
+  "Saudi Arabia",
+];
 export interface IBookSlice {
   hotelPackage: "regular" | "premium" | "luxury" | "ordinary";
   daysOfStaying: number;
   numberOfRooms: number;
-  bookedDate: number;
+  startingDate: number;
+  endingDate: number;
   location: string | null;
   createdAt: number;
   totalPrice: number;
@@ -18,7 +24,8 @@ const initSlice: IBookSlice = {
   daysOfStaying: 1,
   numberOfRooms: 1,
   location: null,
-  bookedDate: new Date().getTime(),
+  startingDate: 0,
+  endingDate: 0,
   createdAt: new Date().getTime(),
   totalPrice: 0,
   _id: null,
@@ -56,10 +63,14 @@ const bookSlice = createSlice({
     SetBookLocation: (state, action: PayloadAction<string>) => {
       state.location = action.payload;
     },
-    SetSchedule: (state, action: PayloadAction<number>) => {
-      state.bookedDate = action.payload;
+    SetSchedule: (
+      state,
+      action: PayloadAction<{ startingDate: number; endingDate: number }>,
+    ) => {
+      state.startingDate = action.payload.startingDate;
+      state.endingDate = action.payload.endingDate;
     },
-    SetBookedDate: (state) => {
+    SetCreatedAt: (state) => {
       state.createdAt = new Date().getTime();
     },
     SetTotalPrice: (state) => {
@@ -74,7 +85,8 @@ const bookSlice = createSlice({
       state.location = null;
       state.daysOfStaying = 1;
       state.createdAt = new Date().getTime();
-      state.bookedDate = new Date().getTime();
+      state.startingDate = 0;
+      state.endingDate = 0;
       state.hotelPackage = "ordinary";
       state.totalPrice = 0;
       state._id = null;
@@ -94,7 +106,7 @@ export const {
   SetSchedule,
   SetTotalPrice,
   SetBookLocation,
-  SetBookedDate,
+  SetCreatedAt,
 } = {
   ...bookSlice.actions,
 };

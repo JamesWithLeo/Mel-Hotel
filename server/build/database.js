@@ -44,8 +44,7 @@ function fetchDocuments(collection, id) {
             }
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            return Promise.reject(error);
         }
     });
 }

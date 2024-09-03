@@ -1,14 +1,14 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../hotelStore";
 import { Navigate } from "react-router-dom";
-import { IBookSlice } from "../redux slices/bookSlice";
+import { IBookSlice, Reset } from "../redux slices/bookSlice";
 import axios from "axios";
 import PackageCard from "./packageCard";
 import { useLayoutEffect, useState } from "react";
 
 export default function BookedPackage() {
   const user = useSelector((state: AppState) => state.auth.user);
-
+  const dispatch = useDispatch();
   const [activeBookings, setActiveBookings] = useState<IBookSlice[]>([]);
   const [pendingBookings, setPendingBookings] = useState<IBookSlice[]>([]);
   const [expireBookings, setExpireBookings] = useState<IBookSlice[]>([]);
@@ -22,6 +22,7 @@ export default function BookedPackage() {
     });
   };
   useLayoutEffect(() => {
+    dispatch(Reset());
     fetchBookings();
   }, []);
 
@@ -42,7 +43,11 @@ export default function BookedPackage() {
               <>
                 {activeBookings.map((value) => {
                   return (
-                    <PackageCard packageObject={value} status={"active"} />
+                    <PackageCard
+                      packageObject={value}
+                      status={"active"}
+                      key={value._id}
+                    />
                   );
                 })}
               </>
@@ -61,7 +66,11 @@ export default function BookedPackage() {
                 <>
                   {pendingBookings.map((value) => {
                     return (
-                      <PackageCard packageObject={value} status={"pending"} />
+                      <PackageCard
+                        packageObject={value}
+                        status={"pending"}
+                        key={value._id}
+                      />
                     );
                   })}
                 </>

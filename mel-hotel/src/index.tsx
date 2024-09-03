@@ -21,12 +21,14 @@ import SigninFC from "./account.component/signin";
 import SchedLayout from "./book.component/schedLayout";
 import AdminLayout from "./admin.component/adminLayout";
 import AccountCollection from "./admin.component/accountCollection";
-import BookCollection from "./admin.component/bookCollection";
+import PendingBookingCollection from "./admin.component/PendingBookingCollection";
 import PackageLayout from "./packages.component/packageLayout";
 import BookedPackage from "./packages.component/BookedPackage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ViewPackage from "./packages.component/viewPackage";
 import AdminDashboard from "./admin.component/adminDashboard";
+import ActiveBookingCollection from "./admin.component/ActiveBookingCollection";
+import ExpireBookingCollection from "./admin.component/ExpireBookingCollection";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -86,16 +88,14 @@ const router = createBrowserRouter([
   { path: "signin", element: <SigninFC /> },
   {
     path: "admin",
-    element: (
-      <QueryClientProvider client={queryClient}>
-        <AdminLayout />
-      </QueryClientProvider>
-    ),
+    element: <AdminLayout />,
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: "dashboard", element: <AdminDashboard /> },
       { path: "account", element: <AccountCollection /> },
-      { path: "book", element: <BookCollection /> },
+      { path: "pending", element: <PendingBookingCollection /> },
+      { path: "active", element: <ActiveBookingCollection /> },
+      { path: "expire", element: <ExpireBookingCollection /> },
     ],
   },
   { path: "ordinary", element: <Ordinary isReadOnly={true} /> },
@@ -108,8 +108,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Provider store={hotelStore}>
-      <RouterProvider router={router} />
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={hotelStore}>
+        <RouterProvider router={router} />
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

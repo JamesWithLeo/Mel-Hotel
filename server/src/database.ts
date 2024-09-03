@@ -29,8 +29,7 @@ export async function fetchDocuments(collection: Collection, id?: string) {
       return await collection.find().toArray();
     }
   } catch (error) {
-    console.log(error);
-    throw error;
+    return Promise.reject(error)
   }
 }
 export async function insertDocument(collection: Collection, doc: any) {

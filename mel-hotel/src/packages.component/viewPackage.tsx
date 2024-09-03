@@ -12,6 +12,7 @@ export default function ViewPackage() {
   const packageObject: IBookSlice & { _id: string } = location.state;
   const [isVisibleQr, setIsVisibleQr] = useState<boolean>(false);
   const [qrCode, setQrCode] = useState<string>("");
+
   const HandleAbort = async () => {
     await axios
       .delete("/melhotel/book/" + packageObject._id)
@@ -76,13 +77,15 @@ export default function ViewPackage() {
             <h1 className="font-edu">{packageObject.location}</h1>
           </span>
           <h1 className="text-sm font-light">
-            Scheduled on : {new Date(packageObject.bookedDate).toUTCString()}{" "}
+            Scheduled on {packageObject.startingDate ? new Date(packageObject.startingDate).toLocaleString():null}{" "}
           </h1>
           <h1 className="text-sm font-light">
+            and will be expired on {new Date(packageObject.endingDate).toLocaleString()}</h1>
+          <h1 className="text-sm font-light">
             {packageObject.numberOfRooms} rooms for{" "}
-            {packageObject.daysOfStaying} , Amounting of $
-            {packageObject.totalPrice}
-            days
+            {packageObject.daysOfStaying} days , Amounting of $
+            {packageObject.totalPrice}{" "}
+            dollars
           </h1>
           <Link
             to={"/" + packageObject.hotelPackage}

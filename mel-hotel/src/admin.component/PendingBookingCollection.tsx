@@ -4,21 +4,16 @@ import { IBookSlice } from "../redux slices/bookSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTable } from "@fortawesome/free-solid-svg-icons";
 
-const BookTable = lazy(() => import("./bookTable"));
-export type ReservationTypeface = {
-  _id: string;
-  AccountId: string;
-  PackageType: string;
-  DateOfBooking: string;
-  ReservedDate: string;
-  Country: string;
-};
-export default function BookCollection() {
+const BookTable = lazy(() => import("./PendingBookingTable"));
+
+export default function PendingBookingCollection() {
   const [bookData, setBookData] = useState<IBookSlice[] | null>(null);
   const fetchBookings = async () => {
-    await axios.get("/admin/database/book").then(async (response) => {
-      setBookData(response.data);
-    });
+    await axios
+      .get("/melhotel/collection/", { params: { collection: "pending" } })
+      .then(async (response) => {
+        setBookData(response.data);
+      });
   };
   useEffect(() => {
     fetchBookings();
@@ -36,9 +31,7 @@ export default function BookCollection() {
             </div>
           }
         >
-          {bookData ? (
-            <BookTable data={bookData} RefreshData={fetchBookings} />
-          ) : null}
+          {bookData ? <BookTable data={bookData} /> : null}
         </Suspense>
       </>
     </div>

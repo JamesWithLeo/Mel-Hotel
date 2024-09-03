@@ -1,9 +1,4 @@
-import {
-  faBars,
-  faCog,
-  faCogs,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars, faCogs, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
@@ -45,7 +40,7 @@ function App() {
   return (
     <>
       <div className="flex h-screen w-full flex-col items-center">
-        <header className="sticky top-0 z-50 flex h-16 min-h-16 w-full max-w-7xl justify-between bg-gray-100 px-8 opacity-95 backdrop-blur backdrop-opacity-20">
+        <header className="sticky top-0 z-50 flex h-16 min-h-16 w-full max-w-7xl justify-between bg-gray-100 px-4 opacity-95 backdrop-blur backdrop-opacity-20 lg:px-8">
           <div></div>
           <div className="hidden h-full items-center gap-8 opacity-100 md:flex">
             <NavLink to={"/"} className={navClass}>
@@ -66,8 +61,8 @@ function App() {
                 className={({ isPending, isActive, isTransitioning }) =>
                   [
                     isActive
-                      ? "text-contrast hidden items-center gap-4 text-xl md:flex"
-                      : "text-primarydarker hidden items-center gap-4 text-xl md:flex",
+                      ? "text-contrast flex items-center gap-4 text-xl"
+                      : "text-primarydarker flex items-center gap-4 text-xl",
                     isPending ? "" : "",
                     isTransitioning ? "" : "",
                   ].join(" ")
@@ -98,7 +93,7 @@ function App() {
             ) : (
               <NavLink
                 to={"/login"}
-                className={"text-primarydarker hidden border-b-4 sm:block"}
+                className={"text-primarydarker hidden= border-b-4 sm:block"}
               >
                 <FontAwesomeIcon
                   icon={faUser}

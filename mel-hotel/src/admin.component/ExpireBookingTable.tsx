@@ -1,44 +1,13 @@
 import {
   MaterialReactTable,
-  MRT_Row,
   MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
 import { useMemo } from "react";
 import { IBookSlice } from "../redux slices/bookSlice";
-const countryDropDownOption = [
-  "Philippines",
-  "Swizterland",
-  "Shanghai",
-  "Saudi Arabia",
-];
-export default function BookTable({
-  data,
-  RefreshData,
-}: {
-  data: IBookSlice[];
-  RefreshData: () => void;
-}) {
-  const handleDeleteReservation = async (row: MRT_Row<IBookSlice>) => {
-    if (window.confirm("Are you sure want to delete this Reservation? ")) {
-      await fetch(`/admin/database/reservation/delete/${row.original._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        },
-      })
-        .then(async (respone) => {
-          await respone.json().then((value) => {
-            console.log(value);
-            RefreshData();
-          });
-        })
-        .catch((response) => {
-          console.log(response);
-        });
-    }
-  };
-
+import axios from "axios";
+import { countryDropDownOption } from "../redux slices/bookSlice";
+export default function ExpireBookingTable({ data }: { data: IBookSlice[] }) {
   const columns = useMemo<MRT_ColumnDef<IBookSlice>[]>(
     () => [
       {
@@ -103,6 +72,7 @@ export default function BookTable({
         },
         header: "timeCreated",
         enableSorting: false,
+        size: 100,
         maxSize: 150,
       },
       {
@@ -112,6 +82,7 @@ export default function BookTable({
         },
         header: "createdAt",
         enableSorting: false,
+        size: 100,
         maxSize: 150,
       },
       {
@@ -121,10 +92,19 @@ export default function BookTable({
         maxSize: 200,
       },
       {
-        header: "BookedDate",
+        header: "Schedule on",
         accessorFn(originalRow) {
-          return new Date(originalRow.bookedDate).toLocaleDateString();
+          return new Date(originalRow.startingDate).toLocaleDateString();
         },
+        size: 100,
+        maxSize: 200,
+      },
+      {
+        header: "Ending on",
+        accessorFn(originalRow) {
+          return new Date(originalRow.endingDate).toLocaleDateString();
+        },
+        size: 100,
         maxSize: 200,
       },
     ],
@@ -257,8 +237,21 @@ export default function BookTable({
       ];
     },
     renderRowActionMenuItems: ({ row }) => {
-      const handleDelete = () => {
-        handleDeleteReservation(row);
+      const handleDelete = async () => {
+        if (
+          window.confirm("Are you sure want to delete this active booking? ")
+        ) {
+          await axios
+            .delete(`/melhotel/collection/`, {
+              params: { id: row.original._id, collection: "active" },
+            })
+            .then(async (respone) => {
+              console.log(respone);
+            })
+            .catch((response) => {
+              console.log(response);
+            });
+        }
       };
       return [
         <div className="flex flex-col">

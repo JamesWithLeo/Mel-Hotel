@@ -39,7 +39,7 @@ export default function AdminLayout() {
           Account
         </NavLink>
         <NavLink
-          to={"/admin/book"}
+          to={"/admin/active"}
           className={({ isActive }) =>
             [
               isActive
@@ -48,7 +48,31 @@ export default function AdminLayout() {
             ].join(" ")
           }
         >
-          Book
+          Active
+        </NavLink>
+        <NavLink
+          to={"/admin/pending"}
+          className={({ isActive }) =>
+            [
+              isActive
+                ? "bg-contrast w-full rounded-lg text-center text-sm text-gray-800"
+                : "text-center text-sm",
+            ].join(" ")
+          }
+        >
+          Pending
+        </NavLink>
+        <NavLink
+          to={"/admin/expire"}
+          className={({ isActive }) =>
+            [
+              isActive
+                ? "bg-contrast w-full rounded-lg text-center text-sm text-gray-800"
+                : "text-center text-sm",
+            ].join(" ")
+          }
+        >
+          expire
         </NavLink>
       </div>
 

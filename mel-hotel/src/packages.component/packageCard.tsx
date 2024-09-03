@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { IBookSlice } from "../redux slices/bookSlice";
-import { stat } from "fs";
 
 export default function PackageCard({
   packageObject,
@@ -36,8 +35,11 @@ export default function PackageCard({
         <h1 className={packageStyle}>{packageObject.hotelPackage}</h1>
         <h1 className="font-edu sm:text-right">{packageObject.location}</h1>
       </span>
-      <h1 className="text-sm font-light">
-        Scheduled on : {new Date(packageObject.bookedDate).toDateString()}
+      <h1 className="text-xs font-light sm:text-sm">
+        Scheduled on :{" "}
+        {packageObject.startingDate
+          ? new Date(packageObject.startingDate).toDateString()
+          : null}{" "}
       </h1>
       <h1 className="text-sm font-light">
         {packageObject.numberOfRooms} rooms for {packageObject.daysOfStaying}{" "}

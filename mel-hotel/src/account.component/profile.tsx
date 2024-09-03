@@ -40,16 +40,20 @@ export default function Profile() {
 
     const formData = new FormData();
     formData.append("image", photoUrlElement.files[0]);
-    // {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // }
+
     try {
-      const response = await axios.post("/melhotel/upload/", formData);
+      const response = await axios.post("/melhotel/upload/", 
+        formData
+         ,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    } 
+      );
       if (response.data) {
         console.log("Image uploaded successfully:", response.data);
         updatePhotoUrl(response.data.secure_url);
+        window.location.reload()
       }
     } catch (error) {
       console.error("Error uploading image:", error);

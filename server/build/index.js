@@ -63,7 +63,6 @@ const storage = multer_1.default.diskStorage({
     },
 });
 const upload = (0, multer_1.default)({ dest: "uploads/", storage: storage });
-//
 const database_1 = __importStar(require("./database"));
 const mongodb_1 = require("mongodb");
 const user = process.env.DB_USER;
@@ -73,10 +72,9 @@ const DB_URI = `mongodb+srv://${user}:${password}@${cluster}.wadd7q8.mongodb.net
 const DATABASE_CLIENT = (0, database_1.default)(DB_URI);
 const DATABASE = DATABASE_CLIENT.db("MelHotel");
 const ACCOUNT = DATABASE.collection("ACCOUNT");
+const BOOK = DATABASE.collection("BOOK");
 const ACTIVE = DATABASE.collection("ACTIVE");
 const EXPIRE = DATABASE.collection("EXPIRE");
-const PENDING = DATABASE.collection("PENDING");
-//
 const PORT = parseInt(process.env.PORT, 10);
 const express_1 = __importStar(require("express"));
 const cors_1 = __importDefault(require("cors"));
@@ -94,8 +92,7 @@ app.get("/hotel", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json(Object.assign({ response: "success" }, reject));
     });
 }));
-//
-app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.route("/melhotel/collection/").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const collection = req.query.collection;
     switch (collection) {
         case "account":
@@ -104,7 +101,7 @@ app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, 
                 res.status(200).json(response);
             })
                 .catch((rejected) => {
-                res.status(200).json({ rejected });
+                res.status(500).json({ errorMessage: "Can't fetch collection", rejected });
             });
             break;
         case "active":
@@ -113,16 +110,16 @@ app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, 
                 res.status(200).json(response);
             })
                 .catch((rejected) => {
-                res.status(200).json({ rejected });
+                res.status(500).json({ errorMessage: "Can't fetch collection", rejected });
             });
             break;
         case "pending":
-            yield (0, database_1.fetchDocuments)(PENDING)
+            yield (0, database_1.fetchDocuments)(BOOK)
                 .then((response) => {
                 res.status(200).json(response);
             })
                 .catch((rejected) => {
-                res.status(200).json({ rejected });
+                res.status(500).json({ errorMessage: "Can't fetch collection", rejected });
             });
             break;
         case "expire":
@@ -131,7 +128,39 @@ app.get("/melhotel/collection", (req, res) => __awaiter(void 0, void 0, void 0, 
                 res.status(200).json(response);
             })
                 .catch((rejected) => {
-                res.status(200).json({ rejected });
+                res.status(500).json({ errorMessage: "Can't fetch collection", rejected });
+            });
+            break;
+        default:
+            res.sendStatus(500);
+            break;
+    }
+})).put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+})).delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = req.query.collection;
+    const id = req.query.id;
+    if (!collection || !id)
+        res.sendStatus(500);
+    switch (collection) {
+        case "pending":
+            yield (0, database_1.deleteDocument)(BOOK, id).then((response) => {
+                res.status(200).json(response);
+            }).catch((rejected) => {
+                res.status(500).json({ errorMessage: "Can't delete document in Pending booking collection", rejected });
+            });
+            break;
+        case "active":
+            yield (0, database_1.deleteDocument)(ACTIVE, id).then((response) => {
+                res.status(200).json(response);
+            }).catch((rejected) => {
+                res.status(500).json({ errorMessage: "Can't delete document in Pending booking collection", rejected });
+            });
+            break;
+        case "expire":
+            yield (0, database_1.deleteDocument)(EXPIRE, id).then((response) => {
+                res.status(200).json(response);
+            }).catch((rejected) => {
+                res.status(500).json({ errorMessage: "Can't delete document in Expire booking collection", rejected });
             });
             break;
         default:
@@ -179,28 +208,8 @@ app
             res.status(200).json(result);
         });
 }));
-// book admin request
 app
-    .route("/admin/database/book/:id?")
-    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.fetchDocuments)(ACTIVE).then((result) => {
-        res.status(200).json(result);
-    });
-}))
-    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.params.id)
-        yield (0, database_1.deleteDocument)(ACTIVE, req.params.id).then((result) => {
-            res.status(200).json(result);
-        });
-}))
-    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.params.id)
-        yield (0, database_1.updateDocument)(ACTIVE, req.params.id, req.body).then((result) => {
-            res.status(200).json(result);
-        });
-}));
-app
-    .route("/melhotel/book/:uid?")
+    .route("/melhotel/book/:uid")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     function checkExistenceAndInsert(coll, doc) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -215,49 +224,23 @@ app
         });
     }
     try {
-        const userBookings = yield (0, database_1.fetchBYUid)(ACTIVE, req.params.uid);
-        const expireBookingsDocuments = yield (0, database_1.fetchBYUid)(EXPIRE, req.params.uid);
-        const pendingBookingsDocuments = yield (0, database_1.fetchBYUid)(PENDING, req.params.uid);
-        // THE COLLECTION CYCLE ON ITS DOCUMENTS,  CHECK THE STATES OF DOCUMENT AND
-        //  REMOVING THE DOCUMENT IF IT DOESNT BELONG TO THE COLLECTION.
-        // separate each bookings depending whether if its active, pending or expired
-        const newActiveBookings = pendingBookingsDocuments.filter((value) => new Date(value.bookedDate).toDateString() ===
-            new Date().toDateString());
-        const pendingBookings = userBookings.filter((value) => value.bookedDate > new Date().getTime());
-        const expireBookings = userBookings.filter((bookings) => {
-            let diff = bookings.bookedDate - new Date().getTime();
-            if (diff / (1000 * 60 * 60 * 24) <= -1)
-                return true;
-            return false;
-        });
-        const insertedNewActive = newActiveBookings.filter((value) => {
-            checkExistenceAndInsert(ACTIVE, value);
-        });
-        const insertPendingBookings = pendingBookings.filter((value) => checkExistenceAndInsert(PENDING, value));
-        const insertedExpireBookings = expireBookings.filter((value) => checkExistenceAndInsert(EXPIRE, value));
-        if (insertedNewActive.length) {
-            console.log("new active bookings");
-            // empty array will delete all the documents
-            const deletedExpire = yield ACTIVE.deleteMany(...insertedNewActive);
-            console.log(deletedExpire);
+        const dateTodayInEpoch = new Date().getTime();
+        const newActiveBookings = yield BOOK.find({ startingDate: { $lte: dateTodayInEpoch } }).toArray();
+        const newExpireBookings = yield ACTIVE.find({ endingDate: { $lt: dateTodayInEpoch } }).toArray();
+        const newExpire = newExpireBookings.filter((expireBooking) => checkExistenceAndInsert(EXPIRE, expireBooking));
+        const newActive = newActiveBookings.filter((activeBooking) => checkExistenceAndInsert(ACTIVE, activeBooking));
+        if (newExpire.length !== 0) {
+            const deletedActive = yield ACTIVE.deleteMany(...newExpire);
+            console.log(deletedActive);
         }
-        if (insertPendingBookings.length) {
-            console.log("new pending bookings");
-            // empty array will delete all the documents
-            const deletedExpire = yield ACTIVE.deleteMany(...insertPendingBookings);
-            console.log(deletedExpire);
+        if (newActive.length !== 0) {
+            const deletedPending = yield BOOK.deleteMany(...newActive);
+            console.log(deletedPending);
         }
-        if (insertedExpireBookings.length) {
-            console.log("a new booking expired ");
-            // empty array will delete all the documents
-            const deletedExpire = yield ACTIVE.deleteMany(...insertedExpireBookings);
-            console.log(deletedExpire);
-        }
-        res.status(200).json({
-            expire: expireBookingsDocuments,
-            pending: pendingBookingsDocuments,
-            active: userBookings,
-        });
+        const pendingBookings = yield (0, database_1.fetchBYUid)(BOOK, req.params.uid);
+        const activeBookings = yield (0, database_1.fetchBYUid)(ACTIVE, req.params.uid);
+        const expireBookings = yield (0, database_1.fetchBYUid)(EXPIRE, req.params.uid);
+        res.status(200).json({ pending: pendingBookings, active: activeBookings, expire: expireBookings });
     }
     catch (error) {
         console.log(error);
@@ -266,16 +249,16 @@ app
 }))
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     req.body.uid = new mongodb_1.ObjectId(req.body.uid);
-    yield (0, database_1.insertDocument)(ACTIVE, req.body)
+    yield (0, database_1.insertDocument)(BOOK, req.body)
         .then((result) => {
         res.status(200).json(result);
     })
         .catch(() => {
-        res.sendStatus(500);
+        res.sendStatus(400).json({ errorMessage: "Can't insert bookings" });
     });
 }))
     .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, database_1.deleteDocument)(ACTIVE, req.params.uid)
+    yield (0, database_1.deleteDocument)(BOOK, req.params.uid)
         .then((result) => {
         res.status(200).json(result);
     })
