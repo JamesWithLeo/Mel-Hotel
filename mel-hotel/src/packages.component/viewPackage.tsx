@@ -6,10 +6,12 @@ import axios from "axios";
 
 import { useState, useEffect } from "react";
 import QRCode from "qrcode";
+
 export default function ViewPackage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const packageObject: IBookSlice & { _id: string } = location.state;
+  const packageObject: IBookSlice & { _id: string } = location.state.package;
+  const type: "active" | "pending" | "expire" = location.state.type;
   const [isVisibleQr, setIsVisibleQr] = useState<boolean>(false);
   const [qrCode, setQrCode] = useState<string>("");
 
@@ -77,15 +79,19 @@ export default function ViewPackage() {
             <h1 className="font-edu">{packageObject.location}</h1>
           </span>
           <h1 className="text-sm font-light">
-            Scheduled on {packageObject.startingDate ? new Date(packageObject.startingDate).toLocaleString():null}{" "}
+            Scheduled on{" "}
+            {packageObject.startingDate
+              ? new Date(packageObject.startingDate).toLocaleString()
+              : null}{" "}
           </h1>
           <h1 className="text-sm font-light">
-            and will be expired on {new Date(packageObject.endingDate).toLocaleString()}</h1>
+            and will be expired on{" "}
+            {new Date(packageObject.endingDate).toLocaleString()}
+          </h1>
           <h1 className="text-sm font-light">
             {packageObject.numberOfRooms} rooms for{" "}
             {packageObject.daysOfStaying} days , Amounting of $
-            {packageObject.totalPrice}{" "}
-            dollars
+            {packageObject.totalPrice} dollars
           </h1>
           <Link
             to={"/" + packageObject.hotelPackage}
@@ -94,13 +100,14 @@ export default function ViewPackage() {
             view Inclusions
           </Link>
         </section>
-
-        <button
-          className="absolute bottom-4 w-max self-end rounded bg-red-400 px-4 py-1 text-red-700 shadow"
-          onClick={HandleAbort}
-        >
-          Abort package
-        </button>
+        {type !== "expire" ? (
+          <button
+            className="absolute bottom-4 w-max self-end rounded bg-red-400 px-4 py-1 text-red-700 shadow"
+            onClick={HandleAbort}
+          >
+            Abort package
+          </button>
+        ) : null}
       </main>
     </>
   );

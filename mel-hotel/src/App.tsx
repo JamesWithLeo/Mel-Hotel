@@ -13,7 +13,6 @@ interface INavClass {
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const active = useSelector((state: AppState) => state.auth.isActive);
   const user = useSelector((state: AppState) => state.auth.user);
   const navClass = ({ isActive, isPending, isTransitioning }: INavClass) => {
     return [

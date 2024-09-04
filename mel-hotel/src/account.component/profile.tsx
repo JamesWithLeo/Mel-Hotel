@@ -8,7 +8,7 @@ import {
   faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLayoutEffect, useRef, useState } from "react";
-import { Capitalize } from "../fomatString";
+import { Capitalize, EpochToInputDate } from "../fomatString";
 import { Link } from "react-router-dom";
 import { getPhotoUrl, updatePhotoUrl } from "../firebase";
 import axios from "axios";
@@ -42,18 +42,15 @@ export default function Profile() {
     formData.append("image", photoUrlElement.files[0]);
 
     try {
-      const response = await axios.post("/melhotel/upload/", 
-        formData
-         ,{
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    } 
-      );
+      const response = await axios.post("/melhotel/upload/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response.data) {
         console.log("Image uploaded successfully:", response.data);
         updatePhotoUrl(response.data.secure_url);
-        window.location.reload()
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -105,10 +102,6 @@ export default function Profile() {
         >
           Book
         </Link>
-        <button className="text-primarydarker h-full w-max rounded border border-gray-200 bg-gray-50 px-3 py-1 hover:shadow hover:drop-shadow-md">
-          Write Review
-        </button>
-
         <button
           className="h-full w-max rounded border border-gray-200 bg-gray-50 px-3 py-1 text-red-400 hover:shadow hover:drop-shadow-md"
           onClick={handleLogout}
@@ -120,7 +113,6 @@ export default function Profile() {
       <div className="text-primarydarker flex h-full w-full max-w-lg flex-col items-center gap-4 self-start px-4 pb-8 md:pl-24">
         <section className="flex w-full grid-cols-2 flex-col sm:grid">
           <h1 className="font-fauna w-max align-middle">Gmail</h1>
-
           <div className="flex w-full gap-4">
             <input
               type="email"
@@ -351,6 +343,7 @@ export default function Profile() {
               readOnly
               type="date"
               id="Birthdate"
+              defaultValue={EpochToInputDate(user.birthdate)}
               className="outline-primarydarker w-full rounded bg-gray-200 px-2 py-2 focus:bg-gray-100 focus:shadow-inner focus:outline-dashed"
             />
             <button

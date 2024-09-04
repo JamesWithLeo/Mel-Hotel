@@ -26,6 +26,16 @@ export default function BranchLocation({
       description: "Mel Hotel, Main Branch.  Manila, Philippines. ",
     },
     {
+      name: "Okinawa, Japan",
+      position: [26.3, 128.0],
+      description: "Japan main branch",
+    },
+    {
+      name: "Vancouver, Canada",
+      position: [49.1539, -123.06],
+      description: "Vancouver, Canada",
+    },
+    {
       name: "Main branch. Boracay, Philippines",
       position: [11.9683, 121.9229],
       description: "Boracay branch",

@@ -33,13 +33,11 @@ var user: IUser | null = userlocal ? JSON.parse(userlocal) : null;
 
 interface IAuthSlice {
   user: IUser | null;
-  isActive: boolean;
   photUrl: string | null;
 }
 
 const authSliceInitState: IAuthSlice = {
   user: user ? user : null,
-  isActive: false,
   photUrl: null,
 };
 

@@ -3,18 +3,18 @@ import { IBookSlice } from "../redux slices/bookSlice";
 
 export default function PackageCard({
   packageObject,
-  status,
+  status: type,
 }: {
   packageObject: IBookSlice;
   status: "active" | "pending" | "expire";
 }) {
   const navigate = useNavigate();
   const HandleClickCard = () => {
-    navigate("/view", { state: packageObject });
+    navigate("/view", { state: { package: packageObject, type: type } });
   };
   let cardstyle = "";
   let packageStyle = "";
-  switch (status) {
+  switch (type) {
     case "active":
       cardstyle = "w-full rounded border p-2 bg-contrast sm:w-full sm:p-4";
       packageStyle =
