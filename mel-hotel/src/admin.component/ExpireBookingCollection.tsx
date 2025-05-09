@@ -10,7 +10,7 @@ export default function ExpireBookingCollection() {
   const [bookData, setBookData] = useState<IBookSlice[] | null>(null);
   const fetchBookings = async () => {
     await axios
-      .get("/melhotel/collection/", { params: { collection: "active" } })
+      .get("/melhotel/collection/", { params: { collection: "expire" } })
       .then(async (response) => {
         setBookData(response.data);
       });
